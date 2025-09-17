@@ -185,7 +185,7 @@
   </nav>
 
   <div class="nav-buttons" aria-label="Quick navigation">
-    <button type="button" class="nav-button" onclick="window.open('/live/', '_blank')">
+    <button type="button" class="nav-button" id="play-ex-air-btn">
       <img src="static/excavator.svg" alt="RedNode dashboard icon" loading="lazy">
       <span>Play Ex-Air</span>
     </button>
@@ -285,5 +285,54 @@
   <footer>
     <p>&copy; 2025 RedNode Excavation. All Rights Reserved.</p>
   </footer>
+
+  <script>
+    (function () {
+      const btn = document.getElementById("play-ex-air-btn");
+      if (!btn) return;
+      const label = btn.querySelector("span");
+      const defaultLabel = label ? label.textContent : "Play Ex-Air";
+
+      async function playExAir() {
+        if (!label) return;
+        btn.disabled = true;
+        label.textContent = "Starting…";
+
+        try {
+          const res = await fetch("/api/gesture/start", { method: "POST" });
+          const data = await res.json();
+          if (!res.ok || !data.ok) {
+            throw new Error((data && data.error) || "Unable to launch Ex-Air");
+          }
+
+          label.textContent = data.started ? "Ex-Air Running" : "Ex-Air Already Running";
+          setTimeout(() => {
+            label.textContent = defaultLabel;
+          }, 4000);
+        } catch (err) {
+          console.error("Failed to launch gesture.py:", err);
+          label.textContent = "Retry Play Ex-Air";
+          alert(`Failed to start Ex-Air: ${err.message || err}`);
+        } finally {
+          btn.disabled = false;
+        }
+      }
+
+      btn.addEventListener("click", (event) => {
+        event.preventDefault();
+        playExAir();
+      });
+
+      fetch("/api/gesture/status")
+        .then((res) => (res.ok ? res.json() : null))
+        .then((status) => {
+          if (!status || !status.running || !label) return;
+          label.textContent = "Ex-Air Running";
+        })
+        .catch(() => {
+          if (label) label.textContent = defaultLabel;
+        });
+    })();
+  </script>
 </body>
 </html>
