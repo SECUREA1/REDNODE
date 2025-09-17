@@ -108,8 +108,21 @@ const server = http.createServer(async (req, res) => {
   }
 
   // Serve chat client for root requests
-  const isRootRequest = ["/", "/index.html", "/rednode", "/rednode.html"].includes(urlPath);
+  const isRootRequest = ["/", "/index.html"].includes(urlPath);
   if ((req.method === "GET" || req.method === "HEAD") && isRootRequest) {
+    try {
+      const html = await readFile(path.join(ROOT, "home.html"));
+      res.writeHead(200, { "Content-Type": "text/html" });
+      if (req.method === "GET") res.end(html); else res.end();
+    } catch {
+      res.writeHead(404);
+      res.end("Not found");
+    }
+    return;
+  }
+
+  const isRednodeRequest = ["/rednode", "/rednode.html"].includes(urlPath);
+  if ((req.method === "GET" || req.method === "HEAD") && isRednodeRequest) {
     try {
       const html = await readFile(path.join(ROOT, "rednode.html"));
       res.writeHead(200, { "Content-Type": "text/html" });
