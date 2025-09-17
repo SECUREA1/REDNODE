@@ -1,22 +1,14 @@
 services:
-  # Static site for the HTML
-    - type: web
-      name: rednode-excavation-site
-    runtime: static
-      repo: https://github.com/SECUREA1/REDNODE-EXCAVATION.git
-    branch: main
-    buildCommand: ""
-    staticPublishPath: .
-    previews:
-      generation: automatic
-
-  # Node WebSocket fanout
-    - type: web
-      name: rednode-excavation-ws
-    runtime: node
-      repo: https://github.com/SECUREA1/REDNODE-EXCAVATION.git
-    rootDir: ws-server
-    plan: starter
-    buildCommand: npm ci
-    startCommand: node server.js
-    healthCheckPath: /healthz
+  - type: web
+    name: excavator-game
+    env: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: streamlit run app.py --server.port $PORT --server.address 0.0.0.0
+    envVars:
+      - key: PYTHONUNBUFFERED
+        value: "1"
+      - key: SDL_VIDEODRIVER
+        value: "dummy"
+      - key: OPENCV_VIDEOIO_PRIORITY_MSMF
+        value: "0"
