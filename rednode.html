@@ -52,6 +52,39 @@
       display: block;
       border: 2px solid gold;
     }
+    .nav-buttons {
+      margin: 90px auto 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+      text-align: center;
+    }
+    .nav-button {
+      padding: 0.8rem 1.6rem;
+      background: #b30000;
+      color: gold;
+      border: 2px solid gold;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: bold;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6rem;
+      box-shadow: 0 4px 10px rgba(255, 0, 0, 0.5);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .nav-button:hover,
+    .nav-button:focus {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 16px rgba(255, 0, 0, 0.6);
+    }
+    .nav-button img {
+      width: 20px;
+      height: 20px;
+      filter: drop-shadow(0 0 6px rgba(255, 215, 0, 0.8));
+    }
     section {
       padding: 4rem 2rem;
       max-width: 1000px;
@@ -139,10 +172,14 @@
     </ul>
   </nav>
 
-  <div style="text-align:center; margin-top:80px;">
-    <button onclick="window.location.href='/#rednode'" 
-            style="padding:0.8rem 1.6rem; background:#b30000; color:gold; border:2px solid gold; border-radius:8px; cursor:pointer;">
-      Back to Dashboard
+  <div class="nav-buttons" aria-label="Quick navigation">
+    <button type="button" class="nav-button" onclick="window.location.href='/#rednode'">
+      <img src="static/excavator.svg" alt="RedNode dashboard icon" loading="lazy">
+      <span>Back to Dashboard</span>
+    </button>
+    <button type="button" class="nav-button" onclick="window.location.href='index.html'">
+      <img src="static/excavator.svg" alt="Excavator layout icon" loading="lazy">
+      <span>Launch Excavator Control Center</span>
     </button>
   </div>
 
