@@ -122,6 +122,39 @@
       border: 2px solid gold;
       color: gold;
     }
+    .live-callout {
+      margin-top: 2.5rem;
+      text-align: center;
+    }
+    .live-callout p {
+      margin-bottom: 1rem;
+      font-size: 1.1rem;
+      color: #fffa8b;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+    }
+    .live-callout button {
+      padding: 1rem 2.5rem;
+      font-size: 1.4rem;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      border-radius: 999px;
+      border: 3px solid #fffa8b;
+      background: radial-gradient(circle at top, #ff004c, #b30000 55%, #600 100%);
+      color: #fffbe6;
+      cursor: pointer;
+      box-shadow: 0 0 22px rgba(255, 48, 64, 0.65), 0 0 12px rgba(255, 215, 0, 0.55) inset;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .live-callout button:hover,
+    .live-callout button:focus {
+      transform: translateY(-3px) scale(1.02);
+      box-shadow: 0 0 30px rgba(255, 48, 64, 0.85), 0 0 16px rgba(255, 215, 0, 0.75) inset;
+    }
+    .live-callout button:active {
+      transform: translateY(1px) scale(0.99);
+    }
     .cta {
       text-align: center;
       background: #800;
@@ -204,6 +237,12 @@
         <h3>Collaborative Monitoring</h3>
         <p>Allow approved operators to request joining, share thumbnails, and engage in stream-specific discussions.</p>
       </div>
+    </div>
+    <div class="live-callout" role="presentation">
+      <p>Ready to enter the control center?</p>
+      <button type="button" onclick="window.location.href='index.html'" aria-label="Join the live RedNode channel now">
+        Join Now – Live Channel
+      </button>
     </div>
   </section>
 
