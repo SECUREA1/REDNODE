@@ -92,6 +92,57 @@
       border: 2px solid gold;
       color: gold;
     }
+    .extream-starter {
+      max-width: 900px;
+      margin: 6rem auto 2rem;
+      padding: 3rem 2rem;
+      background: #800;
+      border-radius: 12px;
+      border: 3px solid gold;
+      text-align: center;
+      color: gold;
+      box-shadow: 0 6px 20px rgba(255, 0, 0, 0.4);
+    }
+    .extream-starter h2 {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+    .extream-starter p {
+      max-width: 600px;
+      margin: 0 auto 2rem;
+      font-size: 1.1rem;
+      color: #ffdead;
+    }
+    .starter-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 1rem;
+    }
+    .starter-buttons a {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.9rem 2rem;
+      border-radius: 10px;
+      border: 2px solid gold;
+      background: linear-gradient(135deg, #b30000, #ff4500);
+      color: gold;
+      font-weight: bold;
+      letter-spacing: 0.04em;
+      text-decoration: none;
+      text-transform: uppercase;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      min-width: 160px;
+    }
+    .starter-buttons a:hover,
+    .starter-buttons a:focus {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 18px rgba(255, 69, 0, 0.6);
+      outline: none;
+    }
     .cta {
       text-align: center;
       background: #800;
@@ -140,11 +191,24 @@
   </nav>
 
   <div style="text-align:center; margin-top:80px;">
-    <button onclick="window.location.href='/#rednode'" 
+    <button onclick="window.location.href='index.html#rednode'"
             style="padding:0.8rem 1.6rem; background:#b30000; color:gold; border:2px solid gold; border-radius:8px; cursor:pointer;">
       Back to Dashboard
     </button>
   </div>
+
+  <section class="extream-starter" aria-labelledby="extream-heading">
+    <h2 id="extream-heading">Extream Starter</h2>
+    <p>
+      Jump directly into the RedNode experience&mdash;chat with your crew, launch a live stream,
+      or power up your node network from one command center.
+    </p>
+    <div class="starter-buttons">
+      <a href="index.html" title="Open the RedNode chat dashboard">Chat</a>
+      <a href="/ex1/index.html" title="Start the Extream live stream" target="_blank" rel="noopener">Stream</a>
+      <a href="#nodes" title="Explore the RedNode system">Node On</a>
+    </div>
+  </section>
 
   <header id="home">
     <h1>RedNode.ai Integrated Node System</h1>
