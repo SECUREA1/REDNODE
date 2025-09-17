@@ -3,6 +3,7 @@ import http from "http";
 import { readFile } from "fs/promises";
 import path from "path";
 import { fileURLToPath } from "url";
+import { spawn } from "child_process";
 import { WebSocketServer } from "ws";
 import Database from "better-sqlite3";
 
@@ -11,6 +12,69 @@ const PORT = process.env.PORT || 10000; // Render provides PORT
 // Locate repo root to serve the client HTML
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, "..");
+
+const PYTHON_BIN =
+  process.env.PYTHON_PATH || process.env.PYTHON || process.env.PYTHON_BIN || "python3";
+const GESTURE_PATH = path.join(ROOT, "gesture.py");
+
+let gestureProcess = null;
+let lastGestureExit = null;
+
+function startGestureProcess() {
+  if (gestureProcess && gestureProcess.exitCode === null && !gestureProcess.killed) {
+    return {
+      ok: true,
+      running: true,
+      started: false,
+      message: "Gesture process already running",
+    };
+  }
+
+  try {
+    const child = spawn(PYTHON_BIN, [GESTURE_PATH], {
+      cwd: ROOT,
+      env: process.env,
+      stdio: "inherit",
+    });
+    gestureProcess = child;
+    lastGestureExit = null;
+
+    child.on("exit", (code, signal) => {
+      lastGestureExit = { code, signal };
+      gestureProcess = null;
+    });
+
+    child.on("error", (err) => {
+      lastGestureExit = { error: err.message };
+      gestureProcess = null;
+    });
+
+    return {
+      ok: true,
+      running: true,
+      started: true,
+      message: "Gesture process launched",
+    };
+  } catch (error) {
+    lastGestureExit = { error: error.message };
+    return {
+      ok: false,
+      running: false,
+      started: false,
+      message: "Unable to launch gesture process",
+      error: String(error.message || error),
+    };
+  }
+}
+
+function gestureStatus() {
+  const running = Boolean(gestureProcess && gestureProcess.exitCode === null && !gestureProcess.killed);
+  return {
+    ok: true,
+    running,
+    lastExit: lastGestureExit,
+  };
+}
 
 const DB_PATH = process.env.DB_PATH || path.join(ROOT, "app.db");
 const db = new Database(DB_PATH);
@@ -104,6 +168,20 @@ const server = http.createServer(async (req, res) => {
       res.writeHead(200, { "Content-Type": "application/json" });
       res.end(JSON.stringify({ ok: true }));
     });
+    return;
+  }
+
+  if (req.method === "POST" && urlPath === "/api/gesture/start") {
+    const result = startGestureProcess();
+    res.writeHead(result.ok ? 200 : 500, { "Content-Type": "application/json" });
+    res.end(JSON.stringify(result));
+    return;
+  }
+
+  if (req.method === "GET" && urlPath === "/api/gesture/status") {
+    const result = gestureStatus();
+    res.writeHead(200, { "Content-Type": "application/json" });
+    res.end(JSON.stringify(result));
     return;
   }
 
