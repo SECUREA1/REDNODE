@@ -11,34 +11,9 @@
     if(saved){
       try{ Object.assign(context, JSON.parse(saved)); } catch {}
     }
-    const container = document.querySelector('[data-chat-container]') || document.body;
-    const buildButton = () => {
-      if(typeof window.createIconButton === 'function'){
-        return window.createIconButton('chat-toggle-btn', '/static/chat.svg');
-      }
-      const btn = document.createElement('button');
-      btn.id = 'chat-toggle-btn';
-      btn.type = 'button';
-      btn.textContent = 'Chat';
-      Object.assign(btn.style, {
-        position: 'fixed',
-        bottom: '20px',
-        right: '20px',
-        padding: '10px 14px',
-        background: '#b30000',
-        color: '#ffd700',
-        border: '2px solid #ffd700',
-        borderRadius: '12px',
-        cursor: 'pointer',
-        zIndex: 1000
-      });
-      return btn;
-    };
     if(context.username){
-      const chatBtn = buildButton();
-      if(container && chatBtn && !document.getElementById('chat-toggle-btn')){
-        container.appendChild(chatBtn);
-      }
+      const chatBtn = createIconButton('chat-toggle-btn', '/static/chat.svg');
+      container.appendChild(chatBtn);
       // Inject live chat for logged-in users
       const sio = document.createElement('script');
       // Load Socket.IO client from the official CDN
