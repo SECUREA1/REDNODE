@@ -120,18 +120,6 @@ const server = http.createServer(async (req, res) => {
     return;
   }
 
-  if ((req.method === "GET" || req.method === "HEAD") && urlPath === "/dashboard.html") {
-    try {
-      const html = await readFile(path.join(ROOT, "dashboard.html"));
-      res.writeHead(200, { "Content-Type": "text/html" });
-      if (req.method === "GET") res.end(html); else res.end();
-    } catch {
-      res.writeHead(404);
-      res.end("Not found");
-    }
-    return;
-  }
-
   // Serve static assets
   if ((req.method === "GET" || req.method === "HEAD") && urlPath.startsWith("/static/")) {
     try {
