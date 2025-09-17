@@ -1,0 +1,22 @@
+services:
+  # Static site for the HTML
+  - type: web
+    name: exstream-chat-site
+    runtime: static
+    repo: https://github.com/SECUREA1/EXSTREAM.git
+    branch: main
+    buildCommand: ""
+    staticPublishPath: .
+    previews:
+      generation: automatic
+
+  # Node WebSocket fanout
+  - type: web
+    name: exstream-chat-ws
+    runtime: node
+    repo: https://github.com/SECUREA1/EXSTREAM.git
+    rootDir: ws-server
+    plan: starter
+    buildCommand: npm ci
+    startCommand: node server.js
+    healthCheckPath: /healthz

@@ -1,6 +1,6 @@
-# RedNode Excavation
+# CHAINeS Chat
 
-Single-page excavation-themed chat and streaming client with optional WebSocket backend and
+Single-page chat client for chaines.io with optional WebSocket backend and
 persistent chat history.
 
 ## Deploying on Render
@@ -53,14 +53,3 @@ Run `python backup.py` to copy repository files into the `backups/` directory.
 The script uses the same backup process for every file type, storing each
 extension in its own subdirectory and preserving metadata so all files retain
 their information.
-
-### Excavator commands
-
-The chat supports playful slash commands that also ping a mock excavator
-endpoint. Try:
-
-- `/dig` – digs a mighty trench
-- `/scoop` – scoops up a big pile of dirt
-- `/dump` – dumps the load into a truck
-- `/spin` – spins the cab around
-- `/honk` – honks the horn proudly
