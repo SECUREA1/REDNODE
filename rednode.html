@@ -75,6 +75,11 @@
       box-shadow: 0 4px 10px rgba(255, 0, 0, 0.5);
       transition: transform 0.2s ease, box-shadow 0.2s ease;
     }
+    .nav-button[disabled] {
+      opacity: 0.6;
+      cursor: wait;
+      box-shadow: none;
+    }
     .nav-button:hover,
     .nav-button:focus {
       transform: translateY(-2px);
@@ -84,6 +89,14 @@
       width: 20px;
       height: 20px;
       filter: drop-shadow(0 0 6px rgba(255, 215, 0, 0.8));
+    }
+    .nav-feedback {
+      width: 100%;
+      text-align: center;
+      margin-top: 0.75rem;
+      color: #fffa8b;
+      font-weight: 600;
+      letter-spacing: 0.02em;
     }
     section {
       padding: 4rem 2rem;
@@ -185,15 +198,17 @@
   </nav>
 
   <div class="nav-buttons" aria-label="Quick navigation">
-    <button type="button" class="nav-button" onclick="window.location.href='/live/'">
+    <button type="button" class="nav-button" id="gesture-connect-button">
       <img src="static/excavator.svg" alt="RedNode dashboard icon" loading="lazy">
-      <span>Back to Dashboard</span>
+      <span>EX-AIR GAME CONNECTING TO GESTURE.PY</span>
     </button>
     <button type="button" class="nav-button" onclick="document.getElementById('live-streaming').scrollIntoView({behavior: 'smooth'});">
       <img src="static/excavator.svg" alt="Live streaming icon" loading="lazy">
       <span>Explore Live Streaming</span>
     </button>
   </div>
+
+  <div id="gesture-status" class="nav-feedback" role="status" aria-live="polite"></div>
 
   <header id="home">
     <h1>RedNode Excavation Control Center</h1>
@@ -285,5 +300,47 @@
   <footer>
     <p>&copy; 2025 RedNode Excavation. All Rights Reserved.</p>
   </footer>
+
+  <script>
+    (function () {
+      const gestureButton = document.getElementById('gesture-connect-button');
+      const statusEl = document.getElementById('gesture-status');
+
+      if (!gestureButton || !statusEl) {
+        return;
+      }
+
+      async function launchGestureGame() {
+        gestureButton.disabled = true;
+        statusEl.textContent = 'Connecting to gesture.py…';
+
+        try {
+          const response = await fetch('/api/gesture', {
+            method: 'POST'
+          });
+
+          const data = await response.json().catch(() => ({}));
+
+          if (!response.ok) {
+            throw new Error(data.error || response.statusText || 'Unknown error');
+          }
+
+          statusEl.textContent = data.message || 'Gesture game launch request sent.';
+        } catch (error) {
+          statusEl.textContent = `Failed to launch gesture game: ${error.message}`;
+        } finally {
+          gestureButton.disabled = false;
+          setTimeout(() => {
+            if (statusEl.textContent.startsWith('Failed')) {
+              return;
+            }
+            statusEl.textContent = '';
+          }, 6000);
+        }
+      }
+
+      gestureButton.addEventListener('click', launchGestureGame);
+    })();
+  </script>
 </body>
 </html>
