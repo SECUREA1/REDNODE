@@ -18,7 +18,7 @@
       padding-top: 60px;
     }
     /* Major elements with a gold trim */
-    header, nav, section, .contractor-node, footer {
+    header, nav, section, footer {
       border: 3px solid gold;
       padding: 1rem;
     }
@@ -99,12 +99,10 @@
       padding-bottom: 0.5rem;
     }
     /* Container styles for grouped content */
-    .container,
     .features,
     .tech,
     .process,
-    .nodes,
-    .marketplace {
+    .nodes {
       display: flex;
       flex-wrap: wrap;
       gap: 2rem;
@@ -114,8 +112,7 @@
     .feature-item,
     .tech-item,
     .process-item,
-    .node-item,
-    .market-item {
+    .node-item {
       flex: 1 1 300px;
       background: #900;
       padding: 2rem;
@@ -133,23 +130,6 @@
       border: 3px solid gold;
       color: gold;
     }
-    .contractor-node {
-      text-align: center;
-      background: #900;
-      padding: 3rem;
-      border-radius: 10px;
-      box-shadow: 0 4px 10px rgba(255,0,0,0.6);
-      margin: 4rem auto;
-      border: 3px solid gold;
-      color: gold;
-    }
-    .contractor-node img {
-      width: 100%;
-      max-width: 600px;
-      border-radius: 8px;
-      margin-top: 2rem;
-      border: 2px solid gold;
-    }
     footer {
       background: #600;
       text-align: center;
@@ -164,140 +144,107 @@
     <ul>
       <li><a href="#home">Home</a></li>
       <li><a href="#features">Features</a></li>
-      <li><a href="#tech">Technology</a></li>
-      <li><a href="#nodes">Nodes</a></li>
-      <li><a href="#process">How It Works</a></li>
-      <li><a href="#marketplace">Marketplace</a></li>
+      <li><a href="#live-streaming">Live Streaming</a></li>
+      <li><a href="#chat">Chat</a></li>
+      <li><a href="#integration">Integration</a></li>
       <li><a href="#contact">Contact</a></li>
     </ul>
   </nav>
 
   <div class="nav-buttons" aria-label="Quick navigation">
-    <button type="button" class="nav-button" onclick="window.location.href='/#rednode'">
+    <button type="button" class="nav-button" onclick="window.location.href='index.html'">
       <img src="static/excavator.svg" alt="RedNode dashboard icon" loading="lazy">
       <span>Back to Dashboard</span>
     </button>
-    <button type="button" class="nav-button" onclick="window.location.href='https://exstream.onrender.com/'">
-      <img src="static/excavator.svg" alt="Excavator layout icon" loading="lazy">
-      <span>Launch Excavator Control Center</span>
+    <button type="button" class="nav-button" onclick="document.getElementById('live-streaming').scrollIntoView({behavior: 'smooth'});">
+      <img src="static/excavator.svg" alt="Live streaming icon" loading="lazy">
+      <span>Explore Live Streaming</span>
     </button>
   </div>
 
   <header id="home">
-    <h1>RedNode.ai Integrated Node System</h1>
-    <p>The Ultimate AI-Powered Platform for Smart Automation, Security, and Industrial Optimization</p>
+    <h1>RedNode Excavation Control Center</h1>
+    <p>A single-page excavation-themed chat and streaming hub with seamless history and optional WebSocket connectivity.</p>
   </header>
 
   <section id="features">
-    <h2 class="section-title">Key Features</h2>
+    <h2 class="section-title">Core Features</h2>
     <div class="features">
       <div class="feature-item">
-        <h3>Personal Node Growth</h3>
-        <p>Your RedNode learns from your home, office, or industrial setup to optimize workflows and automation.</p>
+        <h3>Excavation-Themed UI</h3>
+        <p>A cohesive design system with rich gold accents and heavy machinery motifs to immerse operators in the RedNode experience.</p>
       </div>
       <div class="feature-item">
-        <h3>Multi-Modal Data Collection</h3>
-        <p>Captures human movement, machine telemetry, and real-time sensor readings.</p>
+        <h3>Persistent Chat History</h3>
+        <p>Retain important crew discussions with automatic local storage that keeps conversations available between sessions.</p>
       </div>
       <div class="feature-item">
-        <h3>AI-Powered Automation</h3>
-        <p>Leverages deep learning to recognize tasks, improve efficiency, and optimize operations.</p>
+        <h3>Multi-Mode Connectivity</h3>
+        <p>Toggle between local-first usage and WebSocket-enabled collaboration to match the needs of on-site and remote teams.</p>
       </div>
       <div class="feature-item">
-        <h3>Rewards for Quality Data</h3>
-        <p>Earn payouts by uploading high-quality data, tokenized for network growth and AI training.</p>
+        <h3>Live Status Indicators</h3>
+        <p>Monitor live operators, broadcast sessions, and excavator commands at a glance with responsive dashboard chips.</p>
       </div>
     </div>
   </section>
 
-  <section id="tech">
-    <h2 class="section-title">Advanced Technology</h2>
+  <section id="live-streaming">
+    <h2 class="section-title">Live Streaming Control</h2>
     <div class="tech">
       <div class="tech-item">
-        <h3>Omconsole Technology</h3>
-        <p>Utilizes EEG, EMG, Retina, and Gesture-controlled remote systems with AI-driven enhancements through node verification and distribution.</p>
+        <h3>OBS-Ready Codes</h3>
+        <p>Generate stream keys for quick integration with OBS Studio and other RTMP-compatible broadcasting tools.</p>
       </div>
       <div class="tech-item">
-        <h3>AI &amp; Machine Learning</h3>
-        <p>Uses YOLO, DeepFace, and custom ML models for real-time object recognition and task execution.</p>
+        <h3>One-Click Broadcast Mode</h3>
+        <p>Expand any stream to a focused, fullscreen layout for supervisors while keeping the mission feed available to the crew.</p>
       </div>
       <div class="tech-item">
-        <h3>Edge Computing</h3>
-        <p>Processes data locally for speed and efficiency, reducing latency.</p>
-      </div>
-      <div class="tech-item">
-        <h3>Blockchain Integrity</h3>
-        <p>Ensures secure, immutable logging and verification of events.</p>
+        <h3>Collaborative Monitoring</h3>
+        <p>Allow approved operators to request joining, share thumbnails, and engage in stream-specific discussions.</p>
       </div>
     </div>
   </section>
 
-  <section id="nodes">
-    <h2 class="section-title">Node System</h2>
-    <div class="nodes">
-      <div class="node-item">
-        <h3>Gaming Node</h3>
-        <p>Enhances gaming experiences with AI-driven customization, tracking, and real-time interactions.</p>
-      </div>
-      <div class="node-item">
-        <h3>Security Node</h3>
-        <p>Provides real-time security monitoring, anomaly detection, and access control with AI-based analytics.</p>
-      </div>
-      <div class="node-item">
-        <h3>Object Tracking Node</h3>
-        <p>Tracks objects in real-time for industrial automation, logistics, and security applications.</p>
-      </div>
-      <div class="node-item">
-        <h3>Equipment Management Node</h3>
-        <p>Optimizes machinery operations in industries like construction and mining through predictive analytics and automation.</p>
-      </div>
-      <div class="node-item">
-        <h3>Contractor Node</h3>
-        <p>Facilitates contractor project management, automation, and performance tracking using AI-driven insights.</p>
-      </div>
-    </div>
-  </section>
-
-  <section id="marketplace">
-    <h2 class="section-title">RedNode Marketplace</h2>
-    <div class="marketplace">
-      <div class="market-item">
-        <h3>Live Tokenized Gaming</h3>
-        <p>Play and compete in AI-enhanced games using RedNode tokens.</p>
-      </div>
-      <div class="market-item">
-        <h3>Apps &amp; Tools</h3>
-        <p>Access and trade AI-driven applications, automation solutions, and software tools.</p>
-      </div>
-      <div class="market-item">
-        <h3>Task Exchange</h3>
-        <p>Trade and collaborate on AI-generated tasks and industrial solutions.</p>
-      </div>
-      <div class="market-item">
-        <h3>Coming Soon</h3>
-        <p>Use RedNode tokens to play, operate, and trade tasks, experiences, and games created by contributors.</p>
-      </div>
-    </div>
-  </section>
-
-  <section id="process">
-    <h2 class="section-title">How It Works</h2>
+  <section id="chat">
+    <h2 class="section-title">Crew Communication</h2>
     <div class="process">
       <div class="process-item">
-        <p>Details on the workflow and processes of RedNode.ai will be provided soon.</p>
+        <p>Structured roles, inline command tips, and optional closed caption controls keep every message actionable for excavation teams.</p>
+      </div>
+      <div class="process-item">
+        <p>Attachment previews, quick reactions, and minimisable conversation threads make it easy to review past activity without losing context.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="integration">
+    <h2 class="section-title">Integration Highlights</h2>
+    <div class="nodes">
+      <div class="node-item">
+        <h3>API Command Relay</h3>
+        <p>Trigger excavator maneuvers—like dig, scoop, and dump—through secure REST endpoints directly from chat macros.</p>
+      </div>
+      <div class="node-item">
+        <h3>Theme Synchronization</h3>
+        <p>Synchronise dark and light themes across crews so the interface adapts to field conditions and operator preferences.</p>
+      </div>
+      <div class="node-item">
+        <h3>Modular Extensions</h3>
+        <p>Extend the dashboard with custom widgets, from equipment diagnostics to weather overlays, using the existing layout primitives.</p>
       </div>
     </div>
   </section>
 
   <section class="cta" id="contact">
-    <h2>Ready to Transform Your Operations?</h2>
-    <p>Contact us to integrate RedNode into your AI-driven environment.</p>
+    <h2>Deploy RedNode Excavation</h2>
+    <p>Looking to modernize your field operations? Connect with us to enable immersive excavation control for your crews.</p>
     <a href="mailto:info@rednode.ai">Contact Us</a>
   </section>
 
   <footer>
-    <p>&copy; 2025 RedNode.ai. All Rights Reserved.</p>
+    <p>&copy; 2025 RedNode Excavation. All Rights Reserved.</p>
   </footer>
-  <script src="{{ url_for('static', filename='session.js') }}"></script>
 </body>
 </html>
