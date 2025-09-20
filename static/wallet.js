@@ -17,6 +17,7 @@
   let lastVerificationId = 0;
   let gateElements = null;
   let currentContractStatus = null;
+  let providerPollInterval = null;
 
   const DEFAULT_CONFIG = Object.freeze({ mint: null, rpcUrl: DEFAULT_RPC, saleUrl: DEFAULT_SALE_URL });
 
@@ -169,6 +170,86 @@
   function getActiveConfig(){
     if(currentConfig) return currentConfig;
     return resolveInitialConfig();
+  }
+
+  function resolveProvider(){
+    if(currentProvider && currentProvider.isPhantom) return currentProvider;
+    if(typeof window === 'undefined') return null;
+    const phantom = window.phantom && window.phantom.solana;
+    if(phantom && phantom.isPhantom) return phantom;
+    const provider = window.solana;
+    if(provider && provider.isPhantom) return provider;
+    if(provider && Array.isArray(provider.providers)){
+      const match = provider.providers.find((candidate) => candidate && candidate.isPhantom);
+      if(match) return match;
+    }
+    return null;
+  }
+
+  function stopProviderPolling(){
+    if(providerPollInterval){
+      clearInterval(providerPollInterval);
+      providerPollInterval = null;
+    }
+  }
+
+  function startProviderPolling(){
+    if(typeof window === 'undefined' || providerPollInterval) return;
+    const handleInitialized = () => {
+      const provider = resolveProvider();
+      if(provider && provider.isPhantom){
+        stopProviderPolling();
+        onProviderAvailable(provider);
+      }
+    };
+    window.addEventListener('solana#initialized', handleInitialized, { once: true });
+    window.addEventListener('load', handleInitialized, { once: true });
+    providerPollInterval = setInterval(handleInitialized, 500);
+    handleInitialized();
+  }
+
+  function onProviderAvailable(provider){
+    if(!provider || !provider.isPhantom) return;
+    stopProviderPolling();
+    if(provider.__rednodeAttached) return;
+    provider.__rednodeAttached = true;
+    currentProvider = provider;
+
+    const handleConnect = handleConnectFactory(provider);
+    connectHandler = handleConnect;
+
+    provider.on && provider.on('connect', handleConnect);
+    provider.on && provider.on('disconnect', () => handleDisconnect(provider, handleConnect));
+    provider.on && provider.on('accountChanged', (pubKey) => {
+      if(pubKey){
+        handleConnect({ publicKey: pubKey });
+      } else {
+        handleDisconnect(provider, handleConnect);
+      }
+    });
+
+    if(provider.isConnected && provider.publicKey){
+      handleConnect({ publicKey: provider.publicKey });
+    } else {
+      provider.connect({ onlyIfTrusted: true })
+        .then((resp) => {
+          if(resp && resp.publicKey){
+            return handleConnect(resp);
+          }
+          if(provider.publicKey){
+            return handleConnect({ publicKey: provider.publicKey });
+          }
+          return null;
+        })
+        .catch((err) => {
+          console.info('[RedNode] Phantom auto-connect skipped', err && err.message ? err.message : err);
+        })
+        .finally(() => {
+          if(!provider.isConnected || !provider.publicKey){
+            ensureManualConnect(provider, handleConnect);
+          }
+        });
+    }
   }
 
   function formatTokenAmount(rawValue, decimals){
@@ -536,7 +617,7 @@
     if(typeof document === 'undefined' || !document.body) return;
     status = mergeContractStatus(status);
     const { overlay, statusText, actionButton, salesButton } = ensureGate();
-    const provider = currentProvider || window.solana;
+    const provider = resolveProvider();
 
     if(status && status.verified){
       overlay.style.display = 'none';
@@ -586,7 +667,7 @@
         }
       };
     }
-    const showSale = !!(saleUrl && status && status.reason === 'contract_missing');
+    const showSale = !!(saleUrl && status && (status.reason === 'contract_missing' || status.reason === 'provider_unavailable'));
     salesButton.style.display = showSale ? 'inline-flex' : 'none';
   }
 
@@ -622,8 +703,27 @@
   }
 
   function triggerConnect(){
-    const provider = currentProvider || window.solana;
+    const context = ensureContext();
+    const provider = resolveProvider();
+    const wallet = context.wallet;
+    if(wallet && wallet.address){
+      runVerification(wallet.address);
+      return;
+    }
     if(!provider || !provider.isPhantom){
+      startProviderPolling();
+      const saleUrl = (context.tokenVerification && context.tokenVerification.saleUrl) || (getActiveConfig().saleUrl);
+      if(saleUrl){
+        try {
+          if(saleUrl.startsWith('#')){
+            window.location.hash = saleUrl;
+          } else {
+            window.open(saleUrl, '_blank');
+          }
+        } catch {
+          window.location.href = saleUrl;
+        }
+      }
       return;
     }
     if(!connectHandler){
@@ -725,7 +825,7 @@
 
   function handleDisconnect(provider, handleConnect){
     const context = ensureContext();
-    currentProvider = provider || currentProvider;
+    currentProvider = provider || resolveProvider();
     setCurrentWallet(null);
     const config = getActiveConfig();
     setTokenStatus(context, {
@@ -849,8 +949,7 @@
 
     const config = resolveInitialConfig();
     checkMintContract(config).then(applyContractStatus);
-    const provider = window.solana;
-    currentProvider = provider;
+    const provider = resolveProvider();
 
     if(!provider || !provider.isPhantom){
       setTokenStatus(context, {
@@ -862,44 +961,11 @@
         saleUrl: config.saleUrl,
         checkedAt: new Date().toISOString()
       });
+      startProviderPolling();
       return;
     }
 
-    const handleConnect = handleConnectFactory(provider);
-    connectHandler = handleConnect;
-
-    provider.on && provider.on('connect', handleConnect);
-    provider.on && provider.on('disconnect', () => handleDisconnect(provider, handleConnect));
-    provider.on && provider.on('accountChanged', (pubKey) => {
-      if(pubKey){
-        handleConnect({ publicKey: pubKey });
-      } else {
-        handleDisconnect(provider, handleConnect);
-      }
-    });
-
-    if(provider.isConnected && provider.publicKey){
-      handleConnect({ publicKey: provider.publicKey });
-    } else {
-      provider.connect({ onlyIfTrusted: true })
-        .then((resp) => {
-          if(resp && resp.publicKey){
-            return handleConnect(resp);
-          }
-          if(provider.publicKey){
-            return handleConnect({ publicKey: provider.publicKey });
-          }
-          return null;
-        })
-        .catch((err) => {
-          console.info('[RedNode] Phantom auto-connect skipped', err && err.message ? err.message : err);
-        })
-        .finally(() => {
-          if(!provider.isConnected || !provider.publicKey){
-            ensureManualConnect(provider, handleConnect);
-          }
-        });
-    }
+    onProviderAvailable(provider);
   }
 
   if(document.readyState === 'loading'){
