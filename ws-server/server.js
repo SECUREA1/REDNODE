@@ -4,6 +4,7 @@ import { readFile } from "fs/promises";
 import path from "path";
 import { fileURLToPath } from "url";
 import { WebSocketServer } from "ws";
+import { spawn } from "child_process";
 import Database from "better-sqlite3";
 
 const PORT = process.env.PORT || 10000; // Render provides PORT
@@ -42,6 +43,35 @@ db.exec(`
   );
 `);
 try { db.exec("ALTER TABLE chat_messages ADD COLUMN room TEXT"); } catch {}
+
+let gestureProcess = null;
+
+function launchGestureProcess() {
+  if (gestureProcess && gestureProcess.exitCode === null) {
+    return { started: false, running: true, message: "Gesture game is already running." };
+  }
+
+  try {
+    gestureProcess = spawn("python3", ["gesture.py"], {
+      cwd: ROOT,
+      stdio: "inherit",
+    });
+    gestureProcess.on("error", () => {
+      gestureProcess = null;
+    });
+    gestureProcess.on("exit", () => {
+      gestureProcess = null;
+    });
+    return { started: true, running: true, message: "Gesture game launched successfully." };
+  } catch (error) {
+    gestureProcess = null;
+    return {
+      started: false,
+      running: false,
+      error: error.message || "Failed to start gesture game.",
+    };
+  }
+}
 
 function loadHistory() {
   const rows = db
@@ -104,6 +134,14 @@ const server = http.createServer(async (req, res) => {
       res.writeHead(200, { "Content-Type": "application/json" });
       res.end(JSON.stringify({ ok: true }));
     });
+    return;
+  }
+
+  if (req.method === "POST" && urlPath === "/api/gesture") {
+    const result = launchGestureProcess();
+    const statusCode = result.error ? 500 : 200;
+    res.writeHead(statusCode, { "Content-Type": "application/json" });
+    res.end(JSON.stringify(result));
     return;
   }
 
