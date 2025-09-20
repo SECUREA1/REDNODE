@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <title>RedNode Excavation</title>
     <link rel="icon" href="/static/excavator.svg" />
+    <link rel="stylesheet" href="/static/wallet-gate.css" />
   <meta name="color-scheme" content="dark light" />
   <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
   <style>
@@ -404,7 +405,7 @@
     }
   </style>
 </head>
-<body>
+<body class="wallet-locked">
   <div class="wrap">
     <header>
       <div class="brand">
@@ -1700,5 +1701,31 @@
     requireAuth();
   })();
   </script>
+  <div id="wallet-gate" role="dialog" aria-modal="true" aria-labelledby="wallet-gate-title" data-token-address="" data-token-min="">
+    <div class="wallet-card">
+      <h2 id="wallet-gate-title">Connect Your Wallet</h2>
+      <p>Verify your token ownership to begin streaming and control sessions.</p>
+      <div class="wallet-status">Wallet access required.</div>
+      <div class="wallet-actions">
+        <button type="button" data-action="connect">Connect Wallet</button>
+        <p class="wallet-connected" aria-live="polite">Connected as <strong id="wallet-connected-account">—</strong></p>
+      </div>
+      <label for="wallet-token-address">
+        Token contract address
+        <input type="text" id="wallet-token-address" name="wallet-token-address" placeholder="0x…" autocomplete="off">
+      </label>
+      <label for="wallet-token-amount">
+        Minimum balance required (optional)
+        <input type="number" id="wallet-token-amount" name="wallet-token-amount" min="0" step="any" placeholder="e.g. 10">
+      </label>
+      <div class="wallet-actions">
+        <button type="button" data-action="verify" disabled>Verify Token</button>
+        <small><a href="#" data-action="reset">Reset access</a> to switch wallets.</small>
+      </div>
+      <p class="wallet-message" aria-live="polite"></p>
+    </div>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/ethers@6.8.1/dist/ethers.min.js" integrity="sha384-4Mi1Wd9msMhyiEKkQ9GBcoxiTqUbFVG71EZrKT9x/93Rl5wiNhcMD4Hn9TP0EQLU" crossorigin="anonymous"></script>
+  <script src="/static/wallet-gate.js"></script>
 </body>
 </html>
