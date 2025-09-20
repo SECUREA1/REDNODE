@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>RedNode.ai – Integrated Intelligent Node System</title>
+  <link rel="stylesheet" href="static/wallet-gate.css">
   <style>
     * {
       margin: 0;
@@ -126,7 +127,7 @@
     }
   </style>
 </head>
-<body>
+<body class="wallet-locked">
   <nav>
     <ul>
       <li><a href="#home">Home</a></li>
@@ -264,6 +265,32 @@
   <footer>
     <p>&copy; 2025 RedNode.ai. All Rights Reserved.</p>
   </footer>
+  <div id="wallet-gate" role="dialog" aria-modal="true" aria-labelledby="wallet-gate-title" data-token-address="" data-token-min="">
+    <div class="wallet-card">
+      <h2 id="wallet-gate-title">Connect Your Wallet</h2>
+      <p>Select your Ethereum wallet and verify your token ownership to unlock the live controls.</p>
+      <div class="wallet-status">Wallet access required.</div>
+      <div class="wallet-actions">
+        <button type="button" data-action="connect">Connect Wallet</button>
+        <p class="wallet-connected" aria-live="polite">Connected as <strong id="wallet-connected-account">—</strong></p>
+      </div>
+      <label for="wallet-token-address">
+        Token contract address
+        <input type="text" id="wallet-token-address" name="wallet-token-address" placeholder="0x…" autocomplete="off">
+      </label>
+      <label for="wallet-token-amount">
+        Minimum balance required (optional)
+        <input type="number" id="wallet-token-amount" name="wallet-token-amount" min="0" step="any" placeholder="e.g. 10">
+      </label>
+      <div class="wallet-actions">
+        <button type="button" data-action="verify" disabled>Verify Token</button>
+        <small><a href="#" data-action="reset">Reset access</a> to switch wallets.</small>
+      </div>
+      <p class="wallet-message" aria-live="polite"></p>
+    </div>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/ethers@6.8.1/dist/ethers.min.js" integrity="sha384-4Mi1Wd9msMhyiEKkQ9GBcoxiTqUbFVG71EZrKT9x/93Rl5wiNhcMD4Hn9TP0EQLU" crossorigin="anonymous"></script>
+  <script src="static/wallet-gate.js"></script>
   <script src="{{ url_for('static', filename='session.js') }}"></script>
 </body>
 </html>
