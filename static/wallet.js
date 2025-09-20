@@ -8,10 +8,12 @@
   const DEFAULT_RPC = 'https://api.mainnet-beta.solana.com';
 
   let manualConnectHandler = null;
+  let connectHandler = null;
   let currentContext = null;
   let currentProvider = null;
   let currentConfig = null;
   let lastVerificationId = 0;
+  let gateElements = null;
 
   const DEFAULT_CONFIG = Object.freeze({ mint: null, rpcUrl: DEFAULT_RPC });
 
@@ -260,6 +262,142 @@
     }
   }
 
+  function ensureGate(){
+    if(gateElements) return gateElements;
+
+    const overlay = document.createElement('div');
+    overlay.style.position = 'fixed';
+    overlay.style.inset = '0';
+    overlay.style.display = 'none';
+    overlay.style.alignItems = 'center';
+    overlay.style.justifyContent = 'center';
+    overlay.style.zIndex = '99999';
+    overlay.style.background = 'rgba(17, 0, 0, 0.92)';
+    overlay.style.backdropFilter = 'blur(4px)';
+
+    const panel = document.createElement('div');
+    panel.style.maxWidth = '420px';
+    panel.style.width = '90%';
+    panel.style.background = '#210000';
+    panel.style.border = '2px solid gold';
+    panel.style.borderRadius = '18px';
+    panel.style.padding = '32px 28px';
+    panel.style.boxShadow = '0 20px 40px rgba(0,0,0,0.55)';
+    panel.style.color = 'gold';
+    panel.style.textAlign = 'center';
+    panel.style.fontFamily = '"Segoe UI", Arial, sans-serif';
+
+    const heading = document.createElement('h2');
+    heading.textContent = 'RedNode Access Requires Token Verification';
+    heading.style.marginBottom = '16px';
+    heading.style.fontSize = '1.25rem';
+    heading.style.letterSpacing = '0.04em';
+
+    const statusText = document.createElement('p');
+    statusText.style.marginBottom = '24px';
+    statusText.style.fontSize = '0.95rem';
+    statusText.style.lineHeight = '1.5';
+
+    const actionButton = document.createElement('button');
+    actionButton.type = 'button';
+    actionButton.textContent = 'Connect Phantom Wallet';
+    actionButton.style.padding = '12px 22px';
+    actionButton.style.background = '#b30000';
+    actionButton.style.color = 'gold';
+    actionButton.style.border = '2px solid gold';
+    actionButton.style.borderRadius = '999px';
+    actionButton.style.fontSize = '0.95rem';
+    actionButton.style.fontWeight = '600';
+    actionButton.style.letterSpacing = '0.05em';
+    actionButton.style.cursor = 'pointer';
+    actionButton.style.transition = 'all 0.25s ease';
+    actionButton.addEventListener('mouseenter', () => {
+      actionButton.style.background = '#d00000';
+      actionButton.style.transform = 'translateY(-1px)';
+    });
+    actionButton.addEventListener('mouseleave', () => {
+      actionButton.style.background = '#b30000';
+      actionButton.style.transform = 'translateY(0)';
+    });
+    actionButton.addEventListener('click', () => {
+      triggerConnect();
+    });
+
+    panel.appendChild(heading);
+    panel.appendChild(statusText);
+    panel.appendChild(actionButton);
+    overlay.appendChild(panel);
+    document.body.appendChild(overlay);
+
+    gateElements = { overlay, statusText, actionButton };
+    return gateElements;
+  }
+
+  function describeStatus(status){
+    if(!status) return 'Connect your Phantom wallet to verify the required token and unlock the site.';
+    if(status.pending) return 'Verifying the required token balance…';
+    if(status.verified) return 'Token verified. Loading RedNode experience…';
+
+    switch(status.reason){
+      case 'missing_mint':
+        return 'The RedNode configuration is missing the required token mint. Please contact support.';
+      case 'provider_unavailable':
+        return 'Phantom wallet is required to access RedNode. Install or enable the Phantom browser extension.';
+      case 'disconnected':
+        return 'Wallet disconnected. Reconnect your Phantom wallet to continue.';
+      case 'no_accounts':
+      case 'no_balance':
+        return 'The required RedNode access token was not detected in your wallet.';
+      case 'zero_balance':
+        return 'Your wallet holds the access token but has a zero balance. Acquire tokens to proceed.';
+      case 'http_429':
+        return 'Too many requests were made to the Solana RPC. Please try again shortly.';
+      case 'http_500':
+      case 'http_502':
+      case 'http_503':
+      case 'http_504':
+        return 'The Solana RPC is currently unavailable. Please try again in a moment.';
+      case 'request_failed':
+      case 'verification_error':
+        return 'We could not verify your token balance. Please retry the connection.';
+      default:
+        return 'Unable to verify the required token. Please reconnect your Phantom wallet.';
+    }
+  }
+
+  function updateGate(status){
+    if(typeof document === 'undefined' || !document.body) return;
+    const { overlay, statusText, actionButton } = ensureGate();
+    const provider = currentProvider || window.solana;
+
+    if(status && status.verified){
+      overlay.style.display = 'none';
+      return;
+    }
+
+    overlay.style.display = 'flex';
+    statusText.textContent = describeStatus(status);
+
+    const providerAvailable = !!(provider && provider.isPhantom);
+    const canRetry = providerAvailable && (!status || status.pending !== true);
+
+    if(providerAvailable && status && status.pending){
+      actionButton.disabled = true;
+      actionButton.style.opacity = '0.7';
+      actionButton.style.cursor = 'default';
+    } else if(providerAvailable && canRetry){
+      actionButton.disabled = false;
+      actionButton.style.opacity = '1';
+      actionButton.style.cursor = 'pointer';
+    } else {
+      actionButton.disabled = true;
+      actionButton.style.opacity = '0.7';
+      actionButton.style.cursor = 'default';
+    }
+
+    actionButton.style.display = providerAvailable ? 'inline-flex' : 'none';
+  }
+
   function setTokenStatus(context, status){
     currentContext = context;
     if(status){
@@ -270,6 +408,31 @@
       persist(TOKEN_STATUS_KEY, null);
     }
     broadcast('rednode-token-status', status);
+    updateGate(status);
+  }
+
+  function triggerConnect(){
+    const provider = currentProvider || window.solana;
+    if(!provider || !provider.isPhantom){
+      return;
+    }
+    if(!connectHandler){
+      connectHandler = handleConnectFactory(provider);
+    }
+    provider.connect({ onlyIfTrusted: false })
+      .then((resp) => {
+        if(resp && resp.publicKey){
+          return connectHandler(resp);
+        }
+        if(provider.publicKey){
+          return connectHandler({ publicKey: provider.publicKey });
+        }
+        return null;
+      })
+      .catch((err) => {
+        console.warn('[RedNode] Manual Phantom connection failed', err);
+        ensureManualConnect(provider, connectHandler);
+      });
   }
 
   async function runVerification(address){
@@ -369,10 +532,16 @@
     const storedWallet = load(WALLET_STORAGE_KEY);
     if(storedWallet){
       setCurrentWallet(storedWallet);
+      if(storedWallet.address){
+        runVerification(storedWallet.address);
+      }
     }
     const storedStatus = load(TOKEN_STATUS_KEY);
     if(storedStatus){
       context.tokenVerification = storedStatus;
+      updateGate(storedStatus);
+    } else {
+      updateGate(null);
     }
 
     const api = window.RedNodeWallet = window.RedNodeWallet || {};
@@ -451,6 +620,7 @@
     }
 
     const handleConnect = handleConnectFactory(provider);
+    connectHandler = handleConnect;
 
     provider.on && provider.on('connect', handleConnect);
     provider.on && provider.on('disconnect', () => handleDisconnect(provider, handleConnect));
@@ -473,6 +643,7 @@
           if(provider.publicKey){
             return handleConnect({ publicKey: provider.publicKey });
           }
+          return null;
         })
         .catch((err) => {
           console.info('[RedNode] Phantom auto-connect skipped', err && err.message ? err.message : err);
