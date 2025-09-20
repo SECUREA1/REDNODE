@@ -109,6 +109,9 @@
     }
     footer .status.bottom { justify-content:space-around; width:100%; min-height:60px; }
     footer .status.bottom .chip { flex:1 1 25%; justify-content:center; }
+    #wallet-chip { flex:1 1 40%; justify-content:space-between; gap:12px; }
+    #wallet-chip .wallet-chip-address { font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace; letter-spacing:0.4px; }
+    #wallet-chip .btn { padding:6px 10px; font-size:12px; }
     footer .legal { font-size:12px; color:var(--muted); text-align:center; }
     .chip { display:inline-flex; align-items:center; gap:8px; padding:6px 10px; border:2px solid var(--accent-2);
             border-radius:12px; background: var(--accent); box-shadow: 0 0 6px var(--accent-2); color: var(--fg); }
@@ -238,6 +241,10 @@
     .fun-btn::before {
       content: none;
     }
+    .wallet-card button::before,
+    #wallet-chip button::before {
+      content: none;
+    }
     button:empty::before { margin-right:0; }
 
     /* Auth screen */
@@ -245,6 +252,21 @@
     .card { width:min(520px, 92vw); padding:22px; border-radius: 18px; background: var(--panel); border: 1px solid var(--lining); box-shadow: var(--shadow); }
     .card h2 { margin:0 0 8px; font-size: 22px; }
     .card p { margin: 0 0 14px; color: var(--muted); }
+    .wallet-card { display:flex; flex-direction:column; gap:18px; }
+    .wallet-card h3 { margin:0 0 6px; font-size:18px; color: var(--fg); }
+    .wallet-card .wallet-steps { display:grid; gap:16px; }
+    .wallet-card .wallet-step { padding:16px; border-radius:14px; border:1px dashed var(--lining); background: color-mix(in oklab, var(--panel), transparent 12%); display:grid; gap:12px; }
+    .wallet-card .wallet-step strong { font-weight:700; color: var(--accent-2); }
+    .wallet-card .wallet-address { font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace; word-break: break-all; color: var(--accent-2); }
+    .wallet-card .wallet-actions { display:flex; flex-wrap:wrap; gap:10px; align-items:center; }
+    .wallet-card .inline-field { display:flex; flex-direction:column; gap:6px; }
+    .wallet-card .inline-field label { font-weight:600; color: var(--fg); }
+    .wallet-card .inline-field input { width:100%; padding:12px 14px; border-radius:12px; border:1px solid var(--lining); background: color-mix(in oklab, var(--panel), transparent 10%); color: var(--fg); font: inherit; }
+    .wallet-card .wallet-status { min-height:20px; font-size:14px; color: var(--muted); }
+    .wallet-card .wallet-status.notice { color: var(--muted); }
+    .wallet-card .wallet-status.success { color: #9be564; }
+    .wallet-card .wallet-status.error { color: var(--danger); }
+    #token-step[hidden] { display:none !important; }
     .fields { display:grid; gap:10px; }
     .fields input { width:100%; padding:12px 14px; border-radius:12px; border:1px solid var(--lining); background: var(--panel); color: var(--fg); font: inherit; }
     .actions { display:flex; gap:10px; margin-top:12px; }
@@ -469,6 +491,10 @@
         <span class="chip" id="live-chip" title="Users online">
           <span id="live-count">0</span> online
         </span>
+        <span class="chip" id="wallet-chip" title="Connected wallet" hidden>
+          <span class="wallet-chip-address" id="wallet-chip-address"></span>
+          <button id="wallet-switch" class="btn ghost" type="button">Switch</button>
+        </span>
         <button id="theme-toggle" class="chip" title="Toggle dark or light mode"></button>
         <span class="chip" id="user-chip" title="Logged in user" style="display:none">
           <span class="usr" id="user-name"></span>
@@ -483,6 +509,40 @@
     <h3>Online now</h3>
     <ul id="users"></ul>
   </div>
+
+  <!-- Wallet gate overlay -->
+  <section id="wallet-gate" class="auth" hidden aria-modal="true" role="dialog">
+    <div class="card wallet-card">
+      <h2>Connect Wallet &amp; Verify Access</h2>
+      <p>Secure the excavation site by proving ownership of the required Ethereum token.</p>
+      <div class="wallet-steps">
+        <div class="wallet-step">
+          <h3>Step 1 · Connect</h3>
+          <p>Choose the Ethereum wallet you want to use for RedNode.</p>
+          <div class="wallet-actions">
+            <button class="btn primary" id="connect-wallet" type="button">Connect Wallet</button>
+            <span class="wallet-address" id="wallet-address">Not connected</span>
+          </div>
+        </div>
+        <div class="wallet-step" id="token-step" hidden>
+          <h3>Step 2 · Verify token</h3>
+          <p>Confirm that the connected wallet holds the access token required to enter.</p>
+          <div class="inline-field">
+            <label for="token-address">Token contract address</label>
+            <input id="token-address" placeholder="0x..." autocomplete="off" />
+          </div>
+          <div class="wallet-actions">
+            <div class="inline-field" style="min-width:140px;">
+              <label for="token-min">Minimum balance</label>
+              <input id="token-min" type="number" min="0" step="0.000000000000000001" value="1" />
+            </div>
+            <button class="btn primary" id="verify-token" type="button">Verify Token</button>
+          </div>
+        </div>
+      </div>
+      <p class="wallet-status notice" id="wallet-status">Connect your wallet to continue.</p>
+    </div>
+  </section>
 
   <!-- Auth overlay -->
   <section id="auth" class="auth" hidden>
@@ -513,6 +573,7 @@
     </div>
   </div>
 
+  <script src="https://cdn.jsdelivr.net/npm/ethers@6.11.1/dist/ethers.umd.min.js" crossorigin="anonymous"></script>
   <script>
   ;(() => {
     const el = (q, parent=document) => parent.querySelector(q);
@@ -542,6 +603,17 @@
     let pendingFile = null;
     let fileLoading = false;
     const auth = el('#auth');
+    const walletGate = el('#wallet-gate');
+    const connectWalletBtn = el('#connect-wallet');
+    const verifyTokenBtn = el('#verify-token');
+    const walletStatus = el('#wallet-status');
+    const walletAddressLabel = el('#wallet-address');
+    const tokenStep = el('#token-step');
+    const tokenAddressInput = el('#token-address');
+    const tokenMinInput = el('#token-min');
+    const walletChip = el('#wallet-chip');
+    const walletChipAddress = el('#wallet-chip-address');
+    const walletSwitchBtn = el('#wallet-switch');
     const usernameInput = el('#username');
     const enterBtn = el('#enter');
     const skipBtn = el('#skip');
@@ -653,6 +725,34 @@
         try { v ? localStorage.setItem('rednode_obs_key', v) : localStorage.removeItem('rednode_obs_key'); }
         catch {}
       },
+      get walletAddress() {
+        try { return localStorage.getItem('rednode_wallet_address') || ''; }
+        catch { return ''; }
+      },
+      set walletAddress(v) {
+        try {
+          v ? localStorage.setItem('rednode_wallet_address', v) : localStorage.removeItem('rednode_wallet_address');
+        } catch {}
+      },
+      get walletVerified() {
+        try { return localStorage.getItem('rednode_wallet_verified') === 'true'; }
+        catch { return false; }
+      },
+      set walletVerified(v) {
+        try {
+          if (v) localStorage.setItem('rednode_wallet_verified', 'true');
+          else localStorage.removeItem('rednode_wallet_verified');
+        } catch {}
+      },
+      get tokenAddress() {
+        try { return localStorage.getItem('rednode_required_token') || ''; }
+        catch { return ''; }
+      },
+      set tokenAddress(v) {
+        try {
+          v ? localStorage.setItem('rednode_required_token', v) : localStorage.removeItem('rednode_required_token');
+        } catch {}
+      },
       pushMsg(m) {
         try {
           const items = JSON.parse(localStorage.getItem('rednode_messages') || '[]');
@@ -667,6 +767,264 @@
         try { localStorage.removeItem('rednode_messages'); } catch {}
       }
     };
+
+    const walletWaiters = [];
+    const hasEthers = typeof window !== 'undefined' && typeof window.ethers !== 'undefined';
+    const configuredTokenAddress = (document.body?.dataset?.tokenAddress || '').trim();
+    const configuredTokenMinimum = (document.body?.dataset?.tokenMin || '').trim();
+
+    function normalizeAddress(addr) {
+      if (!addr) return '';
+      const value = String(addr).trim();
+      if (!value) return '';
+      if (hasEthers && window.ethers?.isAddress?.(value)) {
+        try { return window.ethers.getAddress(value); }
+        catch { return value.toLowerCase(); }
+      }
+      return /^0x[0-9a-fA-F]{40}$/.test(value) ? value : '';
+    }
+
+    function formatAddress(addr) {
+      if (!addr) return '';
+      return `${addr.slice(0, 6)}…${addr.slice(-4)}`;
+    }
+
+    function setWalletStatus(message, tone = 'notice') {
+      if (!walletStatus) return;
+      walletStatus.textContent = message || '';
+      walletStatus.className = 'wallet-status';
+      if (tone) walletStatus.classList.add(tone);
+    }
+
+    function updateWalletChip() {
+      if (!walletChip) return;
+      if (store.walletAddress && store.walletVerified) {
+        walletChip.hidden = false;
+        if (walletChipAddress) walletChipAddress.textContent = formatAddress(store.walletAddress);
+      } else {
+        walletChip.hidden = true;
+        if (walletChipAddress) walletChipAddress.textContent = '';
+      }
+    }
+
+    function resetWalletGateUI() {
+      if (!walletGate) return;
+      if (walletAddressLabel) walletAddressLabel.textContent = store.walletAddress || 'Not connected';
+      if (tokenStep) tokenStep.hidden = !store.walletAddress;
+      if (connectWalletBtn) connectWalletBtn.textContent = store.walletAddress ? 'Switch Wallet' : 'Connect Wallet';
+      if (tokenAddressInput) {
+        if (store.tokenAddress) tokenAddressInput.value = store.tokenAddress;
+        else if (configuredTokenAddress && !tokenAddressInput.value) tokenAddressInput.value = configuredTokenAddress;
+      }
+      if (tokenMinInput) {
+        if (configuredTokenMinimum) tokenMinInput.value = configuredTokenMinimum;
+        else if (!tokenMinInput.value) tokenMinInput.value = '1';
+      }
+      if (!store.walletAddress) setWalletStatus('Connect your wallet to continue.', 'notice');
+      else setWalletStatus('Verify your token to continue.', store.walletVerified ? 'success' : 'notice');
+    }
+
+    function openWalletGate() {
+      if (!walletGate) return;
+      walletGate.hidden = false;
+      walletGate.classList.remove('is-hidden');
+      walletGate.style.display = 'grid';
+      resetWalletGateUI();
+    }
+
+    function closeWalletGate() {
+      if (!walletGate) return;
+      walletGate.classList.add('is-hidden');
+      walletGate.setAttribute('hidden', '');
+      walletGate.style.display = 'none';
+    }
+
+    function completeWalletGate() {
+      closeWalletGate();
+      updateWalletChip();
+      while (walletWaiters.length) {
+        const resolve = walletWaiters.shift();
+        try { resolve(); } catch {}
+      }
+    }
+
+    function ensureWalletAccess() {
+      if (store.walletVerified && store.walletAddress) {
+        updateWalletChip();
+        return Promise.resolve();
+      }
+      openWalletGate();
+      return new Promise((resolve) => walletWaiters.push(resolve));
+    }
+
+    async function connectWallet() {
+      if (!connectWalletBtn) return;
+      if (!window.ethereum) {
+        setWalletStatus('No Ethereum wallet detected. Install MetaMask or a compatible wallet to continue.', 'error');
+        return;
+      }
+      const original = connectWalletBtn.textContent;
+      connectWalletBtn.disabled = true;
+      connectWalletBtn.textContent = 'Connecting…';
+      try {
+        const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+        const selected = Array.isArray(accounts) && accounts.length ? normalizeAddress(accounts[0]) : '';
+        if (!selected) {
+          setWalletStatus('No wallet address was returned. Please try again.', 'error');
+          connectWalletBtn.textContent = original;
+          return;
+        }
+        store.walletAddress = selected;
+        store.walletVerified = false;
+        store.user = '';
+        store.clearMsgs();
+        if (walletAddressLabel) walletAddressLabel.textContent = selected;
+        if (tokenStep) tokenStep.hidden = false;
+        connectWalletBtn.textContent = 'Switch Wallet';
+        setWalletStatus('Wallet connected. Verify your token to enter.', 'success');
+      } catch (err) {
+        connectWalletBtn.textContent = original;
+        const rejected = err && (err.code === 4001 || err.code === 'ACTION_REJECTED');
+        setWalletStatus(rejected ? 'Wallet connection request was rejected.' : 'Unable to connect to the wallet.', 'error');
+      } finally {
+        connectWalletBtn.disabled = false;
+      }
+    }
+
+    async function verifyAccessToken() {
+      if (!verifyTokenBtn) return;
+      if (!store.walletAddress) {
+        setWalletStatus('Connect a wallet before verifying tokens.', 'error');
+        return;
+      }
+      if (!hasEthers) {
+        setWalletStatus('Ethereum tools failed to load. Refresh and try again.', 'error');
+        return;
+      }
+      const tokenInput = (tokenAddressInput?.value || '').trim();
+      const minimumRaw = (tokenMinInput?.value || '1').trim();
+      const tokenAddr = normalizeAddress(tokenInput);
+      if (!tokenAddr) {
+        setWalletStatus('Enter a valid token contract address.', 'error');
+        return;
+      }
+      if (!minimumRaw || Number.isNaN(Number(minimumRaw)) || Number(minimumRaw) < 0) {
+        setWalletStatus('Enter a valid minimum token amount.', 'error');
+        return;
+      }
+      const original = verifyTokenBtn.textContent;
+      verifyTokenBtn.disabled = true;
+      verifyTokenBtn.textContent = 'Verifying…';
+      setWalletStatus('Requesting token balance…', 'notice');
+      try {
+        const provider = new window.ethers.BrowserProvider(window.ethereum);
+        const abi = [
+          'function balanceOf(address owner) view returns (uint256)',
+          'function decimals() view returns (uint8)'
+        ];
+        const contract = new window.ethers.Contract(tokenAddr, abi, provider);
+        let decimals = 0;
+        try {
+          const dec = await contract.decimals();
+          const parsed = typeof dec === 'bigint' ? Number(dec) : Number(dec);
+          decimals = Number.isFinite(parsed) ? parsed : 18;
+        } catch {
+          decimals = 0;
+        }
+        let balance;
+        try {
+          balance = await contract.balanceOf(store.walletAddress);
+        } catch (err) {
+          console.error('Balance lookup failed', err);
+          setWalletStatus('Unable to read token balance. Confirm the contract supports balanceOf.', 'error');
+          return;
+        }
+        let required;
+        try {
+          required = window.ethers.parseUnits(minimumRaw, decimals);
+        } catch (err) {
+          console.error('Minimum parse failed', err);
+          setWalletStatus('Minimum amount could not be parsed. Adjust the value and try again.', 'error');
+          return;
+        }
+        if (balance >= required) {
+          store.walletVerified = true;
+          store.tokenAddress = tokenAddr;
+          if (tokenAddressInput) tokenAddressInput.value = tokenAddr;
+          setWalletStatus('Token verified successfully. Welcome aboard!', 'success');
+          setTimeout(() => completeWalletGate(), 600);
+        } else {
+          setWalletStatus('This wallet does not hold the required token balance.', 'error');
+        }
+      } catch (err) {
+        console.error('Token verification failed', err);
+        setWalletStatus('Token verification failed. Check your wallet connection and try again.', 'error');
+      } finally {
+        verifyTokenBtn.disabled = false;
+        verifyTokenBtn.textContent = original;
+      }
+    }
+
+    if (connectWalletBtn) {
+      connectWalletBtn.addEventListener('click', (event) => {
+        event.preventDefault();
+        connectWallet();
+      });
+    }
+    if (verifyTokenBtn) {
+      verifyTokenBtn.addEventListener('click', (event) => {
+        event.preventDefault();
+        verifyAccessToken();
+      });
+    }
+    if (walletSwitchBtn) {
+      walletSwitchBtn.addEventListener('click', () => {
+        store.walletVerified = false;
+        store.walletAddress = '';
+        store.tokenAddress = '';
+        store.user = '';
+        store.clearMsgs();
+        window.location.reload();
+      });
+    }
+
+    if (store.walletAddress) {
+      if (walletAddressLabel) walletAddressLabel.textContent = store.walletAddress;
+      if (tokenStep) tokenStep.hidden = !store.walletVerified;
+    }
+    updateWalletChip();
+
+    if (window.ethereum?.on) {
+      window.ethereum.on('accountsChanged', (accounts) => {
+        const next = Array.isArray(accounts) && accounts.length ? normalizeAddress(accounts[0]) : '';
+        if (!next) {
+          store.walletAddress = '';
+          store.walletVerified = false;
+          store.user = '';
+          store.clearMsgs();
+          updateWalletChip();
+          openWalletGate();
+          setWalletStatus('No wallet connected. Connect your wallet to continue.', 'notice');
+          requireAuth();
+          return;
+        }
+        if (next !== store.walletAddress) {
+          store.walletAddress = next;
+          store.walletVerified = false;
+          store.user = '';
+          store.clearMsgs();
+          updateWalletChip();
+          openWalletGate();
+          setWalletStatus('Wallet changed. Please verify the token for the new address.', 'notice');
+          requireAuth();
+        }
+      });
+      window.ethereum.on('chainChanged', () => {
+        if (!store.walletAddress) return;
+        if (!store.walletVerified) return;
+        setWalletStatus('Network changed. Re-verify your token if access is restricted.', 'notice');
+      });
+    }
 
     function applyTheme(t){
       document.documentElement.dataset.theme = t;
@@ -1002,6 +1360,15 @@
 
     // --- Auth flow ---
     function requireAuth(){
+      if (!store.walletVerified || !store.walletAddress) {
+        if (auth) {
+          auth.classList.add('is-hidden');
+          auth.setAttribute('hidden','');
+          auth.style.display = 'none';
+        }
+        ensureWalletAccess().then(() => requireAuth());
+        return;
+      }
       if (store.user) {
         enterChat(store.user);
       } else {
@@ -1017,6 +1384,7 @@
       store.user = cleaned || ('guest-' + Math.floor(Math.random()*9999));
       userName.textContent = '@' + store.user;
       userChip.style.display = 'inline-flex';
+      updateWalletChip();
 
       // decisively hide overlay
       auth.classList.add('is-hidden');
