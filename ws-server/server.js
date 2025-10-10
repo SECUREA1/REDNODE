@@ -1,6 +1,6 @@
 // server.js
 import http from "http";
-import { readFile } from "fs/promises";
+import { readFile, stat } from "fs/promises";
 import path from "path";
 import { fileURLToPath } from "url";
 import { WebSocketServer } from "ws";
@@ -84,6 +84,40 @@ function loadHistory() {
   }));
 }
 
+const MIME_TYPES = {
+  ".js": "text/javascript",
+  ".css": "text/css",
+  ".svg": "image/svg+xml",
+  ".png": "image/png",
+  ".jpg": "image/jpeg",
+  ".jpeg": "image/jpeg",
+  ".gif": "image/gif",
+  ".vtt": "text/vtt",
+  ".html": "text/html",
+};
+
+async function tryServeFile(res, relativePath, method) {
+  const normalized = path.normalize(path.join(ROOT, relativePath));
+  if (!normalized.startsWith(ROOT)) return false;
+
+  try {
+    const info = await stat(normalized);
+    if (!info.isFile()) return false;
+    const ext = path.extname(normalized).toLowerCase();
+    if (method === "GET") {
+      const data = await readFile(normalized);
+      res.writeHead(200, { "Content-Type": MIME_TYPES[ext] || "application/octet-stream" });
+      res.end(data);
+    } else {
+      res.writeHead(200, { "Content-Type": MIME_TYPES[ext] || "application/octet-stream" });
+      res.end();
+    }
+    return true;
+  } catch {
+    return false;
+  }
+}
+
 const server = http.createServer(async (req, res) => {
   if (req.url === "/healthz") {
     res.writeHead(200);
@@ -108,13 +142,20 @@ const server = http.createServer(async (req, res) => {
   }
 
   // Serve chat client for root requests
-  const isRootRequest = ["/", "/index.html"].includes(urlPath);
+  const isRootRequest = ["/", "/index.html", "/start", "/start.html"].includes(urlPath);
   if ((req.method === "GET" || req.method === "HEAD") && isRootRequest) {
-    try {
-      const html = await readFile(path.join(ROOT, "home.html"));
-      res.writeHead(200, { "Content-Type": "text/html" });
-      if (req.method === "GET") res.end(html); else res.end();
-    } catch {
+    const served = await tryServeFile(res, "start.html", req.method);
+    if (!served) {
+      res.writeHead(404);
+      res.end("Not found");
+    }
+    return;
+  }
+
+  const homePaths = new Set(["/home", "/home.html"]);
+  if ((req.method === "GET" || req.method === "HEAD") && homePaths.has(urlPath)) {
+    const served = await tryServeFile(res, "home.html", req.method);
+    if (!served) {
       res.writeHead(404);
       res.end("Not found");
     }
@@ -123,11 +164,18 @@ const server = http.createServer(async (req, res) => {
 
   const isRednodeRequest = ["/rednode", "/rednode.html"].includes(urlPath);
   if ((req.method === "GET" || req.method === "HEAD") && isRednodeRequest) {
-    try {
-      const html = await readFile(path.join(ROOT, "rednode.html"));
-      res.writeHead(200, { "Content-Type": "text/html" });
-      if (req.method === "GET") res.end(html); else res.end();
-    } catch {
+    const served = await tryServeFile(res, "rednode.html", req.method);
+    if (!served) {
+      res.writeHead(404);
+      res.end("Not found");
+    }
+    return;
+  }
+
+  const dashboardPaths = new Set(["/dashboard", "/dashboard.html"]);
+  if ((req.method === "GET" || req.method === "HEAD") && dashboardPaths.has(urlPath)) {
+    const served = await tryServeFile(res, "dashboard.html", req.method);
+    if (!served) {
       res.writeHead(404);
       res.end("Not found");
     }
@@ -136,11 +184,8 @@ const server = http.createServer(async (req, res) => {
 
   const livePaths = new Set(["/live", "/live/", "/live/index.html"]);
   if ((req.method === "GET" || req.method === "HEAD") && livePaths.has(urlPath)) {
-    try {
-      const html = await readFile(path.join(ROOT, "live", "index.html"));
-      res.writeHead(200, { "Content-Type": "text/html" });
-      if (req.method === "GET") res.end(html); else res.end();
-    } catch {
+    const served = await tryServeFile(res, path.join("live", "index.html"), req.method);
+    if (!served) {
       res.writeHead(404);
       res.end("Not found");
     }
@@ -149,27 +194,20 @@ const server = http.createServer(async (req, res) => {
 
   // Serve static assets
   if ((req.method === "GET" || req.method === "HEAD") && urlPath.startsWith("/static/")) {
-    try {
-      const filePath = path.join(ROOT, urlPath);
-      const data = await readFile(filePath);
-      const ext = path.extname(filePath).toLowerCase();
-      const types = {
-        ".js": "text/javascript",
-        ".css": "text/css",
-        ".svg": "image/svg+xml",
-        ".png": "image/png",
-        ".jpg": "image/jpeg",
-        ".jpeg": "image/jpeg",
-        ".gif": "image/gif",
-        ".vtt": "text/vtt"
-      };
-      res.writeHead(200, { "Content-Type": types[ext] || "application/octet-stream" });
-      if (req.method === "GET") res.end(data); else res.end();
-    } catch {
+    const served = await tryServeFile(res, urlPath.slice(1), req.method);
+    if (!served) {
       res.writeHead(404);
       res.end("Not found");
     }
     return;
+  }
+
+  if ((req.method === "GET" || req.method === "HEAD") && urlPath !== "/") {
+    const relative = urlPath.replace(/^\/+/, "");
+    if (relative) {
+      const served = await tryServeFile(res, relative, req.method);
+      if (served) return;
+    }
   }
 
   res.writeHead(404, { "Content-Type": "text/plain" });
