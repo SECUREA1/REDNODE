@@ -311,11 +311,28 @@
       background: rgba(0, 0, 0, 0.6);
     }
 
-    .rednode-preview iframe {
-      width: 100%;
-      min-height: 520px;
-      border: none;
-      display: block;
+    .launch-message {
+      padding: 2.5rem 2rem;
+      text-align: left;
+      color: gold;
+      display: grid;
+      gap: 1rem;
+    }
+
+    .launch-message h3 {
+      font-size: 1.4rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .launch-message ul {
+      padding-left: 1.25rem;
+      display: grid;
+      gap: 0.75rem;
+    }
+
+    .launch-message li {
+      list-style: disc;
     }
 
     .rednode-launch .hero-btn {
@@ -496,13 +513,20 @@
   </section>
 
   <section class="rednode-launch" id="launch">
-    <h2>Launch the RedNode Control Centre</h2>
-    <p>Preview the live operations console directly from this start page. When you are ready to take command, launch the dedicated control centre for the full RedNode excavation experience.</p>
+    <h2>Launch the RedNode Start Interface</h2>
+    <p>Explore the guided start experience that introduces RedNode.ai, its capabilities, and the pathways into each operations surface.</p>
     <div class="rednode-preview">
-      <iframe src="rednode.html" title="RedNode Control Centre Preview" loading="lazy"></iframe>
+      <div class="launch-message">
+        <h3>What you&apos;ll find on Start</h3>
+        <ul>
+          <li>High-level walkthroughs of the RedNode ecosystem.</li>
+          <li>Quick links to product overviews, live demos, and marketplace concepts.</li>
+          <li>Context to determine when to enter specialized dashboards or the control centre.</li>
+        </ul>
+      </div>
     </div>
-    <a class="hero-btn primary" href="rednode.html" target="_blank" rel="noopener">
-      <span>Start RedNode Control Centre</span>
+    <a class="hero-btn primary" href="start.html">
+      <span>Open RedNode Start</span>
     </a>
   </section>
 
