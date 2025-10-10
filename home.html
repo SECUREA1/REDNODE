@@ -1,269 +1,526 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>RedNode.ai – Integrated Intelligent Node System</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&family=Space+Grotesk:wght@500;600&display=swap" rel="stylesheet" />
   <style>
-    * {
-      margin: 0;
-      padding: 0;
+    :root {
+      --bg: #050814;
+      --bg-gradient: radial-gradient(160% 120% at 20% -10%, rgba(255, 115, 179, 0.38), transparent 55%),
+        radial-gradient(120% 120% at 120% 20%, rgba(65, 140, 255, 0.35), transparent 60%),
+        linear-gradient(160deg, #03050b 0%, #090d1f 60%, #020308 100%);
+      --surface: rgba(14, 19, 35, 0.82);
+      --surface-strong: rgba(16, 23, 45, 0.9);
+      --glass-border: rgba(122, 161, 255, 0.25);
+      --text: #f5f7ff;
+      --muted: #9aa3c8;
+      --accent: #ff4d8d;
+      --accent-strong: #ff7a5c;
+      --accent-soft: rgba(255, 77, 141, 0.22);
+      --card-shadow: 0 30px 60px rgba(8, 12, 30, 0.45);
+      --radius-xl: 32px;
+      --radius-lg: 22px;
+      --radius-md: 16px;
+      font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      color-scheme: dark;
+      scroll-behavior: smooth;
+    }
+    *, *::before, *::after {
       box-sizing: border-box;
     }
     body {
-      font-family: Arial, sans-serif;
-      line-height: 1.6;
-      background: #300;
-      color: #fff;
-      padding-top: 60px;
+      margin: 0;
+      min-height: 100vh;
+      background: var(--bg-gradient);
+      color: var(--text);
+      font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
     }
-    /* Major elements with a gold trim */
-    header, nav, section, .contractor-node, footer {
-      border: 3px solid gold;
-      padding: 1rem;
-    }
-    header {
-      background: #600;
-      color: gold;
-      padding: 4rem 0;
-      text-align: center;
+    a {
+      color: inherit;
     }
     nav {
-      position: fixed;
+      position: sticky;
       top: 0;
-      width: 100%;
-      background: #800;
-      z-index: 1000;
-      padding: 1rem 0;
+      z-index: 20;
+      backdrop-filter: blur(18px);
+      background: linear-gradient(120deg, rgba(12, 16, 33, 0.85), rgba(12, 16, 33, 0.6));
+      border-bottom: 1px solid rgba(122, 161, 255, 0.3);
+      padding: 1.1rem clamp(1.2rem, 3vw, 2.4rem);
     }
-    nav ul {
-      list-style: none;
+    .nav-content {
+      max-width: 1160px;
+      margin: 0 auto;
       display: flex;
-      justify-content: center;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1.5rem;
     }
-    nav ul li {
-      margin: 0 1rem;
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 0.85rem;
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: clamp(1.1rem, 2vw, 1.35rem);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
     }
-    nav ul li a {
-      color: gold;
+    .brand-logo {
+      width: 42px;
+      height: 42px;
+      padding: 0.55rem;
+      border-radius: 14px;
+      background: linear-gradient(140deg, rgba(255, 77, 141, 0.12), rgba(75, 118, 255, 0.22));
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      box-shadow: 0 12px 24px rgba(9, 13, 35, 0.45);
+      display: grid;
+      place-items: center;
+    }
+    .brand-logo img {
+      width: 22px;
+      height: 22px;
+      filter: drop-shadow(0 0 6px rgba(255, 109, 159, 0.8));
+    }
+    .nav-links {
+      display: flex;
+      gap: clamp(0.75rem, 2vw, 1.5rem);
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+    .nav-links a {
+      position: relative;
+      font-weight: 600;
+      color: var(--muted);
       text-decoration: none;
-      font-weight: bold;
-      padding: 0.8rem;
-      display: block;
-      border: 2px solid gold;
+      font-size: 0.95rem;
+      padding-bottom: 0.35rem;
     }
-    section {
-      padding: 4rem 2rem;
-      max-width: 1000px;
-      margin: auto;
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      inset: auto 0 -0.35rem;
+      height: 2px;
+      background: linear-gradient(90deg, var(--accent), var(--accent-strong));
+      transform: scaleX(0);
+      transform-origin: right;
+      transition: transform 0.25s ease;
     }
-    .section-title {
-      text-align: center;
-      margin-bottom: 2rem;
-      font-size: 2rem;
-      color: gold;
-      border-bottom: 2px solid gold;
-      padding-bottom: 0.5rem;
+    .nav-links a:hover,
+    .nav-links a:focus {
+      color: var(--text);
     }
-    /* Container styles for grouped content */
-    .container,
-    .features,
-    .tech,
-    .process,
-    .nodes,
-    .marketplace {
+    .nav-links a:hover::after,
+    .nav-links a:focus::after {
+      transform: scaleX(1);
+      transform-origin: left;
+    }
+    main {
+      padding: clamp(2rem, 6vw, 5rem) clamp(1.2rem, 4vw, 3rem);
+    }
+    .hero {
+      max-width: 1160px;
+      margin: 0 auto clamp(3rem, 8vw, 6rem);
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: clamp(2.4rem, 5vw, 4rem);
+      align-items: center;
+    }
+    .hero-copy {
+      display: grid;
+      gap: 1.2rem;
+    }
+    .eyebrow {
+      font-size: 0.95rem;
+      letter-spacing: 0.38em;
+      text-transform: uppercase;
+      color: rgba(255, 255, 255, 0.55);
+    }
+    h1 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: clamp(2.4rem, 5vw, 3.4rem);
+      line-height: 1.07;
+      margin: 0;
+      color: #fff7ff;
+      text-shadow: 0 18px 45px rgba(0, 0, 0, 0.48);
+    }
+    .lead {
+      font-size: 1.05rem;
+      color: var(--muted);
+      max-width: 520px;
+    }
+    .cta-group {
       display: flex;
       flex-wrap: wrap;
-      gap: 2rem;
-      justify-content: center;
+      gap: 0.85rem;
+      margin-top: 0.8rem;
     }
-    /* Item styles with gold accents */
-    .feature-item,
-    .tech-item,
-    .process-item,
-    .node-item,
-    .market-item {
-      flex: 1 1 300px;
-      background: #900;
-      padding: 2rem;
-      border-radius: 10px;
-      box-shadow: 0 4px 10px rgba(255,0,0,0.6);
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.65rem;
+      padding: 0.85rem 1.5rem;
+      border-radius: 999px;
+      border: 1px solid transparent;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      cursor: pointer;
+      transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+      text-decoration: none;
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, var(--accent), var(--accent-strong));
+      box-shadow: 0 18px 35px rgba(255, 87, 136, 0.4);
+      color: #0b0d19;
+    }
+    .btn-primary:hover,
+    .btn-primary:focus {
+      transform: translateY(-2px);
+      box-shadow: 0 24px 45px rgba(255, 122, 140, 0.5);
+    }
+    .btn-outline {
+      border-color: rgba(122, 161, 255, 0.5);
+      color: var(--text);
+      background: rgba(14, 22, 45, 0.35);
+      box-shadow: 0 16px 32px rgba(9, 12, 25, 0.45);
+    }
+    .btn-outline:hover,
+    .btn-outline:focus {
+      border-color: rgba(255, 255, 255, 0.65);
+      transform: translateY(-2px);
+    }
+    .hero-visual {
+      position: relative;
+      padding: clamp(1.4rem, 4vw, 2.6rem);
+      border-radius: var(--radius-xl);
+      background: linear-gradient(140deg, rgba(27, 36, 67, 0.9), rgba(24, 30, 55, 0.65));
+      box-shadow: var(--card-shadow);
+      border: 1px solid rgba(122, 161, 255, 0.25);
+      overflow: hidden;
+    }
+    .hero-visual::before {
+      content: '';
+      position: absolute;
+      inset: -40% -35% 30% -35%;
+      background: radial-gradient(ellipse at top, rgba(255, 77, 141, 0.4), transparent 60%);
+      opacity: 0.8;
+      filter: blur(15px);
+    }
+    .hero-visual img {
+      position: relative;
+      width: clamp(200px, 60%, 320px);
+      display: block;
+      margin: 0 auto;
+      filter: drop-shadow(0 18px 38px rgba(255, 105, 180, 0.45));
+      animation: float 8s ease-in-out infinite;
+    }
+    .hero-metrics {
+      position: absolute;
+      bottom: 1.4rem;
+      left: 1.6rem;
+      right: 1.6rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      justify-content: space-between;
+      font-size: 0.9rem;
+      color: rgba(255, 255, 255, 0.8);
+    }
+    .hero-metrics span strong {
+      display: block;
+      font-size: 1.35rem;
+      color: #fff;
+    }
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+    .section {
+      max-width: 1160px;
+      margin: 0 auto clamp(3rem, 8vw, 5rem);
+      display: grid;
+      gap: 2.4rem;
+    }
+    .section-header {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+    .section-header h2 {
+      margin: 0;
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: clamp(1.8rem, 3.4vw, 2.4rem);
+    }
+    .section-header p {
+      max-width: 620px;
+      color: var(--muted);
+    }
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: clamp(1.4rem, 4vw, 2.4rem);
+    }
+    .card {
+      background: var(--surface);
+      border-radius: var(--radius-lg);
+      padding: clamp(1.6rem, 4vw, 2.2rem);
+      border: 1px solid var(--glass-border);
+      box-shadow: 0 24px 42px rgba(5, 9, 22, 0.35);
+      transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+    .card::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(140deg, rgba(255, 77, 141, 0.08), transparent 60%);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+    .card:hover,
+    .card:focus-within {
+      transform: translateY(-6px);
+      box-shadow: 0 36px 60px rgba(9, 12, 25, 0.55);
+      border-color: rgba(255, 255, 255, 0.25);
+    }
+    .card:hover::after,
+    .card:focus-within::after {
+      opacity: 1;
+    }
+    .card h3 {
+      margin: 0 0 0.75rem;
+      font-size: 1.15rem;
+      color: #ffffff;
+    }
+    .card p {
+      margin: 0;
+      color: rgba(227, 233, 255, 0.82);
+      line-height: 1.6;
+    }
+    .highlight-panel {
+      display: grid;
+      gap: 1.4rem;
+      padding: clamp(2.4rem, 6vw, 3rem);
+      border-radius: var(--radius-xl);
+      background: linear-gradient(120deg, rgba(25, 32, 60, 0.85), rgba(25, 32, 60, 0.55));
+      border: 1px solid rgba(122, 161, 255, 0.3);
+      box-shadow: var(--card-shadow);
+    }
+    .cta-block {
       text-align: center;
-      border: 2px solid gold;
-      color: gold;
+      background: rgba(18, 25, 48, 0.76);
+      border-radius: var(--radius-xl);
+      padding: clamp(2.4rem, 6vw, 3.4rem);
+      border: 1px solid rgba(255, 77, 141, 0.28);
+      box-shadow: 0 32px 52px rgba(6, 9, 22, 0.5);
+      display: grid;
+      gap: 1rem;
     }
-    .cta {
-      text-align: center;
-      background: #800;
-      padding: 3rem;
-      border-radius: 10px;
-      border: 3px solid gold;
-      color: gold;
-    }
-    .contractor-node {
-      text-align: center;
-      background: #900;
-      padding: 3rem;
-      border-radius: 10px;
-      box-shadow: 0 4px 10px rgba(255,0,0,0.6);
-      margin: 4rem auto;
-      border: 3px solid gold;
-      color: gold;
-    }
-    .contractor-node img {
-      width: 100%;
-      max-width: 600px;
-      border-radius: 8px;
-      margin-top: 2rem;
-      border: 2px solid gold;
+    .cta-block h2 {
+      margin: 0;
+      font-size: clamp(1.9rem, 4vw, 2.6rem);
     }
     footer {
-      background: #600;
+      padding: 2.4rem 1.5rem 3rem;
       text-align: center;
-      padding: 1.5rem;
-      border: 3px solid gold;
-      color: gold;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+    @media (max-width: 720px) {
+      nav {
+        position: sticky;
+        top: 0;
+      }
+      .nav-content {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .nav-links {
+        justify-content: flex-start;
+      }
+      .hero-metrics {
+        position: static;
+        margin-top: 1.6rem;
+      }
     }
   </style>
 </head>
 <body>
   <nav>
-    <ul>
-      <li><a href="#home">Home</a></li>
-      <li><a href="#features">Features</a></li>
-      <li><a href="#tech">Technology</a></li>
-      <li><a href="#nodes">Nodes</a></li>
-      <li><a href="#process">How It Works</a></li>
-      <li><a href="#marketplace">Marketplace</a></li>
-      <li><a href="#contact">Contact</a></li>
-    </ul>
+    <div class="nav-content">
+      <div class="brand">
+        <span class="brand-logo"><img src="static/excavator.svg" alt="RedNode mark" loading="lazy" /></span>
+        <span>RedNode.ai</span>
+      </div>
+      <div class="nav-links">
+        <a href="#home">Home</a>
+        <a href="#features">Features</a>
+        <a href="#tech">Technology</a>
+        <a href="#nodes">Nodes</a>
+        <a href="#process">How It Works</a>
+        <a href="#marketplace">Marketplace</a>
+        <a href="#contact">Contact</a>
+      </div>
+    </div>
   </nav>
+  <main>
+    <section id="home" class="hero">
+      <div class="hero-copy">
+        <span class="eyebrow">Integrated Intelligent Node System</span>
+        <h1>Automation that learns, adapts, and scales with your operation.</h1>
+        <p class="lead">RedNode.ai unifies multi-modal sensing, AI-powered automation, and trusted verification to orchestrate smarter workflows across industrial, security, and enterprise environments.</p>
+        <div class="cta-group">
+          <a class="btn btn-primary" href="/rednode.html">Launch Control Centre</a>
+          <a class="btn btn-outline" href="#contact">Connect with our team</a>
+        </div>
+      </div>
+      <div class="hero-visual">
+        <img src="static/excavator.svg" alt="RedNode excavation control" loading="lazy" />
+        <div class="hero-metrics">
+          <span><strong>24/7</strong>Adaptive monitoring</span>
+          <span><strong>+38%</strong>Workflow efficiency</span>
+          <span><strong>Tier IV</strong>Security assurance</span>
+        </div>
+      </div>
+    </section>
 
-  <div style="text-align:center; margin-top:80px;">
-    <p style="margin-bottom:0.75rem; font-size:1.1rem; font-weight:bold; color:gold; letter-spacing:0.04em;">
-      Excavator Control Centre:
-    </p>
-    <button onclick="window.location.href='/rednode.html'"
-            style="padding:0.9rem 2.2rem; background:#b30000; color:gold; border:2px solid gold; border-radius:8px; cursor:pointer; font-weight:bold; text-transform:uppercase; letter-spacing:0.05em;">
-      Excavator Control Centre
-    </button>
-  </div>
+    <section id="features" class="section">
+      <div class="section-header">
+        <span class="eyebrow">Capabilities</span>
+        <h2>Designed for operators who need intelligence at every node.</h2>
+        <p>From jobsite excavators to smart facilities, RedNode.ai learns how your teams move, coordinate, and deliver—unlocking automation that feels tailored to each environment.</p>
+      </div>
+      <div class="card-grid">
+        <article class="card">
+          <h3>Personal Node Growth</h3>
+          <p>Your RedNode learns from your home, office, or industrial setup to optimize workflows and automation.</p>
+        </article>
+        <article class="card">
+          <h3>Multi-Modal Data Collection</h3>
+          <p>Captures human movement, machine telemetry, and real-time sensor readings to build actionable intelligence.</p>
+        </article>
+        <article class="card">
+          <h3>AI-Powered Automation</h3>
+          <p>Leverages deep learning to recognize tasks, improve efficiency, and orchestrate consistent execution.</p>
+        </article>
+        <article class="card">
+          <h3>Rewards for Quality Data</h3>
+          <p>Earn payouts by uploading high-quality data, tokenized for network growth, model refinement, and AI training.</p>
+        </article>
+      </div>
+    </section>
 
-  <header id="home">
-    <h1>RedNode.ai Integrated Node System</h1>
-    <p>The Ultimate AI-Powered Platform for Smart Automation, Security, and Industrial Optimization</p>
-  </header>
+    <section id="tech" class="section">
+      <div class="section-header">
+        <span class="eyebrow">Technology stack</span>
+        <h2>Built on signal intelligence, machine learning, and trusted distribution.</h2>
+        <p>Our architecture combines human-in-the-loop feedback with ruggedized edge computing and verifiable data paths.</p>
+      </div>
+      <div class="card-grid">
+        <article class="card">
+          <h3>Omconsole Technology</h3>
+          <p>Utilizes EEG, EMG, retina, and gesture-controlled remote systems with AI-driven enhancements for node verification and distribution.</p>
+        </article>
+        <article class="card">
+          <h3>AI &amp; Machine Learning</h3>
+          <p>Deploys YOLO, DeepFace, and custom ML models for real-time recognition, planning, and task execution in the field.</p>
+        </article>
+        <article class="card">
+          <h3>Edge Computing</h3>
+          <p>Processes data locally to drive low-latency reactions while prioritizing safety, privacy, and operational uptime.</p>
+        </article>
+        <article class="card">
+          <h3>Blockchain Integrity</h3>
+          <p>Ensures secure, immutable logging and verification of events with chain-ready data for auditors and partners.</p>
+        </article>
+      </div>
+    </section>
 
-  <section id="features">
-    <h2 class="section-title">Key Features</h2>
-    <div class="features">
-      <div class="feature-item">
-        <h3>Personal Node Growth</h3>
-        <p>Your RedNode learns from your home, office, or industrial setup to optimize workflows and automation.</p>
+    <section id="nodes" class="section">
+      <div class="section-header">
+        <span class="eyebrow">Node experiences</span>
+        <h2>Deploy the right node for each environment and evolve it over time.</h2>
+        <p>Modular hardware and software experiences keep crews focused on delivery while RedNode quietly handles orchestration.</p>
       </div>
-      <div class="feature-item">
-        <h3>Multi-Modal Data Collection</h3>
-        <p>Captures human movement, machine telemetry, and real-time sensor readings.</p>
+      <div class="card-grid">
+        <article class="card">
+          <h3>Residential Nodes</h3>
+          <p>Automate secure access, energy efficiency, and lifestyle routines with privacy-first sensing and local inference.</p>
+        </article>
+        <article class="card">
+          <h3>Industrial Nodes</h3>
+          <p>Coordinate fleets, oversee compliance, and trigger preventative maintenance across heavy machinery and robotics.</p>
+        </article>
+        <article class="card">
+          <h3>Security Nodes</h3>
+          <p>Fuse surveillance, identity, and anomaly detection into a single command interface with automated alerting.</p>
+        </article>
       </div>
-      <div class="feature-item">
-        <h3>AI-Powered Automation</h3>
-        <p>Leverages deep learning to recognize tasks, improve efficiency, and optimize operations.</p>
-      </div>
-      <div class="feature-item">
-        <h3>Rewards for Quality Data</h3>
-        <p>Earn payouts by uploading high-quality data, tokenized for network growth and AI training.</p>
-      </div>
-    </div>
-  </section>
+    </section>
 
-  <section id="tech">
-    <h2 class="section-title">Advanced Technology</h2>
-    <div class="tech">
-      <div class="tech-item">
-        <h3>Omconsole Technology</h3>
-        <p>Utilizes EEG, EMG, Retina, and Gesture-controlled remote systems with AI-driven enhancements through node verification and distribution.</p>
+    <section id="process" class="section">
+      <div class="section-header">
+        <span class="eyebrow">How it works</span>
+        <h2>A clear path to intelligent autonomy.</h2>
+        <p>RedNode.ai deploys in structured phases so your teams can onboard quickly and see measurable returns.</p>
       </div>
-      <div class="tech-item">
-        <h3>AI &amp; Machine Learning</h3>
-        <p>Uses YOLO, DeepFace, and custom ML models for real-time object recognition and task execution.</p>
+      <div class="highlight-panel">
+        <div class="card-grid">
+          <article class="card">
+            <h3>01. Data Onboarding</h3>
+            <p>Calibrate nodes with your existing sensors, import historical data, and define operational priorities.</p>
+          </article>
+          <article class="card">
+            <h3>02. AI Optimization</h3>
+            <p>RedNode learns patterns, tags insights, and proposes automations across workflows and compliance tasks.</p>
+          </article>
+          <article class="card">
+            <h3>03. Deployment &amp; Scaling</h3>
+            <p>Roll out verified automations across locations with governance, version control, and transparent reporting.</p>
+          </article>
+        </div>
       </div>
-      <div class="tech-item">
-        <h3>Edge Computing</h3>
-        <p>Processes data locally for speed and efficiency, reducing latency.</p>
-      </div>
-      <div class="tech-item">
-        <h3>Blockchain Integrity</h3>
-        <p>Ensures secure, immutable logging and verification of events.</p>
-      </div>
-    </div>
-  </section>
+    </section>
 
-  <section id="nodes">
-    <h2 class="section-title">Node System</h2>
-    <div class="nodes">
-      <div class="node-item">
-        <h3>Gaming Node</h3>
-        <p>Enhances gaming experiences with AI-driven customization, tracking, and real-time interactions.</p>
+    <section id="marketplace" class="section">
+      <div class="section-header">
+        <span class="eyebrow">Marketplace</span>
+        <h2>Contribute, monetize, and accelerate RedNode innovation.</h2>
+        <p>Creators, integrators, and contractors can publish verified automations, data sets, and AI extensions to the RedNode marketplace.</p>
       </div>
-      <div class="node-item">
-        <h3>Security Node</h3>
-        <p>Provides real-time security monitoring, anomaly detection, and access control with AI-based analytics.</p>
+      <div class="card-grid">
+        <article class="card">
+          <h3>Automation Blueprints</h3>
+          <p>Share or subscribe to modular sequences that keep projects moving and crews aligned.</p>
+        </article>
+        <article class="card">
+          <h3>Telemetry Packs</h3>
+          <p>License anonymized, high-quality data sets to accelerate model training and validation.</p>
+        </article>
+        <article class="card">
+          <h3>Partner Integrations</h3>
+          <p>Connect RedNode.ai with ERP, BIM, and compliance suites to complete your digital operations stack.</p>
+        </article>
       </div>
-      <div class="node-item">
-        <h3>Object Tracking Node</h3>
-        <p>Tracks objects in real-time for industrial automation, logistics, and security applications.</p>
-      </div>
-      <div class="node-item">
-        <h3>Equipment Management Node</h3>
-        <p>Optimizes machinery operations in industries like construction and mining through predictive analytics and automation.</p>
-      </div>
-      <div class="node-item">
-        <h3>Contractor Node</h3>
-        <p>Facilitates contractor project management, automation, and performance tracking using AI-driven insights.</p>
-      </div>
-    </div>
-  </section>
+    </section>
 
-  <section id="marketplace">
-    <h2 class="section-title">RedNode Marketplace</h2>
-    <div class="marketplace">
-      <div class="market-item">
-        <h3>Live Tokenized Gaming</h3>
-        <p>Play and compete in AI-enhanced games using RedNode tokens.</p>
+    <section id="contact" class="section">
+      <div class="cta-block">
+        <span class="eyebrow">Ready to begin?</span>
+        <h2>Deploy RedNode.ai and orchestrate your next evolution.</h2>
+        <p>Schedule a session with our integration specialists to design the node network that meets your objectives.</p>
+        <a class="btn btn-primary" href="mailto:hello@rednode.ai">Start the conversation</a>
       </div>
-      <div class="market-item">
-        <h3>Apps &amp; Tools</h3>
-        <p>Access and trade AI-driven applications, automation solutions, and software tools.</p>
-      </div>
-      <div class="market-item">
-        <h3>Task Exchange</h3>
-        <p>Trade and collaborate on AI-generated tasks and industrial solutions.</p>
-      </div>
-      <div class="market-item">
-        <h3>Coming Soon</h3>
-        <p>Use RedNode tokens to play, operate, and trade tasks, experiences, and games created by contributors.</p>
-      </div>
-    </div>
-  </section>
-
-  <section id="process">
-    <h2 class="section-title">How It Works</h2>
-    <div class="process">
-      <div class="process-item">
-        <p>Details on the workflow and processes of RedNode.ai will be provided soon.</p>
-      </div>
-    </div>
-  </section>
-
-  <section class="cta" id="contact">
-    <h2>Ready to Transform Your Operations?</h2>
-    <p>Contact us to integrate RedNode into your AI-driven environment.</p>
-    <a href="mailto:info@rednode.ai">Contact Us</a>
-  </section>
-
+    </section>
+  </main>
   <footer>
-    <p>&copy; 2025 RedNode.ai. All Rights Reserved.</p>
+    © <span id="year"></span> RedNode.ai. Built for intelligent operations.
   </footer>
-  <script src="{{ url_for('static', filename='session.js') }}"></script>
+  <script>
+    document.getElementById('year').textContent = new Date().getFullYear();
+  </script>
 </body>
 </html>

@@ -10,29 +10,31 @@
         bottom: '0',
         left: '0',
         width: '50%',
-        background: '#1a1a1a',
-        color: '#ffd700',
-        borderRight: '2px solid #ffd700',
-        padding: '10px',
+        background: 'linear-gradient(160deg, rgba(8,12,26,0.92), rgba(8,12,26,0.78))',
+        color: '#f5f7ff',
+        borderRight: '1px solid rgba(123,157,255,0.35)',
+        padding: '16px',
         fontSize: '14px',
         zIndex: 9999,
         display: 'flex',
         flexDirection: 'column',
-        boxSizing: 'border-box'
+        boxSizing: 'border-box',
+        backdropFilter: 'blur(18px)',
+        boxShadow: '0 28px 48px rgba(5,8,22,0.55)'
       });
       if(window.innerWidth < 600){
         box.style.width = '100%';
       }
       box.innerHTML =
-      '<div id="chat-users" style="margin-bottom:4px;font-weight:bold;"></div>' +
-      '<div style="margin-bottom:4px;">' +
-      '<input id="chat-search" placeholder="Search..." style="width:100%;padding:4px;background:#222;border:1px solid #555;color:#ffd700;" />' +
+      '<div id="chat-users" style="margin-bottom:8px;font-weight:600;color:#9aa3c8;"></div>' +
+      '<div style="margin-bottom:12px;">' +
+      '<input id="chat-search" placeholder="Search..." style="width:100%;padding:10px;background:rgba(16,24,46,0.72);border:1px solid rgba(123,157,255,0.35);color:#f5f7ff;border-radius:12px;box-shadow:0 16px 28px rgba(5,8,22,0.4);" />' +
       '</div>' +
-      '<div id="chat-feed" style="overflow-y:auto;flex:1;margin-bottom:4px;background:#111;padding:4px;"></div>' +
-      '<form id="chat-form" style="display:flex;gap:4px;align-items:center;">' +
-      '<input id="chat-input" style="flex:1;padding:4px;background:#222;border:1px solid #555;color:#ffd700;" />' +
-      '<input id="chat-file" type="file" style="width:110px;padding:4px;background:#222;border:1px solid #555;color:#ffd700;" />' +
-      '<button style="padding:4px 8px;background:#b30000;color:#ffd700;border:1px solid #ffd700;">Send</button>' +
+      '<div id="chat-feed" style="overflow-y:auto;flex:1;margin-bottom:12px;background:rgba(10,16,34,0.7);padding:12px;border-radius:18px;border:1px solid rgba(123,157,255,0.3);box-shadow:0 28px 48px rgba(5,8,22,0.45);backdrop-filter:blur(12px);"></div>' +
+      '<form id="chat-form" style="display:flex;gap:10px;align-items:center;background:rgba(12,20,42,0.75);padding:10px;border-radius:14px;border:1px solid rgba(123,157,255,0.3);">' +
+      '<input id="chat-input" style="flex:1;padding:10px 12px;background:transparent;border:0;color:#f5f7ff;outline:none;" />' +
+      '<input id="chat-file" type="file" style="width:120px;padding:10px;border-radius:12px;background:rgba(16,24,46,0.72);border:1px solid rgba(123,157,255,0.35);color:#f5f7ff;cursor:pointer;" />' +
+      '<button style="padding:10px 16px;border-radius:12px;background:linear-gradient(135deg,#ff4d8d,#ff7a5c);color:#050814;font-weight:600;border:0;box-shadow:0 18px 32px rgba(255,87,136,0.4);cursor:pointer;">Send</button>' +
       '</form>';
     document.body.appendChild(box);
 
@@ -42,6 +44,9 @@
     const input = box.querySelector('#chat-input');
     const fileInput = box.querySelector('#chat-file');
     const search = box.querySelector('#chat-search');
+    usersBox.style.textTransform = 'uppercase';
+    usersBox.style.letterSpacing = '0.12em';
+    usersBox.style.fontSize = '11px';
     const sendAllowed = !!ctx.username;
     const socket = io();
     chatSocket = socket;
@@ -50,12 +55,18 @@
     });
     function appendMsg(data){
       const msg = document.createElement('div');
-      msg.style.marginBottom = '6px';
+      msg.style.marginBottom = '10px';
+      msg.style.padding = '12px';
+      msg.style.background = 'rgba(16,24,46,0.72)';
+      msg.style.borderRadius = '14px';
+      msg.style.border = '1px solid rgba(123,157,255,0.25)';
+      msg.style.boxShadow = '0 16px 30px rgba(5,8,22,0.45)';
       const header = document.createElement('div');
       const text = data.message ? ` ${data.message}` : '';
       header.textContent = `${data.user}:${text}`;
-      header.style.color = '#00a0ff';
-      header.style.textShadow = '0 0 4px gold';
+      header.style.color = '#7b9dff';
+      header.style.textShadow = '0 0 8px rgba(123,157,255,0.5)';
+      header.style.fontWeight = '600';
       msg.appendChild(header);
       const fileName = data.file_name || data.fileName;
       const fileType = data.file_type || data.fileType || '';
@@ -64,6 +75,8 @@
         img.src = data.image;
         img.alt = fileName || data.message || 'image';
         img.style.maxWidth = '100%';
+        img.style.borderRadius = '12px';
+        img.style.marginTop = '8px';
         msg.appendChild(img);
       } else if(data.file){
         const type = fileType;
@@ -72,11 +85,14 @@
           vid.src = data.file;
           vid.controls = true;
           vid.style.maxWidth = '100%';
+          vid.style.borderRadius = '12px';
+          vid.style.marginTop = '8px';
           msg.appendChild(vid);
         } else if(type.startsWith('audio/')){
           const aud = document.createElement('audio');
           aud.src = data.file;
           aud.controls = true;
+          aud.style.marginTop = '8px';
           msg.appendChild(aud);
         } else {
           const link = document.createElement('a');
@@ -84,7 +100,10 @@
           const name = fileName || 'download';
           link.textContent = name;
           link.download = name;
-          link.style.color = '#ffd700';
+          link.style.color = '#ff4d8d';
+          link.style.fontWeight = '600';
+          link.style.display = 'inline-block';
+          link.style.marginTop = '6px';
           msg.appendChild(link);
         }
       }
