@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>RedNode.ai – Integrated Intelligent Node System</title>
+  <!-- Import a modern, dynamic font to enhance visual appeal -->
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    /* Reset and global settings */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      transition: all 0.3s ease;
+    }
+    body {
+      font-family: 'Montserrat', Arial, sans-serif;
+      line-height: 1.6;
+      background: linear-gradient(135deg, #300, #600);
+      color: #fff;
+      padding-top: 60px;
+      overflow-x: hidden;
+    }
+    
+    /* Major elements with bold gold trim and glowing accents */
+    header, nav, section, .contractor-node, footer {
+      border: 3px solid gold;
+      padding: 1rem;
+      box-shadow: 0 0 15px rgba(255,215,0,0.5);
+    }
+    
+    header {
+      background: #600;
+      color: gold;
+      padding: 4rem 0;
+      text-align: center;
+      text-shadow: 2px 2px 4px #000;
+      animation: headerGlow 3s infinite alternate;
+    }
+    
+    @keyframes headerGlow {
+      from { box-shadow: 0 0 15px rgba(255,215,0,0.5); }
+      to { box-shadow: 0 0 25px rgba(255,215,0,1); }
+    }
+    
+    nav {
+      position: fixed;
+      top: 0;
+      width: 100%;
+      background: #800;
+      z-index: 1000;
+      padding: 1rem 0;
+    }
+    
+    nav ul {
+      list-style: none;
+      display: flex;
+      justify-content: center;
+    }
+    
+    nav ul li {
+      margin: 0 1rem;
+    }
+    
+    nav ul li a {
+      color: gold;
+      text-decoration: none;
+      font-weight: bold;
+      padding: 0.8rem;
+      display: block;
+      border: 2px solid gold;
+      border-radius: 5px;
+    }
+    
+    nav ul li a:hover {
+      background: gold;
+      color: #300;
+      transform: scale(1.1);
+      box-shadow: 0 0 10px gold;
+    }
+    
+    section {
+      padding: 4rem 2rem;
+      max-width: 1000px;
+      margin: auto;
+      background: rgba(0, 0, 0, 0.3);
+      border-radius: 10px;
+    }
+    
+    .section-title {
+      text-align: center;
+      margin-bottom: 2rem;
+      font-size: 2rem;
+      color: gold;
+      border-bottom: 2px solid gold;
+      padding-bottom: 0.5rem;
+      text-shadow: 1px 1px 3px #000;
+    }
+    
+    /* Container styles for grouped content */
+    .container,
+    .features,
+    .tech,
+    .process,
+    .nodes,
+    .marketplace {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 2rem;
+      justify-content: center;
+    }
+    
+    /* Item styles with enhanced gold accents */
+    .feature-item,
+    .tech-item,
+    .process-item,
+    .node-item,
+    .market-item {
+      flex: 1 1 300px;
+      background: #900;
+      padding: 2rem;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(255,0,0,0.6);
+      text-align: center;
+      border: 2px solid gold;
+      color: gold;
+      cursor: pointer;
+    }
+    
+    .feature-item:hover,
+    .tech-item:hover,
+    .process-item:hover,
+    .node-item:hover,
+    .market-item:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 8px 15px rgba(255,215,0,0.8);
+    }
+    
+    .cta {
+      text-align: center;
+      background: #800;
+      padding: 3rem;
+      border-radius: 10px;
+      border: 3px solid gold;
+      color: gold;
+      box-shadow: 0 4px 10px rgba(255,215,0,0.7);
+    }
+    
+    .cta a {
+      display: inline-block;
+      background: gold;
+      color: #300;
+      padding: 1rem 2rem;
+      text-decoration: none;
+      font-weight: bold;
+      border-radius: 5px;
+      margin-top: 1rem;
+    }
+    
+    .cta a:hover {
+      transform: scale(1.05);
+      background: #ffd700;
+    }
+    
+    .contractor-node {
+      text-align: center;
+      background: #900;
+      padding: 3rem;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(255,0,0,0.6);
+      margin: 4rem auto;
+      border: 3px solid gold;
+      color: gold;
+    }
+    
+    .contractor-node img {
+      width: 100%;
+      max-width: 600px;
+      border-radius: 8px;
+      margin-top: 2rem;
+      border: 2px solid gold;
+    }
+    
+    footer {
+      background: #600;
+      text-align: center;
+      padding: 1.5rem;
+      border: 3px solid gold;
+      color: gold;
+      margin-top: 2rem;
+      box-shadow: 0 0 15px rgba(255,215,0,0.5);
+    }
+    
+    /* Additional animations for a dynamic entrance */
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    section, .feature-item, .tech-item, .node-item, .market-item, .cta {
+      animation: fadeInUp 1s ease-out;
+    }
+    
+  </style>
+</head>
+<body>
+  <nav>
+    <ul>
+      <li><a href="#home">Home</a></li>
+      <li><a href="#features">Features</a></li>
+      <li><a href="#tech">Technology</a></li>
+      <li><a href="#nodes">Nodes</a></li>
+      <li><a href="#process">How It Works</a></li>
+      <li><a href="#marketplace">Marketplace</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+  </nav>
+
+  <header id="home">
+    <h1>RedNode.ai Integrated Node System</h1>
+    <p>The Ultimate AI-Powered Platform for Smart Automation, Security, and Industrial Optimization</p>
+  </header>
+
+  <section id="features">
+    <h2 class="section-title">Key Features</h2>
+    <div class="features">
+      <div class="feature-item">
+        <h3>Personal Node Growth</h3>
+        <p>Your RedNode learns from your home, office, or industrial setup to optimize workflows and automation.</p>
+      </div>
+      <div class="feature-item">
+        <h3>Multi-Modal Data Collection</h3>
+        <p>Captures human movement, machine telemetry, and real-time sensor readings.</p>
+      </div>
+      <div class="feature-item">
+        <h3>AI-Powered Automation</h3>
+        <p>Leverages deep learning to recognize tasks, improve efficiency, and optimize operations.</p>
+      </div>
+      <div class="feature-item">
+        <h3>Rewards for Quality Data</h3>
+        <p>Earn payouts by uploading high-quality data, tokenized for network growth and AI training.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="tech">
+    <h2 class="section-title">Advanced Technology</h2>
+    <div class="tech">
+      <div class="tech-item">
+        <h3>Omconsole Technology</h3>
+        <p>Utilizes EEG, EMG, Retina, and Gesture-controlled remote systems with AI-driven enhancements through node verification and distribution.</p>
+      </div>
+      <div class="tech-item">
+        <h3>AI &amp; Machine Learning</h3>
+        <p>Uses YOLO, DeepFace, and custom ML models for real-time object recognition and task execution.</p>
+      </div>
+      <div class="tech-item">
+        <h3>Edge Computing</h3>
+        <p>Processes data locally for speed and efficiency, reducing latency.</p>
+      </div>
+      <div class="tech-item">
+        <h3>Blockchain Integrity</h3>
+        <p>Ensures secure, immutable logging and verification of events.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="nodes">
+    <h2 class="section-title">Node System</h2>
+    <div class="nodes">
+      <div class="node-item">
+        <h3>Gaming Node</h3>
+        <p>Enhances gaming experiences with AI-driven customization, tracking, and real-time interactions.</p>
+      </div>
+      <div class="node-item">
+        <h3>Security Node</h3>
+        <p>Provides real-time security monitoring, anomaly detection, and access control with AI-based analytics.</p>
+      </div>
+      <div class="node-item">
+        <h3>Object Tracking Node</h3>
+        <p>Tracks objects in real-time for industrial automation, logistics, and security applications.</p>
+      </div>
+      <div class="node-item">
+        <h3>Equipment Management Node</h3>
+        <p>Optimizes machinery operations in industries like construction and mining through predictive analytics and automation.</p>
+      </div>
+      <div class="node-item">
+        <h3>Contractor Node</h3>
+        <p>Facilitates contractor project management, automation, and performance tracking using AI-driven insights.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="marketplace">
+    <h2 class="section-title">RedNode Marketplace</h2>
+    <div class="marketplace">
+      <div class="market-item">
+        <h3>Live Tokenized Gaming</h3>
+        <p>Play and compete in AI-enhanced games using RedNode tokens.</p>
+      </div>
+      <div class="market-item">
+        <h3>Apps &amp; Tools</h3>
+        <p>Access and trade AI-driven applications, automation solutions, and software tools.</p>
+      </div>
+      <div class="market-item">
+        <h3>Task Exchange</h3>
+        <p>Trade and collaborate on AI-generated tasks and industrial solutions.</p>
+      </div>
+      <div class="market-item">
+        <h3>Coming Soon</h3>
+        <p>Use RedNode tokens to play, operate, and trade tasks, experiences, and games created by contributors.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="process">
+    <h2 class="section-title">How It Works</h2>
+    <div class="process">
+      <div class="process-item">
+        <p>Details on the workflow and processes of RedNode.ai will be provided soon.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="cta" id="contact">
+    <h2>Ready to Transform Your Operations?</h2>
+    <p>Contact us to integrate RedNode into your AI-driven environment.</p>
+    <a href="mailto:info@rednode.ai">Contact Us</a>
+  </section>
+
+  <footer>
+    <p>&copy; 2025 RedNode.ai. All Rights Reserved.</p>
+  </footer>
+</body>
+</html>
