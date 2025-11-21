@@ -2,7 +2,8 @@
 FROM nginx:alpine
 
 # Copy the landing page and static assets to the container's web root
-COPY rednode.html /usr/share/nginx/html/index.html
+COPY start.html /usr/share/nginx/html/index.html
+COPY start.html /usr/share/nginx/html/start.html
 COPY rednode.html /usr/share/nginx/html/rednode.html
 COPY live/ /usr/share/nginx/html/live/
 COPY static/ /usr/share/nginx/html/static/
