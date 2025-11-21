@@ -1,0 +1,911 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>RedNode.ai – Integrated Intelligent Node System</title>
+  <!-- Import a modern, dynamic font to enhance visual appeal -->
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    /* Reset and global settings */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      transition: all 0.3s ease;
+    }
+    body {
+      font-family: 'Montserrat', Arial, sans-serif;
+      line-height: 1.6;
+      background: linear-gradient(135deg, #300, #600);
+      color: #fff;
+      padding-top: 60px;
+      overflow-x: hidden;
+    }
+    
+    /* Major elements with bold gold trim and glowing accents */
+    header, nav, section, .contractor-node, footer {
+      border: 3px solid gold;
+      padding: 1rem;
+      box-shadow: 0 0 15px rgba(255,215,0,0.5);
+    }
+    
+    header {
+      background: #600;
+      color: gold;
+      padding: 4rem 0;
+      text-align: center;
+      text-shadow: 2px 2px 4px #000;
+      animation: headerGlow 3s infinite alternate;
+    }
+    
+    @keyframes headerGlow {
+      from { box-shadow: 0 0 15px rgba(255,215,0,0.5); }
+      to { box-shadow: 0 0 25px rgba(255,215,0,1); }
+    }
+    
+    nav {
+      position: fixed;
+      top: 0;
+      width: 100%;
+      background: #800;
+      z-index: 1000;
+      padding: 0.75rem 1.25rem;
+    }
+
+    .nav-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .nav-brand {
+      color: gold;
+      font-weight: 700;
+      font-size: 1.2rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      text-decoration: none;
+    }
+
+    .nav-links {
+      list-style: none;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0;
+      margin: 0;
+      flex: 1 1 320px;
+    }
+
+    .nav-links li {
+      margin: 0;
+    }
+
+    .nav-links a {
+      color: gold;
+      text-decoration: none;
+      font-weight: bold;
+      padding: 0.6rem 0.85rem;
+      display: block;
+      border: 2px solid gold;
+      border-radius: 5px;
+    }
+
+    .nav-links a:hover {
+      background: gold;
+      color: #300;
+      transform: scale(1.05);
+      box-shadow: 0 0 10px gold;
+    }
+
+    .nav-buttons {
+      display: flex;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .nav-link-btn {
+      color: #300;
+      background: gold;
+      text-decoration: none;
+      font-weight: bold;
+      padding: 0.6rem 1rem;
+      border-radius: 999px;
+      border: 2px solid gold;
+      box-shadow: 0 0 12px rgba(255, 215, 0, 0.4);
+    }
+
+    .nav-link-btn:hover {
+      background: #ffd700;
+      color: #300;
+      transform: translateY(-2px);
+    }
+
+    .nav-link-btn.primary {
+      background: #ffcc33;
+      border-color: #ffcc33;
+      color: #300;
+      box-shadow: 0 0 15px rgba(255, 204, 51, 0.6);
+    }
+
+    .nav-link-btn.primary:hover {
+      background: #ffe066;
+      border-color: #ffe066;
+    }
+    
+    section {
+      padding: 4rem 2rem;
+      max-width: 1000px;
+      margin: auto;
+      background: rgba(0, 0, 0, 0.3);
+      border-radius: 10px;
+    }
+    
+    .section-title {
+      text-align: center;
+      margin-bottom: 2rem;
+      font-size: 2rem;
+      color: gold;
+      border-bottom: 2px solid gold;
+      padding-bottom: 0.5rem;
+      text-shadow: 1px 1px 3px #000;
+    }
+    
+    /* Container styles for grouped content */
+    .container,
+    .features,
+    .tech,
+    .process,
+    .nodes,
+    .marketplace {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 2rem;
+      justify-content: center;
+    }
+    
+    /* Item styles with enhanced gold accents */
+    .feature-item,
+    .tech-item,
+    .process-item,
+    .node-item,
+    .market-item {
+      flex: 1 1 300px;
+      background: #900;
+      padding: 2rem;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(255,0,0,0.6);
+      text-align: center;
+      border: 2px solid gold;
+      color: gold;
+      cursor: pointer;
+    }
+    
+    .feature-item:hover,
+    .tech-item:hover,
+    .process-item:hover,
+    .node-item:hover,
+    .market-item:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 8px 15px rgba(255,215,0,0.8);
+    }
+
+    .hero-actions {
+      margin-top: 2rem;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 1rem;
+    }
+
+    .hero-btn {
+      display: inline-block;
+      padding: 0.85rem 1.8rem;
+      border-radius: 999px;
+      border: 2px solid gold;
+      background: transparent;
+      color: gold;
+      font-weight: bold;
+      text-decoration: none;
+      box-shadow: 0 0 10px rgba(255,215,0,0.4);
+    }
+
+    .hero-btn:hover {
+      background: gold;
+      color: #300;
+      transform: translateY(-2px);
+    }
+
+    .hero-btn.primary {
+      background: gold;
+      color: #300;
+    }
+
+    .hero-btn.primary:hover {
+      background: #ffd700;
+    }
+
+    .cta {
+      text-align: center;
+      background: #800;
+      padding: 3rem;
+      border-radius: 10px;
+      border: 3px solid gold;
+      color: gold;
+      box-shadow: 0 4px 10px rgba(255,215,0,0.7);
+    }
+    
+    .cta a {
+      display: inline-block;
+      background: gold;
+      color: #300;
+      padding: 1rem 2rem;
+      text-decoration: none;
+      font-weight: bold;
+      border-radius: 5px;
+      margin-top: 1rem;
+    }
+    
+    .cta a:hover {
+      transform: scale(1.05);
+      background: #ffd700;
+    }
+
+    /* Token gate overlay */
+    body.gate-locked main,
+    body.gate-locked nav,
+    body.gate-locked header,
+    body.gate-locked section,
+    body.gate-locked footer {
+      filter: blur(8px);
+      pointer-events: none;
+      user-select: none;
+    }
+
+    .gate-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 2000;
+      display: grid;
+      place-items: center;
+      background: radial-gradient(circle at 20% 20%, rgba(255,215,0,0.14), transparent 38%),
+        radial-gradient(circle at 80% 10%, rgba(255,77,141,0.2), transparent 42%),
+        linear-gradient(135deg, rgba(12, 8, 24, 0.92), rgba(16, 6, 28, 0.9));
+      padding: 1.5rem;
+      backdrop-filter: blur(8px);
+    }
+
+    .gate-card {
+      width: min(960px, 100%);
+      display: grid;
+      gap: 1.5rem;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      background: rgba(18, 8, 32, 0.82);
+      border: 1px solid rgba(255, 215, 0, 0.35);
+      border-radius: 18px;
+      box-shadow: 0 28px 60px rgba(0, 0, 0, 0.55), 0 0 0 1px rgba(255, 215, 0, 0.2);
+      padding: clamp(1.4rem, 3vw, 2.4rem);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .gate-card::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(120% 60% at 80% 20%, rgba(255, 196, 66, 0.25), transparent 50%);
+      pointer-events: none;
+      opacity: 0.7;
+    }
+
+    .gate-header {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 0.8rem;
+    }
+
+    .gate-pill {
+      align-self: flex-start;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      padding: 0.5rem 0.9rem;
+      border-radius: 999px;
+      background: rgba(255, 215, 0, 0.16);
+      color: gold;
+      border: 1px solid rgba(255, 215, 0, 0.35);
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    .gate-title {
+      font-size: clamp(1.7rem, 3vw, 2.2rem);
+      color: gold;
+      text-shadow: 0 4px 12px rgba(0,0,0,0.45);
+    }
+
+    .gate-subtitle {
+      color: #f6e9c5;
+      max-width: 38ch;
+    }
+
+    .gate-form {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      gap: 0.8rem;
+      padding: 1rem;
+      background: rgba(0, 0, 0, 0.35);
+      border: 1px solid rgba(255, 215, 0, 0.25);
+      border-radius: 14px;
+      box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.02);
+    }
+
+    .gate-form label {
+      display: grid;
+      gap: 0.35rem;
+      font-weight: 700;
+      color: #f6e9c5;
+    }
+
+    .gate-form input,
+    .gate-form textarea {
+      width: 100%;
+      padding: 0.85rem 0.9rem;
+      border-radius: 12px;
+      border: 1px solid rgba(255, 215, 0, 0.35);
+      background: rgba(8, 0, 16, 0.6);
+      color: #fff7e8;
+      font-size: 1rem;
+      box-shadow: inset 0 6px 18px rgba(0, 0, 0, 0.45);
+    }
+
+    .gate-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      align-items: center;
+      margin-top: 0.35rem;
+    }
+
+    .gate-actions button,
+    .gate-actions .ghost-btn {
+      border-radius: 12px;
+      border: 1px solid gold;
+      background: gold;
+      color: #300;
+      padding: 0.85rem 1.2rem;
+      font-weight: 800;
+      cursor: pointer;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      box-shadow: 0 18px 32px rgba(255, 215, 0, 0.32);
+    }
+
+    .gate-actions .ghost-btn {
+      background: transparent;
+      color: gold;
+      box-shadow: none;
+    }
+
+    .gate-meta {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      gap: 1rem;
+      padding: 1rem;
+      background: rgba(255, 215, 0, 0.04);
+      border: 1px solid rgba(255, 215, 0, 0.25);
+      border-radius: 14px;
+    }
+
+    .gate-meta h3 {
+      color: gold;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .gate-meta ul {
+      list-style: none;
+      display: grid;
+      gap: 0.45rem;
+      padding: 0;
+      margin: 0;
+    }
+
+    .gate-meta li {
+      display: flex;
+      gap: 0.6rem;
+      align-items: center;
+      color: #f6e9c5;
+    }
+
+    .gate-meta li span.icon {
+      width: 32px;
+      height: 32px;
+      display: inline-grid;
+      place-items: center;
+      border-radius: 50%;
+      background: rgba(255, 215, 0, 0.18);
+      border: 1px solid rgba(255, 215, 0, 0.28);
+      color: gold;
+      font-weight: 900;
+    }
+
+    .gate-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.45rem 0.75rem;
+      border-radius: 12px;
+      background: rgba(0,0,0,0.45);
+      border: 1px solid rgba(255, 215, 0, 0.25);
+      color: #f6e9c5;
+      font-weight: 700;
+    }
+
+    .gate-manage {
+      position: fixed;
+      right: 1rem;
+      bottom: 1rem;
+      z-index: 1500;
+      padding: 0.75rem 1rem;
+      border-radius: 12px;
+      border: 1px solid rgba(255, 215, 0, 0.35);
+      background: rgba(0, 0, 0, 0.65);
+      color: gold;
+      font-weight: 700;
+      box-shadow: 0 12px 28px rgba(0, 0, 0, 0.4);
+      cursor: pointer;
+      backdrop-filter: blur(8px);
+      display: none;
+    }
+    
+    .contractor-node {
+      text-align: center;
+      background: #900;
+      padding: 3rem;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(255,0,0,0.6);
+      margin: 4rem auto;
+      border: 3px solid gold;
+      color: gold;
+    }
+
+    .contractor-node img {
+      width: 100%;
+      max-width: 600px;
+      border-radius: 8px;
+      margin-top: 2rem;
+      border: 2px solid gold;
+    }
+
+    .rednode-launch {
+      margin: 4rem auto;
+      padding: 3rem;
+      background: rgba(0, 0, 0, 0.35);
+      border-radius: 12px;
+      border: 3px solid gold;
+      box-shadow: 0 0 25px rgba(255, 215, 0, 0.35);
+      max-width: 1100px;
+      text-align: center;
+    }
+
+    .rednode-launch h2 {
+      color: gold;
+      margin-bottom: 1rem;
+      font-size: 2rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .rednode-launch p {
+      margin: 0 auto 2rem auto;
+      max-width: 680px;
+    }
+
+    .rednode-preview {
+      position: relative;
+      margin: 0 auto 2rem auto;
+      border-radius: 12px;
+      border: 2px solid gold;
+      overflow: hidden;
+      box-shadow: 0 12px 25px rgba(255, 215, 0, 0.25);
+      background: rgba(0, 0, 0, 0.6);
+    }
+
+    .launch-message {
+      padding: 2.5rem 2rem;
+      text-align: left;
+      color: gold;
+      display: grid;
+      gap: 1rem;
+    }
+
+    .launch-message h3 {
+      font-size: 1.4rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .launch-message ul {
+      padding-left: 1.25rem;
+      display: grid;
+      gap: 0.75rem;
+    }
+
+    .launch-message li {
+      list-style: disc;
+    }
+
+    .rednode-launch .hero-btn {
+      margin: 0 auto;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    footer {
+      background: #600;
+      text-align: center;
+      padding: 1.5rem;
+      border: 3px solid gold;
+      color: gold;
+      margin-top: 2rem;
+      box-shadow: 0 0 15px rgba(255,215,0,0.5);
+    }
+    
+    /* Additional animations for a dynamic entrance */
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    section, .feature-item, .tech-item, .node-item, .market-item, .cta {
+      animation: fadeInUp 1s ease-out;
+    }
+
+    @media (max-width: 768px) {
+      .nav-container {
+        justify-content: center;
+      }
+
+      .nav-brand {
+        width: 100%;
+        text-align: center;
+      }
+
+      .nav-buttons {
+        justify-content: center;
+      }
+    }
+
+  </style>
+</head>
+<body>
+  <div id="token-gate" class="gate-overlay" role="dialog" aria-modal="true" aria-labelledby="gate-title">
+    <div class="gate-card">
+      <div class="gate-header">
+        <span class="gate-pill">Token Gated</span>
+        <h2 class="gate-title" id="gate-title">Secure access for RedNode Start</h2>
+        <p class="gate-subtitle">Verify with your access token or wallet identifier to unlock personalized paths, session tools, and streaming surfaces.</p>
+        <div class="gate-status" id="gate-status">Awaiting verification</div>
+      </div>
+      <div class="gate-form">
+        <label for="gate-token">Access token</label>
+        <input id="gate-token" name="gate-token" placeholder="Paste your RedNode access token" autocomplete="off" />
+        <label for="gate-wallet">Wallet / Node ID</label>
+        <input id="gate-wallet" name="gate-wallet" placeholder="0x or node-handle" autocomplete="off" />
+        <div class="gate-actions">
+          <button id="gate-accept" type="button">Unlock experience</button>
+          <button id="gate-preview" type="button" class="ghost-btn">Preview without token</button>
+          <button id="gate-clear" type="button" class="ghost-btn">Reset token</button>
+        </div>
+        <small style="color:#f6e9c5">Tokens are stored locally to keep your gateway fast and private. You can update or clear them anytime.</small>
+      </div>
+      <div class="gate-meta">
+        <h3>Why verify?</h3>
+        <ul>
+          <li><span class="icon">🪙</span><span>Token-holders unlock live chat, captions, and multiplayer control lanes.</span></li>
+          <li><span class="icon">🛰️</span><span>Syncs your wallet and chain context for the Excavation WebSocket backends.</span></li>
+          <li><span class="icon">🛡️</span><span>Applies our zero-trust session profile so only verified operators reach sensitive routes.</span></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <button id="gate-manage" class="gate-manage" type="button">Manage access</button>
+  <nav>
+    <div class="nav-container">
+      <a class="nav-brand" href="/">RedNode.ai</a>
+      <ul class="nav-links">
+        <li><a href="#home">Home</a></li>
+        <li><a href="#features">Features</a></li>
+        <li><a href="#tech">Technology</a></li>
+        <li><a href="#nodes">Nodes</a></li>
+        <li><a href="#process">How It Works</a></li>
+        <li><a href="#marketplace">Marketplace</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+      <div class="nav-buttons">
+        <a class="nav-link-btn" href="home.html">Product Overview</a>
+        <a class="nav-link-btn" href="rednode.html">Control Centre</a>
+        <a class="nav-link-btn" href="dashboard.html">Operations Dashboard</a>
+        <a class="nav-link-btn primary" href="CHAINES.IO-CHAT-codex-fix-footer-not-staying-active-on-scroll/index.html">Enter Chat Stream</a>
+      </div>
+    </div>
+  </nav>
+
+  <header id="home">
+    <h1>RedNode.ai Integrated Node System</h1>
+    <p>The Ultimate AI-Powered Platform for Smart Automation, Security, and Industrial Optimization</p>
+    <div class="hero-actions">
+      <a class="hero-btn primary" href="CHAINES.IO-CHAT-codex-fix-footer-not-staying-active-on-scroll/index.html">Enter Chat Stream</a>
+      <a class="hero-btn" href="live/index.html">View Live Excavation Control</a>
+      <a class="hero-btn" href="home.html">Explore the Platform</a>
+    </div>
+  </header>
+
+  <section id="features">
+    <h2 class="section-title">Key Features</h2>
+    <div class="features">
+      <div class="feature-item">
+        <h3>Personal Node Growth</h3>
+        <p>Your RedNode learns from your home, office, or industrial setup to optimize workflows and automation.</p>
+      </div>
+      <div class="feature-item">
+        <h3>Multi-Modal Data Collection</h3>
+        <p>Captures human movement, machine telemetry, and real-time sensor readings.</p>
+      </div>
+      <div class="feature-item">
+        <h3>AI-Powered Automation</h3>
+        <p>Leverages deep learning to recognize tasks, improve efficiency, and optimize operations.</p>
+      </div>
+      <div class="feature-item">
+        <h3>Rewards for Quality Data</h3>
+        <p>Earn payouts by uploading high-quality data, tokenized for network growth and AI training.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="tech">
+    <h2 class="section-title">Advanced Technology</h2>
+    <div class="tech">
+      <div class="tech-item">
+        <h3>Omconsole Technology</h3>
+        <p>Utilizes EEG, EMG, Retina, and Gesture-controlled remote systems with AI-driven enhancements through node verification and distribution.</p>
+      </div>
+      <div class="tech-item">
+        <h3>AI &amp; Machine Learning</h3>
+        <p>Uses YOLO, DeepFace, and custom ML models for real-time object recognition and task execution.</p>
+      </div>
+      <div class="tech-item">
+        <h3>Edge Computing</h3>
+        <p>Processes data locally for speed and efficiency, reducing latency.</p>
+      </div>
+      <div class="tech-item">
+        <h3>Blockchain Integrity</h3>
+        <p>Ensures secure, immutable logging and verification of events.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="nodes">
+    <h2 class="section-title">Node System</h2>
+    <div class="nodes">
+      <div class="node-item">
+        <h3>Gaming Node</h3>
+        <p>Enhances gaming experiences with AI-driven customization, tracking, and real-time interactions.</p>
+      </div>
+      <div class="node-item">
+        <h3>Security Node</h3>
+        <p>Provides real-time security monitoring, anomaly detection, and access control with AI-based analytics.</p>
+      </div>
+      <div class="node-item">
+        <h3>Object Tracking Node</h3>
+        <p>Tracks objects in real-time for industrial automation, logistics, and security applications.</p>
+      </div>
+      <div class="node-item">
+        <h3>Equipment Management Node</h3>
+        <p>Optimizes machinery operations in industries like construction and mining through predictive analytics and automation.</p>
+      </div>
+      <div class="node-item">
+        <h3>Contractor Node</h3>
+        <p>Facilitates contractor project management, automation, and performance tracking using AI-driven insights.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="marketplace">
+    <h2 class="section-title">RedNode Marketplace</h2>
+    <div class="marketplace">
+      <div class="market-item">
+        <h3>Live Tokenized Gaming</h3>
+        <p>Play and compete in AI-enhanced games using RedNode tokens.</p>
+      </div>
+      <div class="market-item">
+        <h3>Apps &amp; Tools</h3>
+        <p>Access and trade AI-driven applications, automation solutions, and software tools.</p>
+      </div>
+      <div class="market-item">
+        <h3>Task Exchange</h3>
+        <p>Trade and collaborate on AI-generated tasks and industrial solutions.</p>
+      </div>
+      <div class="market-item">
+        <h3>Coming Soon</h3>
+        <p>Use RedNode tokens to play, operate, and trade tasks, experiences, and games created by contributors.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="process">
+    <h2 class="section-title">How It Works</h2>
+    <div class="process">
+      <div class="process-item">
+        <p>Details on the workflow and processes of RedNode.ai will be provided soon.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="rednode-launch" id="launch">
+    <h2>Launch the RedNode Start Interface</h2>
+    <p>Explore the guided start experience that introduces RedNode.ai, its capabilities, and the pathways into each operations surface.</p>
+    <div class="rednode-preview">
+      <div class="launch-message">
+        <h3>What you&apos;ll find on Start</h3>
+        <ul>
+          <li>High-level walkthroughs of the RedNode ecosystem.</li>
+          <li>Quick links to product overviews, live demos, and marketplace concepts.</li>
+          <li>Context to determine when to enter specialized dashboards or the control centre.</li>
+        </ul>
+      </div>
+    </div>
+    <a class="hero-btn primary" href="start.html">
+      <span>Open RedNode Start</span>
+    </a>
+  </section>
+
+  <section class="cta" id="contact">
+    <h2>Ready to Transform Your Operations?</h2>
+    <p>Contact us to integrate RedNode into your AI-driven environment.</p>
+    <a href="mailto:info@rednode.ai">Contact Us</a>
+  </section>
+
+  <footer>
+    <p>&copy; 2025 RedNode.ai. All Rights Reserved.</p>
+  </footer>
+  <script>
+    (() => {
+      const gate = document.getElementById('token-gate');
+      const gateStatus = document.getElementById('gate-status');
+      const tokenInput = document.getElementById('gate-token');
+      const walletInput = document.getElementById('gate-wallet');
+      const acceptBtn = document.getElementById('gate-accept');
+      const previewBtn = document.getElementById('gate-preview');
+      const clearBtn = document.getElementById('gate-clear');
+      const manageBtn = document.getElementById('gate-manage');
+
+      const ACCESS_KEY = 'rednode_access_token';
+      const SESSION_KEY = 'session_user';
+      const WALLET_KEY = 'mixer_current_wallet';
+      const CHAIN_KEY = 'mixer_current_chain';
+      const CURRENCY_KEY = 'mixer_current_currency';
+
+      const setContext = (token, wallet) => {
+        const ctx = (window.APP_CONTEXT = window.APP_CONTEXT || {});
+        ctx.username = wallet || '';
+        ctx.wallet = wallet || '';
+        ctx.accessToken = token || '';
+      };
+
+      const updateStatus = (text, success = false) => {
+        if (!gateStatus) return;
+        gateStatus.textContent = text;
+        gateStatus.style.borderColor = success ? 'rgba(0, 255, 128, 0.35)' : 'rgba(255, 215, 0, 0.25)';
+        gateStatus.style.color = success ? '#d7ffe1' : '#f6e9c5';
+      };
+
+      const persist = (token, wallet) => {
+        setContext(token, wallet);
+        try {
+          if (token) {
+            localStorage.setItem(ACCESS_KEY, token);
+          } else {
+            localStorage.removeItem(ACCESS_KEY);
+          }
+          if (wallet) {
+            localStorage.setItem(WALLET_KEY, wallet);
+          } else {
+            localStorage.removeItem(WALLET_KEY);
+          }
+          localStorage.setItem(CHAIN_KEY, 'RedChain');
+          localStorage.setItem(CURRENCY_KEY, 'RED');
+          if (token || wallet) {
+            localStorage.setItem(SESSION_KEY, JSON.stringify({ username: wallet || 'guest', accessToken: token || '' }));
+          }
+        } catch (err) {
+          console.warn('Unable to persist token gate state', err);
+        }
+      };
+
+      const unlock = (token, wallet) => {
+        persist(token, wallet);
+        if (gate) gate.style.display = 'none';
+        document.body.classList.remove('gate-locked');
+        manageBtn.style.display = 'block';
+        updateStatus(wallet ? `Access unlocked for ${wallet}` : 'Access unlocked for guest', true);
+      };
+
+      const lock = () => {
+        if (gate) gate.style.display = 'grid';
+        document.body.classList.add('gate-locked');
+        manageBtn.style.display = 'none';
+        updateStatus('Awaiting verification');
+      };
+
+      const hydrate = () => {
+        let storedToken = '';
+        let storedWallet = '';
+        try {
+          storedToken = localStorage.getItem(ACCESS_KEY) || '';
+          storedWallet = localStorage.getItem(WALLET_KEY) || '';
+        } catch {}
+        if (storedToken || storedWallet) {
+          tokenInput.value = storedToken;
+          walletInput.value = storedWallet;
+          unlock(storedToken, storedWallet);
+        } else {
+          lock();
+        }
+      };
+
+      acceptBtn?.addEventListener('click', () => {
+        const token = tokenInput.value.trim();
+        const wallet = walletInput.value.trim();
+        if (!token && !wallet) {
+          updateStatus('Please add a token or wallet to continue');
+          return;
+        }
+        unlock(token, wallet);
+      });
+
+      previewBtn?.addEventListener('click', () => {
+        const wallet = walletInput.value.trim();
+        persist('', wallet);
+        unlock('', wallet || 'guest');
+      });
+
+      clearBtn?.addEventListener('click', () => {
+        try {
+          localStorage.removeItem(ACCESS_KEY);
+          localStorage.removeItem(WALLET_KEY);
+          localStorage.removeItem(SESSION_KEY);
+        } catch {}
+        tokenInput.value = '';
+        walletInput.value = '';
+        lock();
+      });
+
+      manageBtn?.addEventListener('click', () => {
+        if (gate.style.display === 'grid') {
+          lock();
+        } else {
+          gate.style.display = 'grid';
+          document.body.classList.add('gate-locked');
+        }
+      });
+
+      hydrate();
+    })();
+  </script>
+</body>
+</html>
