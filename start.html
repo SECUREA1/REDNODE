@@ -257,6 +257,219 @@
       transform: scale(1.05);
       background: #ffd700;
     }
+
+    /* Token gate overlay */
+    body.gate-locked main,
+    body.gate-locked nav,
+    body.gate-locked header,
+    body.gate-locked section,
+    body.gate-locked footer {
+      filter: blur(8px);
+      pointer-events: none;
+      user-select: none;
+    }
+
+    .gate-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 2000;
+      display: grid;
+      place-items: center;
+      background: radial-gradient(circle at 20% 20%, rgba(255,215,0,0.14), transparent 38%),
+        radial-gradient(circle at 80% 10%, rgba(255,77,141,0.2), transparent 42%),
+        linear-gradient(135deg, rgba(12, 8, 24, 0.92), rgba(16, 6, 28, 0.9));
+      padding: 1.5rem;
+      backdrop-filter: blur(8px);
+    }
+
+    .gate-card {
+      width: min(960px, 100%);
+      display: grid;
+      gap: 1.5rem;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      background: rgba(18, 8, 32, 0.82);
+      border: 1px solid rgba(255, 215, 0, 0.35);
+      border-radius: 18px;
+      box-shadow: 0 28px 60px rgba(0, 0, 0, 0.55), 0 0 0 1px rgba(255, 215, 0, 0.2);
+      padding: clamp(1.4rem, 3vw, 2.4rem);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .gate-card::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(120% 60% at 80% 20%, rgba(255, 196, 66, 0.25), transparent 50%);
+      pointer-events: none;
+      opacity: 0.7;
+    }
+
+    .gate-header {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 0.8rem;
+    }
+
+    .gate-pill {
+      align-self: flex-start;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      padding: 0.5rem 0.9rem;
+      border-radius: 999px;
+      background: rgba(255, 215, 0, 0.16);
+      color: gold;
+      border: 1px solid rgba(255, 215, 0, 0.35);
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    .gate-title {
+      font-size: clamp(1.7rem, 3vw, 2.2rem);
+      color: gold;
+      text-shadow: 0 4px 12px rgba(0,0,0,0.45);
+    }
+
+    .gate-subtitle {
+      color: #f6e9c5;
+      max-width: 38ch;
+    }
+
+    .gate-form {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      gap: 0.8rem;
+      padding: 1rem;
+      background: rgba(0, 0, 0, 0.35);
+      border: 1px solid rgba(255, 215, 0, 0.25);
+      border-radius: 14px;
+      box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.02);
+    }
+
+    .gate-form label {
+      display: grid;
+      gap: 0.35rem;
+      font-weight: 700;
+      color: #f6e9c5;
+    }
+
+    .gate-form input,
+    .gate-form textarea {
+      width: 100%;
+      padding: 0.85rem 0.9rem;
+      border-radius: 12px;
+      border: 1px solid rgba(255, 215, 0, 0.35);
+      background: rgba(8, 0, 16, 0.6);
+      color: #fff7e8;
+      font-size: 1rem;
+      box-shadow: inset 0 6px 18px rgba(0, 0, 0, 0.45);
+    }
+
+    .gate-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      align-items: center;
+      margin-top: 0.35rem;
+    }
+
+    .gate-actions button,
+    .gate-actions .ghost-btn {
+      border-radius: 12px;
+      border: 1px solid gold;
+      background: gold;
+      color: #300;
+      padding: 0.85rem 1.2rem;
+      font-weight: 800;
+      cursor: pointer;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      box-shadow: 0 18px 32px rgba(255, 215, 0, 0.32);
+    }
+
+    .gate-actions .ghost-btn {
+      background: transparent;
+      color: gold;
+      box-shadow: none;
+    }
+
+    .gate-meta {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      gap: 1rem;
+      padding: 1rem;
+      background: rgba(255, 215, 0, 0.04);
+      border: 1px solid rgba(255, 215, 0, 0.25);
+      border-radius: 14px;
+    }
+
+    .gate-meta h3 {
+      color: gold;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .gate-meta ul {
+      list-style: none;
+      display: grid;
+      gap: 0.45rem;
+      padding: 0;
+      margin: 0;
+    }
+
+    .gate-meta li {
+      display: flex;
+      gap: 0.6rem;
+      align-items: center;
+      color: #f6e9c5;
+    }
+
+    .gate-meta li span.icon {
+      width: 32px;
+      height: 32px;
+      display: inline-grid;
+      place-items: center;
+      border-radius: 50%;
+      background: rgba(255, 215, 0, 0.18);
+      border: 1px solid rgba(255, 215, 0, 0.28);
+      color: gold;
+      font-weight: 900;
+    }
+
+    .gate-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.45rem 0.75rem;
+      border-radius: 12px;
+      background: rgba(0,0,0,0.45);
+      border: 1px solid rgba(255, 215, 0, 0.25);
+      color: #f6e9c5;
+      font-weight: 700;
+    }
+
+    .gate-manage {
+      position: fixed;
+      right: 1rem;
+      bottom: 1rem;
+      z-index: 1500;
+      padding: 0.75rem 1rem;
+      border-radius: 12px;
+      border: 1px solid rgba(255, 215, 0, 0.35);
+      background: rgba(0, 0, 0, 0.65);
+      color: gold;
+      font-weight: 700;
+      box-shadow: 0 12px 28px rgba(0, 0, 0, 0.4);
+      cursor: pointer;
+      backdrop-filter: blur(8px);
+      display: none;
+    }
     
     .contractor-node {
       text-align: center;
@@ -380,6 +593,37 @@
   </style>
 </head>
 <body>
+  <div id="token-gate" class="gate-overlay" role="dialog" aria-modal="true" aria-labelledby="gate-title">
+    <div class="gate-card">
+      <div class="gate-header">
+        <span class="gate-pill">Token Gated</span>
+        <h2 class="gate-title" id="gate-title">Secure access for RedNode Start</h2>
+        <p class="gate-subtitle">Verify with your access token or wallet identifier to unlock personalized paths, session tools, and streaming surfaces.</p>
+        <div class="gate-status" id="gate-status">Awaiting verification</div>
+      </div>
+      <div class="gate-form">
+        <label for="gate-token">Access token</label>
+        <input id="gate-token" name="gate-token" placeholder="Paste your RedNode access token" autocomplete="off" />
+        <label for="gate-wallet">Wallet / Node ID</label>
+        <input id="gate-wallet" name="gate-wallet" placeholder="0x or node-handle" autocomplete="off" />
+        <div class="gate-actions">
+          <button id="gate-accept" type="button">Unlock experience</button>
+          <button id="gate-preview" type="button" class="ghost-btn">Preview without token</button>
+          <button id="gate-clear" type="button" class="ghost-btn">Reset token</button>
+        </div>
+        <small style="color:#f6e9c5">Tokens are stored locally to keep your gateway fast and private. You can update or clear them anytime.</small>
+      </div>
+      <div class="gate-meta">
+        <h3>Why verify?</h3>
+        <ul>
+          <li><span class="icon">🪙</span><span>Token-holders unlock live chat, captions, and multiplayer control lanes.</span></li>
+          <li><span class="icon">🛰️</span><span>Syncs your wallet and chain context for the Excavation WebSocket backends.</span></li>
+          <li><span class="icon">🛡️</span><span>Applies our zero-trust session profile so only verified operators reach sensitive routes.</span></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <button id="gate-manage" class="gate-manage" type="button">Manage access</button>
   <nav>
     <div class="nav-container">
       <a class="nav-brand" href="/">RedNode.ai</a>
@@ -539,5 +783,129 @@
   <footer>
     <p>&copy; 2025 RedNode.ai. All Rights Reserved.</p>
   </footer>
+  <script>
+    (() => {
+      const gate = document.getElementById('token-gate');
+      const gateStatus = document.getElementById('gate-status');
+      const tokenInput = document.getElementById('gate-token');
+      const walletInput = document.getElementById('gate-wallet');
+      const acceptBtn = document.getElementById('gate-accept');
+      const previewBtn = document.getElementById('gate-preview');
+      const clearBtn = document.getElementById('gate-clear');
+      const manageBtn = document.getElementById('gate-manage');
+
+      const ACCESS_KEY = 'rednode_access_token';
+      const SESSION_KEY = 'session_user';
+      const WALLET_KEY = 'mixer_current_wallet';
+      const CHAIN_KEY = 'mixer_current_chain';
+      const CURRENCY_KEY = 'mixer_current_currency';
+
+      const setContext = (token, wallet) => {
+        const ctx = (window.APP_CONTEXT = window.APP_CONTEXT || {});
+        ctx.username = wallet || '';
+        ctx.wallet = wallet || '';
+        ctx.accessToken = token || '';
+      };
+
+      const updateStatus = (text, success = false) => {
+        if (!gateStatus) return;
+        gateStatus.textContent = text;
+        gateStatus.style.borderColor = success ? 'rgba(0, 255, 128, 0.35)' : 'rgba(255, 215, 0, 0.25)';
+        gateStatus.style.color = success ? '#d7ffe1' : '#f6e9c5';
+      };
+
+      const persist = (token, wallet) => {
+        setContext(token, wallet);
+        try {
+          if (token) {
+            localStorage.setItem(ACCESS_KEY, token);
+          } else {
+            localStorage.removeItem(ACCESS_KEY);
+          }
+          if (wallet) {
+            localStorage.setItem(WALLET_KEY, wallet);
+          } else {
+            localStorage.removeItem(WALLET_KEY);
+          }
+          localStorage.setItem(CHAIN_KEY, 'RedChain');
+          localStorage.setItem(CURRENCY_KEY, 'RED');
+          if (token || wallet) {
+            localStorage.setItem(SESSION_KEY, JSON.stringify({ username: wallet || 'guest', accessToken: token || '' }));
+          }
+        } catch (err) {
+          console.warn('Unable to persist token gate state', err);
+        }
+      };
+
+      const unlock = (token, wallet) => {
+        persist(token, wallet);
+        if (gate) gate.style.display = 'none';
+        document.body.classList.remove('gate-locked');
+        manageBtn.style.display = 'block';
+        updateStatus(wallet ? `Access unlocked for ${wallet}` : 'Access unlocked for guest', true);
+      };
+
+      const lock = () => {
+        if (gate) gate.style.display = 'grid';
+        document.body.classList.add('gate-locked');
+        manageBtn.style.display = 'none';
+        updateStatus('Awaiting verification');
+      };
+
+      const hydrate = () => {
+        let storedToken = '';
+        let storedWallet = '';
+        try {
+          storedToken = localStorage.getItem(ACCESS_KEY) || '';
+          storedWallet = localStorage.getItem(WALLET_KEY) || '';
+        } catch {}
+        if (storedToken || storedWallet) {
+          tokenInput.value = storedToken;
+          walletInput.value = storedWallet;
+          unlock(storedToken, storedWallet);
+        } else {
+          lock();
+        }
+      };
+
+      acceptBtn?.addEventListener('click', () => {
+        const token = tokenInput.value.trim();
+        const wallet = walletInput.value.trim();
+        if (!token && !wallet) {
+          updateStatus('Please add a token or wallet to continue');
+          return;
+        }
+        unlock(token, wallet);
+      });
+
+      previewBtn?.addEventListener('click', () => {
+        const wallet = walletInput.value.trim();
+        persist('', wallet);
+        unlock('', wallet || 'guest');
+      });
+
+      clearBtn?.addEventListener('click', () => {
+        try {
+          localStorage.removeItem(ACCESS_KEY);
+          localStorage.removeItem(WALLET_KEY);
+          localStorage.removeItem(SESSION_KEY);
+        } catch {}
+        tokenInput.value = '';
+        walletInput.value = '';
+        lock();
+      });
+
+      manageBtn?.addEventListener('click', () => {
+        if (gate.style.display === 'grid') {
+          lock();
+        } else {
+          gate.style.display = 'grid';
+          document.body.classList.add('gate-locked');
+        }
+      });
+
+      hydrate();
+    })();
+  </script>
 </body>
 </html>
