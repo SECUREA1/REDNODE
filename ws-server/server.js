@@ -144,6 +144,11 @@ const server = http.createServer(async (req, res) => {
   // Serve chat client for root requests
   const isRootRequest = ["/", "/index.html", "/start", "/start.html"].includes(urlPath);
   if ((req.method === "GET" || req.method === "HEAD") && isRootRequest) {
+    if (urlPath === "/" || urlPath === "/index.html") {
+      res.writeHead(302, { Location: "/start.html" });
+      res.end();
+      return;
+    }
     const served = await tryServeFile(res, "start.html", req.method);
     if (!served) {
       res.writeHead(404);
