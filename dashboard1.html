@@ -1786,18 +1786,19 @@
   simulateSensors();
 
   // ------------------------------
-  // Sensor Material Intelligence jump
-  // ------------------------------
-  const btnOpenSensorNode = document.getElementById("btnOpenSensorNode");
-  if (btnOpenSensorNode) {
-    btnOpenSensorNode.addEventListener("click", () => {
-      // Open the Suit / Sensor Material Intelligence dashboard in a new tab
-      window.open("https://github.com/SECUREA1/REDNODE/blob/main/sensor2.html", "_blank");
+// Sensor Material Intelligence jump
+// ------------------------------
+const btnOpenSensorNode = document.getElementById("btnOpenSensorNode");
+if (btnOpenSensorNode) {
+  btnOpenSensorNode.addEventListener("click", () => {
+    // Open the Sensor Material Intelligence dashboard (local file) in a new tab
+    window.open("sensor2.html", "_blank");
 
-      // If running locally with sensor2.html in the same folder, use instead:
-      // window.open("sensor2.html", "_blank");
-    });
-  }
+    // If you prefer to open it in the same tab, use this instead:
+    // window.location.href = "sensor2.html";
+  });
+}
+
 
   // Initial render
   renderTasks();
