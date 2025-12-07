@@ -809,6 +809,12 @@
       <div class="environment-pill">
         <span class="env-dot"></span> LIVE OPS · EXCAVATION NODE
       </div>
+
+      <!-- NEW: Sensor Material Intelligence button -->
+      <button class="btn btn-ghost btn-sm" id="btnOpenSensorNode">
+        Sensor Material Intelligence
+      </button>
+
       <div class="user-chip">
         <div class="user-avatar">J</div>
         <div class="user-meta">
@@ -1779,8 +1785,23 @@
   setInterval(simulateSensors, 2000);
   simulateSensors();
 
+  // ------------------------------
+  // Sensor Material Intelligence jump
+  // ------------------------------
+  const btnOpenSensorNode = document.getElementById("btnOpenSensorNode");
+  if (btnOpenSensorNode) {
+    btnOpenSensorNode.addEventListener("click", () => {
+      // Open the Suit / Sensor Material Intelligence dashboard in a new tab
+      window.open("https://github.com/SECUREA1/REDNODE/blob/main/sensor2.html", "_blank");
+
+      // If running locally with sensor2.html in the same folder, use instead:
+      // window.open("sensor2.html", "_blank");
+    });
+  }
+
   // Initial render
   renderTasks();
 </script>
 </body>
 </html>
+
