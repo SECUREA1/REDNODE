@@ -3,7 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <title>RedNode Excavation – Operations Dashboard</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <!-- Lock content into viewport frame and improve mobile touch behavior -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <style>
     :root {
       --bg: #050509;
@@ -33,6 +34,11 @@
       box-sizing: border-box;
     }
 
+    html,
+    body {
+      height: 100%;
+    }
+
     body {
       margin: 0;
       padding: 0;
@@ -40,12 +46,15 @@
       background: radial-gradient(circle at top, #171729 0, #050509 55%) fixed;
       color: var(--text-main);
       -webkit-font-smoothing: antialiased;
+      overflow-x: hidden; /* prevent horizontal scroll */
     }
 
     .app-shell {
       min-height: 100vh;
+      max-height: 100vh; /* lock app to viewport height */
       display: flex;
       flex-direction: column;
+      overflow: hidden; /* internal scroll only */
     }
 
     header.app-header {
@@ -200,6 +209,9 @@
       display: grid;
       grid-template-columns: minmax(0, 2.1fr) minmax(0, 1.7fr);
       gap: 18px;
+      flex: 1 1 auto; /* scrollable area within locked shell */
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
     }
 
     @media (max-width: 1100px) {
@@ -365,6 +377,7 @@
           transparent 12px
         );
       cursor: crosshair;
+      touch-action: none; /* allow drawing without page scrolling/pinch-zoom */
     }
 
     .canvas-overlay-legend {
@@ -791,6 +804,33 @@
       color: var(--text-soft);
       text-align: right;
     }
+
+    /* Mobile tweaks to keep everything comfortable in the frame */
+    @media (max-width: 600px) {
+      header.app-header {
+        padding: 12px 16px;
+      }
+
+      .main {
+        padding: 12px 14px 18px;
+      }
+
+      #siteCanvas {
+        height: 260px; /* slightly shorter on small screens */
+      }
+
+      .metrics-row {
+        grid-template-columns: minmax(0, 1fr);
+      }
+
+      .sensor-grid {
+        grid-template-columns: minmax(0, 1fr);
+      }
+
+      .controls-grid {
+        grid-template-columns: minmax(0, 1fr);
+      }
+    }
   </style>
 </head>
 <body>
@@ -810,7 +850,7 @@
         <span class="env-dot"></span> LIVE OPS · EXCAVATION NODE
       </div>
 
-      <!-- NEW: Sensor Material Intelligence button -->
+      <!-- Sensor Material Intelligence button -->
       <button class="btn btn-ghost btn-sm" id="btnOpenSensorNode">
         Sensor Material Intelligence
       </button>
@@ -1284,7 +1324,7 @@
   const pendingFeedback = [];
 
   // ------------------------------
-  // Canvas – mirror of DrawingCanvas
+  // Canvas – mirror of DrawingCanvas (mouse + touch)
   // ------------------------------
 
   const canvas = document.getElementById("siteCanvas");
@@ -1324,6 +1364,7 @@
     }
   }
 
+  // ----- Mouse drawing -----
   canvas.addEventListener("mousedown", (e) => {
     const taskName = getCurrentMainTaskName();
     setToolForTask(taskName);
@@ -1386,6 +1427,98 @@
     drawnShapes.push(shape);
     redrawCanvas();
   });
+
+  // ----- Touch drawing for mobile -----
+
+  function getTouchPos(touch) {
+    const rect = canvas.getBoundingClientRect();
+    return {
+      x: touch.clientX - rect.left,
+      y: touch.clientY - rect.top
+    };
+  }
+
+  function handleTouchStart(e) {
+    // Prevent the page from scrolling while drawing
+    e.preventDefault();
+    const touch = e.touches[0] || e.changedTouches[0];
+    if (!touch) return;
+
+    const taskName = getCurrentMainTaskName();
+    setToolForTask(taskName);
+    const pos = getTouchPos(touch);
+    startX = pos.x;
+    startY = pos.y;
+    isDrawing = true;
+
+    if (currentTool === "point") {
+      const shape = {
+        type: "point",
+        coordinates: [startX, startY],
+        taskName
+      };
+      drawnShapes.push(shape);
+      redrawCanvas();
+      isDrawing = false;
+    }
+  }
+
+  function handleTouchMove(e) {
+    if (!isDrawing || currentTool === "point") return;
+    e.preventDefault();
+    const touch = e.touches[0] || e.changedTouches[0];
+    if (!touch) return;
+    const pos = getTouchPos(touch);
+    const x = pos.x;
+    const y = pos.y;
+    redrawCanvas();
+    ctx.save();
+    ctx.lineWidth = 2;
+    if (currentTool === "rectangle") {
+      ctx.strokeStyle = "#ff375f";
+      ctx.strokeRect(startX, startY, x - startX, y - startY);
+    } else if (currentTool === "line") {
+      ctx.strokeStyle = "#3f82ff";
+      ctx.beginPath();
+      ctx.moveTo(startX, startY);
+      ctx.lineTo(x, y);
+      ctx.stroke();
+    }
+    ctx.restore();
+  }
+
+  function handleTouchEnd(e) {
+    if (!isDrawing || currentTool === "point") return;
+    e.preventDefault();
+    const touch = e.changedTouches[0];
+    if (!touch) {
+      isDrawing = false;
+      return;
+    }
+    const pos = getTouchPos(touch);
+    const endX = pos.x;
+    const endY = pos.y;
+    const taskName = getCurrentMainTaskName();
+
+    let coordinates;
+    if (currentTool === "rectangle" || currentTool === "line") {
+      coordinates = [startX, startY, endX, endY];
+    }
+
+    const shape = {
+      type: currentTool,
+      coordinates,
+      taskName
+    };
+    drawnShapes.push(shape);
+    isDrawing = false;
+    redrawCanvas();
+  }
+
+  canvas.addEventListener("touchstart", handleTouchStart, { passive: false });
+  canvas.addEventListener("touchmove", handleTouchMove, { passive: false });
+  canvas.addEventListener("touchend", handleTouchEnd, { passive: false });
+  canvas.addEventListener("touchcancel", handleTouchEnd, { passive: false });
 
   function redrawCanvas() {
     ctx.clearRect(0, 0, canvasWidth, canvasHeight);
@@ -1786,19 +1919,18 @@
   simulateSensors();
 
   // ------------------------------
-// Sensor Material Intelligence jump
-// ------------------------------
-const btnOpenSensorNode = document.getElementById("btnOpenSensorNode");
-if (btnOpenSensorNode) {
-  btnOpenSensorNode.addEventListener("click", () => {
-    // Open the Sensor Material Intelligence dashboard (local file) in a new tab
-    window.open("sensor2.html", "_blank");
+  // Sensor Material Intelligence jump
+  // ------------------------------
+  const btnOpenSensorNode = document.getElementById("btnOpenSensorNode");
+  if (btnOpenSensorNode) {
+    btnOpenSensorNode.addEventListener("click", () => {
+      // Open the Sensor Material Intelligence dashboard (local file) in a new tab
+      window.open("sensor2.html", "_blank");
 
-    // If you prefer to open it in the same tab, use this instead:
-    // window.location.href = "sensor2.html";
-  });
-}
-
+      // If you prefer to open it in the same tab, use this instead:
+      // window.location.href = "sensor2.html";
+    });
+  }
 
   // Initial render
   renderTasks();
