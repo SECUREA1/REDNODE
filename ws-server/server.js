@@ -177,9 +177,9 @@ const server = http.createServer(async (req, res) => {
     return;
   }
 
-  const dashboardPaths = new Set(["/dashboard", "/dashboard.html"]);
+  const dashboardPaths = new Set(["/dashboard", "/dashboard.html", "/dashboard1", "/dashboard1.html"]);
   if ((req.method === "GET" || req.method === "HEAD") && dashboardPaths.has(urlPath)) {
-    const served = await tryServeFile(res, "dashboard.html", req.method);
+    const served = await tryServeFile(res, "dashboard1.html", req.method);
     if (!served) {
       res.writeHead(404);
       res.end("Not found");
