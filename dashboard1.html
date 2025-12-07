@@ -323,38 +323,6 @@
       color: var(--text-muted);
     }
 
-    .pill-status {
-      font-size: 10px;
-      text-transform: uppercase;
-      letter-spacing: 0.16em;
-      padding: 4px 9px 3px;
-      border-radius: var(--radius-pill);
-      background: rgba(9, 9, 17, 0.9);
-      border: 1px solid rgba(255, 255, 255, 0.06);
-      color: var(--text-soft);
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .pill-status-dot {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      background: var(--good);
-      box-shadow: 0 0 10px rgba(72, 213, 151, 0.75);
-    }
-
-    .pill-status.bad .pill-status-dot {
-      background: var(--bad);
-      box-shadow: 0 0 10px rgba(255, 85, 85, 0.75);
-    }
-
-    .pill-status.warn .pill-status-dot {
-      background: var(--warn);
-      box-shadow: 0 0 10px rgba(255, 202, 95, 0.7);
-    }
-
     .layout-main-row {
       display: grid;
       grid-template-columns: minmax(0, 1.6fr) minmax(0, 1.4fr);
@@ -437,6 +405,36 @@
     .legend-point {
       background: #48d597;
       border-radius: 50%;
+    }
+
+    .sensor-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+      font-size: 11px;
+    }
+
+    .sensor-row {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .sensor-label {
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.13em;
+      color: var(--text-soft);
+    }
+
+    .sensor-value {
+      font-family: var(--font-mono);
+      font-size: 12px;
+    }
+
+    .sensor-sub {
+      font-size: 10px;
+      color: var(--text-soft);
     }
 
     .controls-grid {
@@ -547,25 +545,14 @@
       box-shadow: 0 14px 34px rgba(255, 85, 85, 0.65);
     }
 
-    .chip {
-      font-size: 10px;
+    .badge-secondary {
+      border-radius: 999px;
+      padding: 2px 6px;
+      font-size: 9px;
       text-transform: uppercase;
-      letter-spacing: 0.16em;
-      padding: 3px 8px 2px;
-      border-radius: 999px;
-      border: 1px solid rgba(255, 255, 255, 0.08);
+      letter-spacing: 0.14em;
       color: var(--text-soft);
-      background: rgba(7, 7, 14, 0.95);
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .chip-pill {
-      width: 7px;
-      height: 7px;
-      border-radius: 999px;
-      background: var(--blue);
+      border: 1px solid rgba(255, 255, 255, 0.08);
     }
 
     .task-table {
@@ -621,36 +608,6 @@
       background: rgba(7, 7, 14, 0.96);
     }
 
-    .sensor-grid {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 10px;
-      font-size: 11px;
-    }
-
-    .sensor-row {
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-    }
-
-    .sensor-label {
-      font-size: 10px;
-      text-transform: uppercase;
-      letter-spacing: 0.13em;
-      color: var(--text-soft);
-    }
-
-    .sensor-value {
-      font-family: var(--font-mono);
-      font-size: 12px;
-    }
-
-    .sensor-sub {
-      font-size: 10px;
-      color: var(--text-soft);
-    }
-
     .hstack {
       display: flex;
       align-items: center;
@@ -672,48 +629,6 @@
     .log-entry strong {
       color: var(--accent-strong);
       font-weight: 500;
-    }
-
-    .badge-secondary {
-      border-radius: 999px;
-      padding: 2px 6px;
-      font-size: 9px;
-      text-transform: uppercase;
-      letter-spacing: 0.14em;
-      color: var(--text-soft);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-    }
-
-    .pill-toggle {
-      position: relative;
-      width: 40px;
-      height: 20px;
-      border-radius: 999px;
-      border: 1px solid rgba(255, 255, 255, 0.18);
-      background: rgba(9, 9, 17, 0.9);
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      padding: 2px;
-    }
-
-    .pill-toggle-thumb {
-      width: 16px;
-      height: 16px;
-      border-radius: 999px;
-      background: rgba(255, 255, 255, 0.85);
-      transform: translateX(0);
-      transition: transform 0.16s ease, background 0.12s ease;
-    }
-
-    .pill-toggle.on {
-      background: rgba(255, 55, 95, 0.2);
-      border-color: rgba(255, 55, 95, 0.7);
-    }
-
-    .pill-toggle.on .pill-toggle-thumb {
-      transform: translateX(18px);
-      background: #ff375f;
     }
 
     .alerts-list {
@@ -758,21 +673,116 @@
       margin-top: 1px;
     }
 
-    .badge-primary {
-      font-size: 9px;
-      text-transform: uppercase;
-      letter-spacing: 0.16em;
-      padding: 2px 6px 1px;
+    .pill-toggle {
+      position: relative;
+      width: 40px;
+      height: 20px;
       border-radius: 999px;
-      border: 1px solid rgba(63, 130, 255, 0.7);
-      color: rgba(184, 199, 255, 0.96);
-      background: rgba(63, 130, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      background: rgba(9, 9, 17, 0.9);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      padding: 2px;
     }
 
-    .section-footer {
-      margin-top: 4px;
+    .pill-toggle-thumb {
+      width: 16px;
+      height: 16px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.85);
+      transform: translateX(0);
+      transition: transform 0.16s ease, background 0.12s ease;
+    }
+
+    .pill-toggle.on {
+      background: rgba(255, 55, 95, 0.2);
+      border-color: rgba(255, 55, 95, 0.7);
+    }
+
+    .pill-toggle.on .pill-toggle-thumb {
+      transform: translateX(18px);
+      background: #ff375f;
+    }
+
+    .chip {
       font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      padding: 3px 8px 2px;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
       color: var(--text-soft);
+      background: rgba(7, 7, 14, 0.95);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .chip-pill {
+      width: 7px;
+      height: 7px;
+      border-radius: 999px;
+      background: var(--blue);
+    }
+
+    .feedback-list {
+      max-height: 150px;
+      overflow-y: auto;
+      font-size: 11px;
+      padding-right: 4px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .feedback-item {
+      border-radius: 9px;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      background: rgba(7, 7, 15, 0.95);
+      padding: 6px 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .feedback-meta {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .feedback-actions {
+      display: flex;
+      gap: 6px;
+    }
+
+    .btn-feedback {
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      background: rgba(9, 9, 17, 0.98);
+      padding: 3px 8px;
+      font-size: 11px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      color: var(--text-soft);
+    }
+
+    .btn-feedback:hover {
+      background: rgba(15, 15, 26, 0.98);
+    }
+
+    .btn-feedback.good {
+      border-color: rgba(72, 213, 151, 0.7);
+      color: var(--good);
+    }
+
+    .btn-feedback.bad {
+      border-color: rgba(255, 85, 85, 0.7);
+      color: var(--bad);
     }
 
     .footer-note {
@@ -797,31 +807,28 @@
     </div>
     <div class="header-right">
       <div class="environment-pill">
-        <span class="env-dot"></span> LIVE OPS · NODE CLUSTER
+        <span class="env-dot"></span> LIVE OPS · EXCAVATION NODE
       </div>
       <div class="user-chip">
         <div class="user-avatar">J</div>
         <div class="user-meta">
           <div class="user-name">Site Operator</div>
-          <div class="user-role">Omconsole · Excavation Node</div>
+          <div class="user-role">Omconsole · Excavation Control</div>
         </div>
       </div>
     </div>
   </header>
 
   <main class="main">
-    <!-- LEFT COLUMN: Overview + Site Canvas + Sensors -->
+    <!-- LEFT COLUMN: Overview + Canvas + Sensors -->
     <section>
-      <!-- Top overview / machine + alerts -->
       <div class="card" style="margin-bottom: 12px;">
         <div class="card-header">
           <div class="card-title-row">
             <span class="card-pill">Cluster Overview</span>
             <div class="card-title">Excavation Node Status</div>
           </div>
-          <div class="hstack">
-            <span class="badge-primary">Excavator · RedNode-01</span>
-          </div>
+          <span class="card-tagline">Post holes · Pipe runs · Stripping · No-go zones</span>
         </div>
         <div class="metrics-row">
           <div class="metric-chip">
@@ -853,13 +860,15 @@
             </div>
           </div>
         </div>
+
         <div class="layout-main-row">
+          <!-- Site map -->
           <div class="card-soft">
             <div class="card-header">
               <div class="card-title-row">
                 <span class="card-title">Live Site Map</span>
               </div>
-              <div class="card-tagline">Draw job geometry · Pipe runs · No-go zones</div>
+              <span class="card-tagline">Draw geometry for main tasks</span>
             </div>
             <div class="canvas-wrapper">
               <canvas id="siteCanvas"></canvas>
@@ -875,21 +884,22 @@
                 </div>
               </div>
             </div>
-            <div class="section-footer">
-              Click–drag to draw the current task on the map. Geometry is stored as coordinates for the task manager.
+            <div class="card-subtitle" style="margin-top: 6px;">
+              Mirrors your Tkinter <code>DrawingCanvas</code>: geometry is stored as coordinates on the plan view.
             </div>
           </div>
 
+          <!-- Sensors -->
           <div class="card-soft">
             <div class="card-header">
               <div class="card-title-row">
                 <span class="card-title">Sensor Fusion Snapshot</span>
               </div>
-              <span class="card-tagline">Lidar · Camera · Infrared · Slope</span>
+              <span class="card-tagline">Lidar · Camera · Infrared · Depth</span>
             </div>
             <div class="sensor-grid">
               <div class="sensor-row">
-                <span class="sensor-label">Lidar (0–5m)</span>
+                <span class="sensor-label">Lidar &lt; 5m</span>
                 <span id="sensorLidarObstacles" class="sensor-value">—</span>
                 <span id="sensorLidarSub" class="sensor-sub">Closest: — m</span>
               </div>
@@ -904,35 +914,38 @@
                 <span id="sensorSlopeSub" class="sensor-sub">Slope: — ° · Depth: — m</span>
               </div>
             </div>
-            <div style="margin-top: 8px;">
-              <div class="card-subtitle">
-                These values mirror your Python helpers:
-                <code style="font-family: var(--font-mono); font-size: 10px;">
-                  get_lidar_data · get_infrared_data · get_current_depth · get_slope
-                </code>
-              </div>
+            <div class="card-subtitle" style="margin-top: 8px;">
+              This panel is the web twin of <code>get_lidar_data</code>, <code>get_infrared_data</code>,
+              <code>get_current_depth</code>, and <code>get_slope</code> in your Python stack.
             </div>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- RIGHT COLUMN: Task controls, queue, training log, alerts -->
+    <!-- RIGHT COLUMN: Controls + Queue + Training + Feedback + Alerts -->
     <section>
-      <!-- Task controls -->
+      <!-- Task Controls -->
       <div class="card" style="margin-bottom: 12px;">
         <div class="card-header">
           <div class="card-title-row">
             <span class="card-pill">Task Manager</span>
-            <div class="card-title">Job Definition &amp; Awareness Logic</div>
+            <div class="card-title">Main &amp; Secondary Jobs</div>
           </div>
-          <span class="card-tagline">Primary jobs · Secondary reactions · Omconsole orchestration</span>
+          <span class="card-tagline">Ground type · Depth · Awareness reactions</span>
         </div>
         <div class="controls-grid">
+          <!-- Main tasks -->
           <div class="card-soft">
+            <div class="card-header" style="margin-bottom: 6px;">
+              <div class="card-title-row">
+                <span class="card-title">Main Tasks</span>
+              </div>
+              <span class="badge-secondary">Requires geometry on map</span>
+            </div>
             <div class="form-row">
-              <label for="taskType">Task Type</label>
-              <select id="taskType">
+              <label for="mainTaskType">Task Type</label>
+              <select id="mainTaskType">
                 <option>Post Digging</option>
                 <option>Pipe Laying</option>
                 <option>Area Stripping</option>
@@ -940,74 +953,134 @@
                 <option>Bush Clearing</option>
                 <option>Cable Laying</option>
                 <option>No-Go Zone</option>
-                <option>Depth Piling</option>
               </select>
             </div>
             <div class="form-row">
-              <label for="taskPriority">Priority (1–10)</label>
-              <input id="taskPriority" type="number" min="1" max="10" value="5" />
+              <label for="mainPriority">Priority (1–10)</label>
+              <input id="mainPriority" type="number" min="1" max="10" value="5" />
             </div>
             <div class="form-row">
-              <label for="taskGrade">Grade (1–10)</label>
-              <input id="taskGrade" type="number" min="1" max="10" value="5" />
+              <label for="mainGrade">Grade (1–10)</label>
+              <input id="mainGrade" type="number" min="1" max="10" value="5" />
             </div>
             <div class="form-row">
-              <label>Task Kind</label>
-              <select id="taskKind">
-                <option value="primary" selected>Primary</option>
-                <option value="secondary">Secondary (awareness reaction)</option>
+              <label for="mainGroundType">Ground Type</label>
+              <select id="mainGroundType">
+                <option>Soil</option>
+                <option>Sand</option>
+                <option>Gravel</option>
+                <option>Clay</option>
+                <option>Rock</option>
               </select>
             </div>
-            <button class="btn btn-primary" id="btnAddTask">
-              + Add Task (uses drawn geometry)
+            <div class="form-row">
+              <label for="mainDepth">Depth (m)</label>
+              <input id="mainDepth" type="number" min="0.1" max="100" step="0.1" value="5" />
+            </div>
+            <button class="btn btn-primary" id="btnAddMainTask">
+              + Add Main Task (uses last drawn shape)
             </button>
-            <div class="section-footer">
-              In your Python version this wraps <code>instantiate_task</code> and <code>TaskManager.add_task</code>.
+            <div class="card-subtitle" style="margin-top: 6px;">
+              Equivalent to <code>add_main_task_with_settings</code> and
+              <code>instantiate_task(..., is_secondary=False)</code> in Python.
             </div>
           </div>
 
+          <!-- Secondary tasks -->
           <div class="card-soft">
-            <div class="toggle-row">
-              <div class="toggle-label">
-                <strong>Enable Awareness Tasks</strong><br />
-                <span style="font-size: 10px;">
-                  Mirrors <code>enable_awareness_task()</code> and
-                  <code>monitor_for_awareness_task()</code> in your TaskManager.
-                </span>
+            <div class="card-header" style="margin-bottom: 6px;">
+              <div class="card-title-row">
+                <span class="card-title">Secondary Tasks</span>
               </div>
-              <div id="awarenessToggle" class="pill-toggle" role="switch" aria-checked="false">
-                <div class="pill-toggle-thumb"></div>
-              </div>
+              <span class="badge-secondary">Awareness / follow-up jobs</span>
             </div>
             <div class="form-row">
-              <label>Execution Controls</label>
-              <div class="hstack">
-                <button class="btn btn-sm btn-ghost" id="btnStartTasks">Start Tasks</button>
-                <button class="btn btn-sm btn-danger" id="btnStopTasks">Stop / Clear Tasks</button>
-              </div>
+              <label for="secTaskType">Task Type</label>
+              <select id="secTaskType">
+                <option>Depth Piling</option>
+                <option>Organizing Piles</option>
+                <option>Track Reset</option>
+                <option>Self Leveling</option>
+                <option>Bucket Angle Setting</option>
+                <option>Depth and Scraping Control</option>
+              </select>
             </div>
             <div class="form-row">
-              <label for="modelOverlayLabel">3D Model Overlay (concept)</label>
-              <input id="modelOverlayLabel" type="text" placeholder="e.g. site_model.glb or point cloud id" />
+              <label for="secPriority">Priority (1–10)</label>
+              <input id="secPriority" type="number" min="1" max="10" value="5" />
             </div>
-            <div class="section-footer">
-              In the Tkinter app this is where <code>ModelUploader</code> &amp; <code>LiveFeedOverlay</code> sit.<br />
-              Here it's rendered conceptually; hook to a backend to stream a real overlay.
+            <div class="form-row">
+              <label for="secGrade">Grade (1–10)</label>
+              <input id="secGrade" type="number" min="1" max="10" value="5" />
             </div>
+            <div class="form-row">
+              <label for="secGroundType">Ground Type</label>
+              <select id="secGroundType">
+                <option>Soil</option>
+                <option>Sand</option>
+                <option>Gravel</option>
+                <option>Clay</option>
+                <option>Rock</option>
+              </select>
+            </div>
+            <div class="form-row">
+              <label for="secDepth">Depth (m) (when applicable)</label>
+              <input id="secDepth" type="number" min="0.1" max="100" step="0.1" value="5" />
+            </div>
+            <button class="btn btn-ghost" id="btnAddSecondaryTask">
+              + Add Secondary Task
+            </button>
+            <div class="card-subtitle" style="margin-top: 6px;">
+              Equivalent to <code>add_secondary_task_with_settings</code> and
+              <code>instantiate_task(..., is_secondary=True)</code>.
+            </div>
+          </div>
+        </div>
+
+        <!-- Awareness + Exec controls -->
+        <div class="card-soft" style="margin-top: 10px;">
+          <div class="toggle-row">
+            <div class="toggle-label">
+              <strong>Enable Awareness Tasks</strong><br />
+              <span style="font-size: 10px;">
+                Mirrors <code>enable_awareness_task()</code> and
+                <code>monitor_for_awareness_task()</code>. When on, secondary tasks can auto-fire on events.
+              </span>
+            </div>
+            <div id="awarenessToggle" class="pill-toggle" role="switch" aria-checked="false">
+              <div class="pill-toggle-thumb"></div>
+            </div>
+          </div>
+          <div class="form-row">
+            <label>Execution Controls</label>
+            <div class="hstack">
+              <button class="btn btn-sm btn-ghost" id="btnStartTasks">Start Tasks</button>
+              <button class="btn btn-sm btn-danger" id="btnStopTasks">Stop / Clear Tasks</button>
+            </div>
+          </div>
+          <div class="form-row">
+            <label for="modelOverlayLabel">3D Model Overlay (concept)</label>
+            <input id="modelOverlayLabel" type="text" placeholder="e.g. site_model.ply / pcd / obj" />
+          </div>
+          <div class="card-subtitle">
+            This is the web representation of your <code>ModelUploader</code> and <code>LiveFeedOverlay</code>
+            (webcam + 3D overlay).
           </div>
         </div>
       </div>
 
-      <!-- Task queue + training log + alerts -->
+      <!-- Queue + Training + Operator Feedback + Alerts -->
       <div class="card">
         <div class="card-header">
           <div class="card-title-row">
             <span class="card-pill">Execution &amp; Learning</span>
-            <div class="card-title">Task Queue · Dynamic Training · Alerts</div>
+            <div class="card-title">Queue · Training Data · Human Feedback</div>
           </div>
-          <span class="card-tagline">Sequential execution · Awareness-triggered reactions · Training store</span>
+          <span class="card-tagline">Sequential execution with human-in-the-loop grading</span>
         </div>
+
         <div class="layout-main-row">
+          <!-- Task Queue -->
           <div class="card-soft">
             <div class="card-header" style="margin-bottom: 4px;">
               <div class="card-title-row">
@@ -1018,47 +1091,69 @@
             <div style="max-height: 180px; overflow-y: auto; padding-right: 4px;">
               <table class="task-table">
                 <thead>
-                <tr>
-                  <th>#</th>
-                  <th>Task</th>
-                  <th>P</th>
-                  <th>G</th>
-                  <th>Kind</th>
-                  <th>Status</th>
-                </tr>
+                  <tr>
+                    <th>#</th>
+                    <th>Task</th>
+                    <th>P</th>
+                    <th>G</th>
+                    <th>Ground</th>
+                    <th>Depth</th>
+                    <th>Kind</th>
+                    <th>Status</th>
+                  </tr>
                 </thead>
                 <tbody id="tasksTableBody"></tbody>
               </table>
             </div>
-            <div class="section-footer">
-              When "Start Tasks" is pressed, tasks execute in order (simulating your <code>real_time_task_control()</code> loop).
+            <div class="card-subtitle" style="margin-top: 4px;">
+              Mirrors <code>task_manager.primary_tasks + secondary_tasks</code> and your listbox in Tkinter.
+            </div>
+          </div>
+
+          <!-- Training Log -->
+          <div class="card-soft">
+            <div class="card-header" style="margin-bottom: 6px;">
+              <div class="card-title-row">
+                <span class="card-title">Adaptive Training Log</span>
+              </div>
+              <span class="badge-secondary">position · action · depth · task</span>
+            </div>
+            <div class="log-list" id="trainingLog"></div>
+            <div class="card-subtitle">
+              This reflects your <code>AdaptiveDynamicTraining.log_training_data()</code> and
+              the <code>training_data</code> SQLite table.
+            </div>
+          </div>
+        </div>
+
+        <!-- Operator feedback + Alerts -->
+        <div class="layout-main-row" style="margin-top: 10px;">
+          <div class="card-soft">
+            <div class="card-header" style="margin-bottom: 6px;">
+              <div class="card-title-row">
+                <span class="card-title">Operator Feedback</span>
+              </div>
+              <span class="badge-secondary">"Was this execution satisfactory?"</span>
+            </div>
+            <div class="feedback-list" id="feedbackList">
+              <div class="card-subtitle">Feedback will appear here as tasks complete.</div>
+            </div>
+            <div class="card-subtitle" style="margin-top: 4px;">
+              Web twin of <code>log_operator_feedback(task, feedback)</code> and the
+              <code>operator_feedback</code> table in SQLite.
             </div>
           </div>
 
           <div class="card-soft">
             <div class="card-header" style="margin-bottom: 6px;">
               <div class="card-title-row">
-                <span class="card-title">Adaptive Training Log</span>
+                <span class="card-title">Situational Alerts</span>
               </div>
-              <span class="badge-secondary">mirrors AdaptiveDynamicTraining</span>
+              <span class="badge-secondary">Sensor-driven &amp; awareness-based</span>
             </div>
-            <div class="log-list" id="trainingLog"></div>
-            <div class="section-footer">
-              Each completed task logs position, depth, and task name, similar to your SQLite-backed
-              <code>training_data</code> table.
+            <div class="alerts-list" id="alertList">
+              <div class="alert-empty">No active alerts. Node is operating within envelopes.</div>
             </div>
-          </div>
-        </div>
-
-        <div class="card-soft" style="margin-top: 10px;">
-          <div class="card-header" style="margin-bottom: 6px;">
-            <div class="card-title-row">
-              <span class="card-title">Situational Alerts</span>
-            </div>
-            <span class="badge-secondary">Derived from sensors + awareness</span>
-          </div>
-          <div class="alerts-list" id="alertList">
-            <div class="alert-empty">No active alerts. Node is operating within defined envelopes.</div>
           </div>
         </div>
       </div>
@@ -1066,29 +1161,27 @@
   </main>
 
   <div class="footer-note">
-    HTML dashboard is a visual twin of your Tkinter dashboards: task geometry, awareness logic, sensor fusion, and adaptive training.
+    This HTML dashboard is a branded web twin of your Tkinter Omconsole: task geometry, ground type, depth,
+    awareness logic, sensor fusion, training data, and operator feedback.
   </div>
 </div>
 
 <script>
   // ------------------------------
-  // Task & Training Models (JS mirror of your Python classes)
+  // Data models – mirrors your Python classes
   // ------------------------------
 
   class Task {
-    constructor(name, priority, grade, coordinates, kind = "primary") {
+    constructor(name, priority, grade, groundType, depth, coordinates, kind = "primary") {
       this.id = Task.nextId++;
       this.name = name;
       this.priority = priority;
       this.grade = grade;
-      this.status = "pending"; // pending | running | completed
-      this.kind = kind; // primary or secondary
-      this.coordinates = coordinates; // [x1, y1, x2, y2] or [x, y]
-      this.settings = {};
-    }
-
-    setSettings(settings) {
-      Object.assign(this.settings, settings);
+      this.groundType = groundType;
+      this.depth = depth;
+      this.coordinates = coordinates; // array or null
+      this.kind = kind; // "primary" | "secondary"
+      this.status = "pending"; // "pending" | "running" | "completed"
     }
   }
   Task.nextId = 1;
@@ -1136,10 +1229,9 @@
       }
     }
 
-    // Simulated awareness condition (mirrors monitor_for_awareness_task)
     checkAwarenessTrigger(taskName) {
       if (!this.awarenessEnabled) return false;
-      // Simple probability-based simulation
+      // Simulated awareness condition
       return Math.random() < 0.4;
     }
   }
@@ -1147,6 +1239,7 @@
   class AdaptiveDynamicTraining {
     constructor() {
       this.trainingData = [];
+      this.operatorFeedback = [];
     }
 
     logTrainingData(position, action, depth, task) {
@@ -1158,29 +1251,44 @@
         timestamp: new Date().toISOString()
       };
       this.trainingData.push(record);
-      if (this.trainingData.length > 50) {
+      if (this.trainingData.length > 80) {
         this.trainingData.shift();
       }
       renderTrainingLog();
+    }
+
+    logOperatorFeedback(task, feedback) {
+      const record = {
+        task,
+        feedback,
+        timestamp: new Date().toISOString()
+      };
+      this.operatorFeedback.push(record);
+      if (this.operatorFeedback.length > 80) {
+        this.operatorFeedback.shift();
+      }
+      renderFeedbackHistory();
     }
   }
 
   const taskManager = new TaskManager();
   const trainingSystem = new AdaptiveDynamicTraining();
 
+  // For per-task feedback UI
+  const pendingFeedback = [];
+
   // ------------------------------
-  // Canvas Drawing (mirror of DrawingCanvas)
+  // Canvas – mirror of DrawingCanvas
   // ------------------------------
 
   const canvas = document.getElementById("siteCanvas");
   const ctx = canvas.getContext("2d");
-
   let canvasWidth = 0;
   let canvasHeight = 0;
   let isDrawing = false;
   let startX = 0;
   let startY = 0;
-  let currentTool = "rectangle"; // rectangle | line | point
+  let currentTool = "rectangle";
   const drawnShapes = []; // {type, coordinates, taskName}
 
   function resizeCanvas() {
@@ -1195,8 +1303,9 @@
   window.addEventListener("resize", resizeCanvas);
   resizeCanvas();
 
-  function getCurrentTaskName() {
-    return document.getElementById("taskType").value || "Task";
+  function getCurrentMainTaskName() {
+    const el = document.getElementById("mainTaskType");
+    return el ? el.value : "Task";
   }
 
   function setToolForTask(taskName) {
@@ -1210,7 +1319,7 @@
   }
 
   canvas.addEventListener("mousedown", (e) => {
-    const taskName = getCurrentTaskName();
+    const taskName = getCurrentMainTaskName();
     setToolForTask(taskName);
     isDrawing = true;
     const rect = canvas.getBoundingClientRect();
@@ -1256,7 +1365,7 @@
     const rect = canvas.getBoundingClientRect();
     const endX = e.clientX - rect.left;
     const endY = e.clientY - rect.top;
-    const taskName = getCurrentTaskName();
+    const taskName = getCurrentMainTaskName();
 
     let coordinates;
     if (currentTool === "rectangle" || currentTool === "line") {
@@ -1274,15 +1383,16 @@
 
   function redrawCanvas() {
     ctx.clearRect(0, 0, canvasWidth, canvasHeight);
-
     drawnShapes.forEach((shape) => {
-      const [x1, y1, x2, y2] = shape.coordinates || [];
+      const coords = shape.coordinates || [];
       ctx.save();
       if (shape.type === "rectangle") {
+        const [x1, y1, x2, y2] = coords;
         ctx.strokeStyle = "#ff375f";
         ctx.lineWidth = 2;
         ctx.strokeRect(x1, y1, x2 - x1, y2 - y1);
       } else if (shape.type === "line") {
+        const [x1, y1, x2, y2] = coords;
         ctx.strokeStyle = "#3f82ff";
         ctx.lineWidth = 2;
         ctx.beginPath();
@@ -1290,7 +1400,7 @@
         ctx.lineTo(x2, y2);
         ctx.stroke();
       } else if (shape.type === "point") {
-        const [px, py] = shape.coordinates;
+        const [px, py] = coords;
         ctx.fillStyle = "#48d597";
         ctx.beginPath();
         ctx.arc(px, py, 5, 0, Math.PI * 2);
@@ -1299,15 +1409,6 @@
       ctx.restore();
     });
   }
-
-  // ------------------------------
-  // Task UI wiring
-  // ------------------------------
-
-  const tasksTableBody = document.getElementById("tasksTableBody");
-  const taskQueueBadge = document.getElementById("taskQueueBadge");
-  const metricPrimaryCount = document.getElementById("metricPrimaryCount");
-  const metricPrimarySummary = document.getElementById("metricPrimarySummary");
 
   function getLastShapeForTask(taskName) {
     for (let i = drawnShapes.length - 1; i >= 0; i--) {
@@ -1318,19 +1419,43 @@
     return null;
   }
 
-  document.getElementById("btnAddTask").addEventListener("click", () => {
-    const taskName = document.getElementById("taskType").value;
-    const priority = parseInt(document.getElementById("taskPriority").value, 10) || 5;
-    const grade = parseInt(document.getElementById("taskGrade").value, 10) || 5;
-    const kind = document.getElementById("taskKind").value || "primary";
+  // ------------------------------
+  // Adding tasks (main & secondary)
+  // ------------------------------
+
+  const tasksTableBody = document.getElementById("tasksTableBody");
+  const taskQueueBadge = document.getElementById("taskQueueBadge");
+  const metricPrimaryCount = document.getElementById("metricPrimaryCount");
+  const metricPrimarySummary = document.getElementById("metricPrimarySummary");
+
+  document.getElementById("btnAddMainTask").addEventListener("click", () => {
+    const taskName = document.getElementById("mainTaskType").value;
+    const priority = parseInt(document.getElementById("mainPriority").value, 10) || 5;
+    const grade = parseInt(document.getElementById("mainGrade").value, 10) || 5;
+    const groundType = document.getElementById("mainGroundType").value;
+    const depth = parseFloat(document.getElementById("mainDepth").value) || 0;
 
     const shape = getLastShapeForTask(taskName);
     if (!shape) {
-      alert("Please draw a shape for this task on the site map before adding.");
+      alert("Please draw a shape for this main task on the site map before adding.");
       return;
     }
 
-    const task = new Task(taskName, priority, grade, shape.coordinates, kind);
+    const task = new Task(taskName, priority, grade, groundType, depth, shape.coordinates, "primary");
+    taskManager.addTask(task);
+    renderTasks();
+  });
+
+  document.getElementById("btnAddSecondaryTask").addEventListener("click", () => {
+    const taskName = document.getElementById("secTaskType").value;
+    const priority = parseInt(document.getElementById("secPriority").value, 10) || 5;
+    const grade = parseInt(document.getElementById("secGrade").value, 10) || 5;
+    const groundType = document.getElementById("secGroundType").value;
+    const depth = parseFloat(document.getElementById("secDepth").value) || 0;
+
+    // Secondary tasks typically do not require coordinates
+    const coordinates = null;
+    const task = new Task(taskName, priority, grade, groundType, depth, coordinates, "secondary");
     taskManager.addTask(task);
     renderTasks();
   });
@@ -1341,7 +1466,7 @@
 
     allTasks.forEach((task, index) => {
       const tr = document.createElement("tr");
-
+      const depthText = task.depth ? task.depth.toFixed(1) : "-";
       const kindLabel = task.kind === "secondary" ? "Secondary" : "Primary";
 
       tr.innerHTML = `
@@ -1349,10 +1474,11 @@
         <td>${task.name}</td>
         <td>${task.priority}</td>
         <td>${task.grade}</td>
+        <td>${task.groundType || "-"}</td>
+        <td>${depthText}</td>
         <td><span class="pill-small">${kindLabel}</span></td>
         <td><span class="task-status ${task.status}">${task.status}</span></td>
       `;
-
       tasksTableBody.appendChild(tr);
     });
 
@@ -1365,29 +1491,32 @@
       metricPrimarySummary.textContent = "No active primary tasks";
       metricPrimarySummary.className = "metric-trend neutral";
     } else {
-      metricPrimarySummary.textContent = `${primaryCount} in queue · ${secCount} secondary`;
+      metricPrimarySummary.textContent = `${primaryCount} primary · ${secCount} secondary`;
       metricPrimarySummary.className = "metric-trend";
     }
   }
 
   // ------------------------------
-  // Task execution (mirror of real_time_task_control)
+  // Execution loop – mirrors real_time_task_control
   // ------------------------------
 
   function simulateTaskDuration(task) {
-    // Based on your Python "time.sleep" durations, scale a bit:
     switch (task.name) {
       case "Post Digging":
       case "Bush Clearing":
+      case "No-Go Zone":
+      case "Depth Piling":
+      case "Organizing Piles":
+      case "Track Reset":
+      case "Self Leveling":
+      case "Bucket Angle Setting":
+      case "Depth and Scraping Control":
         return 2000;
       case "Pipe Laying":
       case "Area Stripping":
       case "Dig Area":
       case "Cable Laying":
         return 3000;
-      case "No-Go Zone":
-      case "Depth Piling":
-        return 2000;
       default:
         return 2000;
     }
@@ -1419,33 +1548,30 @@
     item.appendChild(badge);
     item.appendChild(text);
     alertList.appendChild(item);
-
-    const pill = document.querySelector(".pill-status");
-    if (pill) {
-      pill.classList.remove("bad", "warn");
-      if (severity === "bad") pill.classList.add("bad");
-      else if (severity === "warn") pill.classList.add("warn");
-    }
   }
 
-  function clearAlertIfNeeded() {
+  function clearAlerts() {
     const alertList = document.getElementById("alertList");
-    if (alertList && alertList.children.length === 0) {
-      const empty = document.createElement("div");
-      empty.className = "alert-empty";
-      empty.textContent = "No active alerts. Node is operating within defined envelopes.";
-      alertList.appendChild(empty);
-    }
+    alertList.innerHTML = "<div class='alert-empty'>No active alerts. Node is operating within envelopes.</div>";
+  }
+
+  function queueFeedbackForTask(task) {
+    const entry = {
+      id: task.id,
+      taskName: task.name,
+      timestamp: new Date().toISOString()
+    };
+    pendingFeedback.push(entry);
+    renderPendingFeedback();
   }
 
   function executeNextTask() {
     if (!taskManager.executing) return;
 
-    const task = taskManager.getNextTask(false); // primary
+    const task = taskManager.getNextTask(false);
     if (!task) {
-      // No primary tasks left; optionally run secondary ones on demand only
       taskManager.executing = false;
-      clearAlertIfNeeded();
+      clearAlerts();
       renderTasks();
       return;
     }
@@ -1455,7 +1581,7 @@
 
     const duration = simulateTaskDuration(task);
 
-    // Awareness logic – mirrors monitor_for_awareness_task
+    // Awareness logic for secondary tasks
     const triggered = taskManager.checkAwarenessTrigger(task.name);
     if (triggered) {
       const sec = taskManager.getNextTask(true);
@@ -1463,7 +1589,7 @@
         sec.status = "running";
         renderTasks();
         logAlert(
-          `Awareness triggered: executing secondary task "${sec.name}" alongside "${task.name}"`,
+          `Awareness triggered: executing secondary task "${sec.name}" with "${task.name}"`,
           "A",
           "warn"
         );
@@ -1471,7 +1597,15 @@
           sec.status = "completed";
           renderTasks();
           trainingSystem.logTrainingData(randomPosition(), sec.name, randomDepth(), sec.name);
+          queueFeedbackForTask(sec);
         }, duration * 0.7);
+      }
+    } else {
+      // Optional: single secondary as confirmation job (like your messagebox.askyesno)
+      const sec = taskManager.getNextTask(true);
+      if (sec) {
+        // Simulate operator choice: in UI this stays queued until awareness fires again.
+        taskManager.secondaryTasks.unshift(sec);
       }
     }
 
@@ -1480,7 +1614,11 @@
       task.status = "completed";
       renderTasks();
 
-      trainingSystem.logTrainingData(randomPosition(), task.name, randomDepth(), task.name);
+      const pos = randomPosition();
+      const depth = task.depth || randomDepth();
+      trainingSystem.logTrainingData(pos, task.name, depth, task.name);
+      queueFeedbackForTask(task);
+
       executeNextTask();
     }, duration);
   }
@@ -1494,13 +1632,15 @@
   document.getElementById("btnStopTasks").addEventListener("click", () => {
     taskManager.clearAll();
     document.getElementById("trainingLog").innerHTML = "";
-    document.getElementById("alertList").innerHTML =
-      "<div class='alert-empty'>Tasks cleared. No active alerts.</div>";
+    pendingFeedback.length = 0;
+    document.getElementById("feedbackList").innerHTML =
+      "<div class='card-subtitle'>Feedback cleared.</div>";
+    clearAlerts();
     renderTasks();
   });
 
   // ------------------------------
-  // Awareness toggle wiring
+  // Awareness toggle
   // ------------------------------
 
   const awarenessToggle = document.getElementById("awarenessToggle");
@@ -1513,7 +1653,7 @@
     awarenessToggle.setAttribute("aria-checked", isOn ? "true" : "false");
     metricAwarenessState.textContent = isOn ? "ON" : "OFF";
     if (isOn) {
-      metricAwarenessSummary.textContent = "Secondary tasks will trigger on sensor events.";
+      metricAwarenessSummary.textContent = "Secondary tasks can auto-trigger based on conditions.";
       metricAwarenessSummary.className = "metric-trend";
     } else {
       metricAwarenessSummary.textContent = "Awareness tasks disabled.";
@@ -1522,7 +1662,7 @@
   });
 
   // ------------------------------
-  // Training log rendering
+  // Training log UI
   // ------------------------------
 
   function renderTrainingLog() {
@@ -1535,43 +1675,97 @@
       div.innerHTML = `
         <strong>${rec.task}</strong> @ pos ${rec.position.join(", ")}
         · depth ${rec.depth} m<br />
-        <span style="color: var(--text-soft); font-size: 10px;">${new Date(rec.timestamp).toLocaleTimeString()}</span>
+        <span style="color: var(--text-soft); font-size: 10px;">
+          ${new Date(rec.timestamp).toLocaleTimeString()}
+        </span>
       `;
       container.appendChild(div);
     });
   }
 
   // ------------------------------
-  // Sensor simulation (mirror of get_lidar_data, get_infrared_data, get_current_depth, get_slope)
+  // Operator feedback UI
+  // ------------------------------
+
+  function renderPendingFeedback() {
+    const container = document.getElementById("feedbackList");
+    container.innerHTML = "";
+    if (pendingFeedback.length === 0) {
+      container.innerHTML = "<div class='card-subtitle'>No pending feedback. All executions logged.</div>";
+      return;
+    }
+
+    pendingFeedback.slice().reverse().forEach((item) => {
+      const row = document.createElement("div");
+      row.className = "feedback-item";
+      row.innerHTML = `
+        <div class="feedback-meta">
+          <strong>${item.taskName}</strong>
+          <span style="color: var(--text-soft); font-size: 10px;">
+            Completed at ${new Date(item.timestamp).toLocaleTimeString()}
+          </span>
+        </div>
+        <div class="feedback-actions">
+          <button class="btn-feedback good" data-id="${item.id}" data-feedback="yes">
+            👍 Yes
+          </button>
+          <button class="btn-feedback bad" data-id="${item.id}" data-feedback="no">
+            👎 No
+          </button>
+        </div>
+      `;
+      container.appendChild(row);
+    });
+
+    container.querySelectorAll(".btn-feedback").forEach((btn) => {
+      btn.onclick = () => {
+        const id = parseInt(btn.getAttribute("data-id"), 10);
+        const fb = btn.getAttribute("data-feedback");
+        submitFeedback(id, fb);
+      };
+    });
+  }
+
+  function submitFeedback(taskId, feedback) {
+    const idx = pendingFeedback.findIndex((f) => f.id === taskId);
+    if (idx === -1) return;
+    const entry = pendingFeedback[idx];
+    pendingFeedback.splice(idx, 1);
+    trainingSystem.logOperatorFeedback(entry.taskName, feedback === "yes" ? "satisfactory" : "unsatisfactory");
+    renderPendingFeedback();
+  }
+
+  function renderFeedbackHistory() {
+    // Could be extended to show full history; for now we keep the focus on pending.
+  }
+
+  // ------------------------------
+  // Sensor simulation – mirrors your get_* helpers
   // ------------------------------
 
   function simulateSensors() {
-    // Lidar: 1000 rays; count < 5m
     const lidarObstacles = Math.floor(Math.random() * 18);
     const closest = (Math.random() * 5).toFixed(2);
 
     document.getElementById("sensorLidarObstacles").textContent = `${lidarObstacles} pts`;
     document.getElementById("sensorLidarSub").textContent = `Closest: ${closest} m`;
 
-    // Infrared: hotspots > 60°C
     const hotspots = Math.floor(Math.random() * 6);
     const maxTemp = (60 + Math.random() * 40).toFixed(1);
     document.getElementById("sensorInfraHotspots").textContent = `${hotspots} zones`;
     document.getElementById("sensorInfraSub").textContent = `Max temp: ${maxTemp} °C`;
 
-    // Slope & depth
     const slope = (Math.random() * 15).toFixed(1);
     const depth = (1 + Math.random() * 9).toFixed(1);
     document.getElementById("sensorSlopeDepth").textContent = `${depth} m`;
     document.getElementById("sensorSlopeSub").textContent = `Slope: ${slope} ° · Depth: ${depth} m`;
 
-    // Obstacle metric card
     document.getElementById("metricObstacles").textContent = lidarObstacles;
-
     const metricObstaclesSummary = document.getElementById("metricObstaclesSummary");
     if (lidarObstacles === 0) {
       metricObstaclesSummary.textContent = "Sensor sweep clear.";
       metricObstaclesSummary.className = "metric-trend";
+      clearAlerts();
     } else if (lidarObstacles < 6) {
       metricObstaclesSummary.textContent = "Light clutter near work envelope.";
       metricObstaclesSummary.className = "metric-trend";
