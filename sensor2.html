@@ -1,0 +1,1444 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Omconsole Suit Node – AI Suit Control System</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    :root {
+      --bg: #050509;
+      --bg-elevated: #11111a;
+      --bg-soft: #171723;
+      --accent: #ff375f;
+      --accent-soft: rgba(255, 55, 95, 0.16);
+      --accent-strong: #ff6b8f;
+      --border-subtle: #272739;
+      --text-main: #f9fbff;
+      --text-muted: #a3a9c5;
+      --text-soft: #7a80a2;
+      --good: #48d597;
+      --warn: #ffca5f;
+      --bad: #ff5555;
+      --blue: #3f82ff;
+      --radius-lg: 18px;
+      --radius-md: 12px;
+      --radius-pill: 999px;
+      --shadow-soft: 0 22px 60px rgba(0, 0, 0, 0.65);
+      --shadow-card: 0 14px 40px rgba(0, 0, 0, 0.6);
+      --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      --font-main: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: var(--font-main);
+      background: radial-gradient(circle at top, #171729 0, #050509 55%) fixed;
+      color: var(--text-main);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .app-shell {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    header.app-header {
+      padding: 18px 26px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(18px);
+      background: linear-gradient(
+          to right,
+          rgba(255, 55, 95, 0.14),
+          transparent 25%,
+          rgba(63, 130, 255, 0.14),
+          transparent 70%
+        ),
+        linear-gradient(to bottom, rgba(9, 9, 16, 0.96), rgba(5, 5, 9, 0.98));
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .brand-logo {
+      width: 34px;
+      height: 34px;
+      border-radius: 14px;
+      background: conic-gradient(
+        from 210deg,
+        #ff375f,
+        #ff9f0a,
+        #ff375f,
+        #3f82ff,
+        #ff375f
+      );
+      padding: 2px;
+      box-shadow: 0 0 16px rgba(255, 55, 95, 0.7);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .brand-logo-inner {
+      width: 100%;
+      height: 100%;
+      border-radius: 12px;
+      background: radial-gradient(circle at 20% 0, #1f1f2e 0, #050509 70%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 17px;
+      font-weight: 700;
+      color: #fff;
+      letter-spacing: 0.06em;
+    }
+
+    .brand-meta {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .brand-title {
+      font-weight: 600;
+      font-size: 18px;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .brand-subtitle {
+      font-size: 11px;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      color: var(--text-soft);
+    }
+
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .environment-pill {
+      padding: 6px 12px;
+      border-radius: var(--radius-pill);
+      border: 1px solid rgba(163, 169, 197, 0.15);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--text-soft);
+      background: rgba(10, 10, 18, 0.92);
+    }
+
+    .env-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--good);
+      box-shadow: 0 0 10px rgba(72, 213, 151, 0.8);
+    }
+
+    .user-chip {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 6px 10px;
+      border-radius: var(--radius-pill);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      background: rgba(4, 4, 10, 0.96);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+    }
+
+    .user-avatar {
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 25% 0, #fff 0, #ffc9e5 30%, #ff375f 50%, #050509 80%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      font-weight: 600;
+      color: #050509;
+    }
+
+    .user-meta {
+      display: flex;
+      flex-direction: column;
+      line-height: 1.1;
+    }
+
+    .user-name {
+      font-size: 12px;
+      font-weight: 500;
+    }
+
+    .user-role {
+      font-size: 10px;
+      color: var(--text-soft);
+    }
+
+    .main {
+      padding: 16px 24px 24px;
+      display: grid;
+      grid-template-columns: minmax(0, 1.8fr) minmax(0, 1.7fr);
+      gap: 18px;
+    }
+
+    @media (max-width: 1100px) {
+      .main {
+        grid-template-columns: minmax(0, 1fr);
+      }
+    }
+
+    .card {
+      background: radial-gradient(circle at top left, rgba(255, 55, 95, 0.14), transparent 55%),
+        radial-gradient(circle at bottom right, rgba(63, 130, 255, 0.18), transparent 55%),
+        linear-gradient(145deg, #161623, #090914);
+      border-radius: var(--radius-lg);
+      padding: 14px 14px 10px;
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      box-shadow: var(--shadow-card);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card-soft {
+      background: radial-gradient(circle at top, rgba(255, 255, 255, 0.04), transparent 65%),
+        linear-gradient(160deg, #14141f, #070710);
+      border-radius: var(--radius-md);
+      padding: 10px 11px 9px;
+      border: 1px solid rgba(255, 255, 255, 0.04);
+      box-shadow: var(--shadow-soft);
+    }
+
+    .card-header {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+
+    .card-title-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .card-pill {
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      color: var(--accent-strong);
+      background: var(--accent-soft);
+      border-radius: var(--radius-pill);
+      padding: 2px 8px 3px;
+      border: 1px solid rgba(255, 55, 95, 0.7);
+    }
+
+    .card-title {
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .card-subtitle {
+      font-size: 11px;
+      color: var(--text-soft);
+    }
+
+    .metrics-row {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+
+    @media (max-width: 900px) {
+      .metrics-row {
+        grid-template-columns: minmax(0, 1fr);
+      }
+    }
+
+    .metric-chip {
+      background: rgba(7, 7, 15, 0.9);
+      border-radius: 12px;
+      padding: 7px 9px 6px;
+      border: 1px solid rgba(255, 255, 255, 0.04);
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .metric-label {
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      color: var(--text-soft);
+    }
+
+    .metric-value {
+      font-size: 16px;
+      font-weight: 600;
+      display: flex;
+      align-items: baseline;
+      gap: 4px;
+    }
+
+    .metric-unit {
+      font-size: 10px;
+      color: var(--text-soft);
+    }
+
+    .metric-trend {
+      font-size: 11px;
+      color: var(--good);
+    }
+
+    .metric-trend.bad {
+      color: var(--bad);
+    }
+
+    .metric-trend.neutral {
+      color: var(--text-muted);
+    }
+
+    .two-col {
+      display: grid;
+      grid-template-columns: minmax(0, 1.1fr) minmax(0, 1.1fr);
+      gap: 10px;
+    }
+
+    @media (max-width: 900px) {
+      .two-col {
+        grid-template-columns: minmax(0, 1fr);
+      }
+    }
+
+    .form-row {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      margin-bottom: 7px;
+    }
+
+    label {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      color: var(--text-soft);
+    }
+
+    select,
+    input[type="number"],
+    input[type="text"] {
+      width: 100%;
+      padding: 6px 8px;
+      border-radius: 8px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      background: rgba(7, 7, 14, 0.98);
+      color: var(--text-main);
+      font-size: 12px;
+      font-family: var(--font-main);
+      outline: none;
+    }
+
+    select:focus,
+    input[type="number"]:focus,
+    input[type="text"]:focus {
+      border-color: rgba(255, 55, 95, 0.8);
+      box-shadow: 0 0 0 1px rgba(255, 55, 95, 0.5);
+    }
+
+    .btn {
+      border-radius: 10px;
+      border: none;
+      padding: 7px 10px;
+      font-size: 12px;
+      font-weight: 500;
+      font-family: var(--font-main);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: transform 0.08s ease, box-shadow 0.08s ease, background 0.12s ease;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--accent), var(--accent-strong));
+      color: #fff;
+      box-shadow: 0 10px 26px rgba(255, 55, 95, 0.55);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 14px 34px rgba(255, 55, 95, 0.65);
+    }
+
+    .btn-ghost {
+      background: rgba(9, 9, 16, 0.96);
+      color: var(--text-soft);
+      border: 1px solid rgba(255, 255, 255, 0.09);
+    }
+
+    .btn-ghost:hover {
+      background: rgba(17, 17, 28, 0.98);
+      transform: translateY(-1px);
+    }
+
+    .btn-danger {
+      background: linear-gradient(135deg, #ff5555, #ff8686);
+      color: #fff;
+      box-shadow: 0 10px 26px rgba(255, 85, 85, 0.55);
+    }
+
+    .btn-danger:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 14px 34px rgba(255, 85, 85, 0.65);
+    }
+
+    .btn-sm {
+      padding: 5px 9px;
+      border-radius: 999px;
+      font-size: 11px;
+    }
+
+    .hstack {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .sensor-list,
+    .movement-list,
+    .adjustment-list,
+    .material-list {
+      font-size: 11px;
+      line-height: 1.4;
+      font-family: var(--font-mono);
+      max-height: 180px;
+      overflow-y: auto;
+      padding-right: 4px;
+    }
+
+    .kv-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 2px;
+    }
+
+    .kv-key {
+      color: var(--text-soft);
+    }
+
+    .kv-val {
+      color: var(--text-main);
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 3px 8px 2px;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      color: var(--text-soft);
+      background: rgba(7, 7, 14, 0.95);
+    }
+
+    .chip-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 999px;
+      background: var(--blue);
+    }
+
+    .chip-dot-green {
+      background: var(--good);
+    }
+
+    .chip-dot-red {
+      background: var(--bad);
+    }
+
+    .progress-bar {
+      width: 100%;
+      height: 8px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.06);
+      overflow: hidden;
+      margin-top: 4px;
+    }
+
+    .progress-fill {
+      height: 100%;
+      width: 0%;
+      border-radius: 999px;
+      background: linear-gradient(90deg, #3f82ff, #ff375f);
+      transition: width 0.16s ease;
+    }
+
+    .vision-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+      gap: 10px;
+    }
+
+    @media (max-width: 900px) {
+      .vision-grid {
+        grid-template-columns: minmax(0, 1fr);
+      }
+    }
+
+    .vision-panel {
+      font-size: 11px;
+    }
+
+    .vision-detections {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 4px;
+    }
+
+    .vision-chip {
+      padding: 3px 7px 2px;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      background: rgba(7, 7, 14, 0.96);
+      font-size: 10px;
+    }
+
+    .vision-screen {
+      border-radius: 10px;
+      min-height: 110px;
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      background:
+        radial-gradient(circle at 20% 0, rgba(63, 130, 255, 0.24), transparent 50%),
+        radial-gradient(circle at 80% 100%, rgba(255, 55, 95, 0.22), transparent 55%),
+        repeating-linear-gradient(
+          135deg,
+          rgba(255, 255, 255, 0.04),
+          rgba(255, 255, 255, 0.04) 1px,
+          transparent 1px,
+          transparent 8px
+        ),
+        #050509;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-soft);
+      font-size: 11px;
+      text-align: center;
+      padding: 10px;
+    }
+
+    .footer-note {
+      padding: 0 26px 16px;
+      font-size: 10px;
+      color: var(--text-soft);
+      text-align: right;
+    }
+  </style>
+</head>
+<body>
+<div class="app-shell">
+  <header class="app-header">
+    <div class="brand">
+      <div class="brand-logo">
+        <div class="brand-logo-inner">SU</div>
+      </div>
+      <div class="brand-meta">
+        <div class="brand-title">Omconsole Suit Node</div>
+        <div class="brand-subtitle">AI Suit Control · Material Intelligence</div>
+      </div>
+    </div>
+    <div class="header-right">
+      <div class="environment-pill">
+        <span class="env-dot"></span> LIVE NODE · SUIT SYSTEM
+      </div>
+      <div class="user-chip">
+        <div class="user-avatar">J</div>
+        <div class="user-meta">
+          <div class="user-name">Pilot</div>
+          <div class="user-role">Suit Operator · Omconsole</div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="main">
+    <!-- LEFT: Telemetry & Vision -->
+    <section>
+      <div class="card" style="margin-bottom: 12px;">
+        <div class="card-header">
+          <div class="card-title-row">
+            <span class="card-pill">Telemetry</span>
+            <div class="card-title">Suit Telemetry &amp; Material State</div>
+          </div>
+          <span class="card-subtitle">
+            Mirrors: sensors · material classifier · bucket fullness · movement validator
+          </span>
+        </div>
+
+        <div class="metrics-row">
+          <div class="metric-chip">
+            <div class="metric-label">Material (Final)</div>
+            <div class="metric-value">
+              <span id="metricMaterialFinal">—</span>
+            </div>
+            <div id="metricMaterialMode" class="metric-trend neutral">
+              Mode: Auto / Manual
+            </div>
+          </div>
+          <div class="metric-chip">
+            <div class="metric-label">Bucket Fullness</div>
+            <div class="metric-value">
+              <span id="metricFullness">0</span>
+              <span class="metric-unit">%</span>
+            </div>
+            <div class="progress-bar">
+              <div id="fullnessBar" class="progress-fill"></div>
+            </div>
+          </div>
+          <div class="metric-chip">
+            <div class="metric-label">Movement Validator</div>
+            <div class="metric-value">
+              <span id="metricValidator">IDLE</span>
+            </div>
+            <div id="metricValidatorTrend" class="metric-trend neutral">
+              Awaiting simulation start
+            </div>
+          </div>
+        </div>
+
+        <div class="two-col">
+          <div class="card-soft">
+            <div class="card-header">
+              <div class="card-title-row">
+                <span class="card-title">Sensor Readings</span>
+              </div>
+              <span class="badge"><span class="chip-dot"></span> Pressure · Moisture · Temp · Inclination</span>
+            </div>
+            <div class="sensor-list" id="sensorList"></div>
+          </div>
+
+          <div class="card-soft">
+            <div class="card-header">
+              <div class="card-title-row">
+                <span class="card-title">Movement Data</span>
+              </div>
+              <span class="badge"><span class="chip-dot"></span> Position · Velocity · Acceleration</span>
+            </div>
+            <div class="movement-list" id="movementList"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Vision / YOLO Panel -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title-row">
+            <span class="card-pill">Vision</span>
+            <div class="card-title">Camera / YOLO Material Fusion</div>
+          </div>
+          <span class="card-subtitle">
+            Mirrors: YOLO → mapped to material index → fused with sensor classifier
+          </span>
+        </div>
+
+        <div class="vision-grid">
+          <div class="card-soft vision-panel">
+            <div class="card-header" style="margin-bottom: 4px;">
+              <div class="card-title-row">
+                <span class="card-title">Detected Objects</span>
+              </div>
+              <span class="badge"><span class="chip-dot"></span> YOLO (simulated)</span>
+            </div>
+            <div class="vision-detections" id="visionDetections"></div>
+            <div style="margin-top: 8px;">
+              <div class="kv-row">
+                <span class="kv-key">Material (YOLO)</span>
+                <span class="kv-val" id="visionMaterialYOLO">—</span>
+              </div>
+              <div class="kv-row">
+                <span class="kv-key">Material (Sensor)</span>
+                <span class="kv-val" id="visionMaterialSensor">—</span>
+              </div>
+              <div class="kv-row">
+                <span class="kv-key">Material (Final)</span>
+                <span class="kv-val" id="visionMaterialFinal">—</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="card-soft">
+            <div class="card-header" style="margin-bottom: 4px;">
+              <div class="card-title-row">
+                <span class="card-title">Vision Screen</span>
+              </div>
+              <span class="badge"><span class="chip-dot"></span> Webcam / Overlay Placeholder</span>
+            </div>
+            <div class="vision-screen">
+              Vision feed placeholder. Attach real YOLO frames here from your backend when ready.
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- RIGHT: Controls & Adjustments -->
+    <section>
+      <!-- Controls -->
+      <div class="card" style="margin-bottom: 12px;">
+        <div class="card-header">
+          <div class="card-title-row">
+            <span class="card-pill">Control</span>
+            <div class="card-title">Suit Control Panel</div>
+          </div>
+          <span class="card-subtitle">
+            Mirrors: Operator Overrides · Material Selection · Start / Stop Simulation
+          </span>
+        </div>
+
+        <div class="card-soft" style="margin-bottom: 10px;">
+          <div class="card-header" style="margin-bottom: 6px;">
+            <div class="card-title-row">
+              <span class="card-title">Operator Overrides</span>
+            </div>
+            <span class="badge"><span class="chip-dot-red"></span> Force · Speed · Tilt · Pressure Limit</span>
+          </div>
+          <div class="two-col">
+            <div class="form-row">
+              <label for="overrideSetting">Setting</label>
+              <select id="overrideSetting">
+                <option>Force</option>
+                <option>Speed</option>
+                <option>Tilt</option>
+                <option>Pressure Limit</option>
+              </select>
+            </div>
+            <div class="form-row">
+              <label for="overrideValue">New Value</label>
+              <input id="overrideValue" type="number" step="0.1" placeholder="e.g. 5.0" />
+            </div>
+          </div>
+          <button class="btn btn-ghost" id="btnOverrideUpdate">Update Current Material</button>
+          <div class="card-subtitle" style="margin-top: 4px;">
+            Mirrors <code>update_setting()</code> against <code>current_material_type</code>.
+          </div>
+        </div>
+
+        <div class="card-soft">
+          <div class="card-header" style="margin-bottom: 4px;">
+            <div class="card-title-row">
+              <span class="card-title">Material Selection</span>
+            </div>
+            <span class="badge"><span class="chip-dot"></span> Auto Detect or Manual</span>
+          </div>
+          <div class="form-row">
+            <label for="materialSelect">Material</label>
+            <select id="materialSelect"></select>
+          </div>
+          <div class="two-col">
+            <div class="form-row">
+              <label for="matForce">Force</label>
+              <input id="matForce" type="number" step="0.1" />
+            </div>
+            <div class="form-row">
+              <label for="matSpeed">Speed</label>
+              <input id="matSpeed" type="number" step="0.1" />
+            </div>
+          </div>
+          <div class="two-col">
+            <div class="form-row">
+              <label for="matTilt">Tilt</label>
+              <input id="matTilt" type="number" step="0.1" />
+            </div>
+            <div class="form-row">
+              <label for="matPressureLimit">Pressure Limit</label>
+              <input id="matPressureLimit" type="number" step="0.1" />
+            </div>
+          </div>
+          <div class="hstack" style="margin: 6px 0 4px;">
+            <button class="btn btn-primary btn-sm" id="btnApplyMaterial">Apply Material Selection</button>
+            <span class="card-subtitle">
+              Mirrors <code>apply_material_selection()</code>, updating the material_properties table.
+            </span>
+          </div>
+
+          <div class="hstack" style="margin-top: 4px;">
+            <button class="btn btn-ghost btn-sm" id="btnStartSim">Start Simulation</button>
+            <button class="btn btn-danger btn-sm" id="btnStopSim" disabled>Stop Simulation</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Adjustments & Material Properties -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title-row">
+            <span class="card-pill">Adjustments</span>
+            <div class="card-title">Machine Adjustments &amp; Material Properties</div>
+          </div>
+          <span class="card-subtitle">
+            Mirrors: adjust_machine_controls() and material_properties ranges
+          </span>
+        </div>
+
+        <div class="two-col">
+          <div class="card-soft">
+            <div class="card-header" style="margin-bottom: 4px;">
+              <div class="card-title-row">
+                <span class="card-title">Current Adjustments</span>
+              </div>
+              <span class="badge">
+                <span id="adjustmentPressureDot" class="chip-dot"></span> Pressure Envelope
+              </span>
+            </div>
+            <div class="adjustment-list" id="adjustmentList"></div>
+          </div>
+
+          <div class="card-soft">
+            <div class="card-header" style="margin-bottom: 4px;">
+              <div class="card-title-row">
+                <span class="card-title">Material Properties</span>
+              </div>
+              <span class="badge"><span class="chip-dot"></span> Reference ranges</span>
+            </div>
+            <div class="material-list" id="materialList"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div class="footer-note">
+    This web dashboard mirrors your Python <code>MachineControlApp</code>:
+    YOLO + sensors → material classifier → machine adjustments → AI movement validation → SQLite logging.
+  </div>
+</div>
+
+<script>
+  // -----------------------------
+  // Material properties (JS twin of Python material_properties)
+  // -----------------------------
+  const materialProperties = {
+    0: { name: "Sand",      force: 2,  force_range: [1, 3],  speed: 8,  speed_range: [5, 10], tilt: 10, tilt_range: [5, 15],  pressure_limit: 20 },
+    1: { name: "Gravel",    force: 8,  force_range: [6, 10], speed: 3,  speed_range: [2, 5],  tilt: 20, tilt_range: [15, 25], pressure_limit: 50 },
+    2: { name: "Soil",      force: 5,  force_range: [4, 6],  speed: 5,  speed_range: [3, 7],  tilt: 15, tilt_range: [10, 20], pressure_limit: 40 },
+    3: { name: "Mud",       force: 7,  force_range: [5, 9],  speed: 2,  speed_range: [1, 3],  tilt: 30, tilt_range: [25, 35], pressure_limit: 30 },
+    4: { name: "Wet Sand",  force: 4,  force_range: [3, 5],  speed: 5,  speed_range: [3, 7],  tilt: 15, tilt_range: [10, 20], pressure_limit: 35 },
+    5: { name: "Clay",      force: 9,  force_range: [7, 11], speed: 2,  speed_range: [1, 3],  tilt: 35, tilt_range: [30, 40], pressure_limit: 45 },
+    6: { name: "Rock",      force: 10, force_range: [8, 12], speed: 1,  speed_range: [0.5, 2], tilt: 45, tilt_range: [40, 50], pressure_limit: 60 },
+    7: { name: "Water",     force: 1,  force_range: [0, 2],  speed: 10, speed_range: [8, 12], tilt: 0,  tilt_range: [0, 5],   pressure_limit: 10 },
+    8: { name: "Snow",      force: 3,  force_range: [2, 4],  speed: 8,  speed_range: [6, 10], tilt: 5,  tilt_range: [0, 10],  pressure_limit: 15 },
+    9: { name: "Ice",       force: 4,  force_range: [3, 5],  speed: 4,  speed_range: [2, 6],  tilt: 10, tilt_range: [5, 15],  pressure_limit: 20 },
+    10:{ name: "Pavement",  force: 0,  force_range: [0, 1],  speed: 5,  speed_range: [4, 6],  tilt: 0,  tilt_range: [0, 5],   pressure_limit: 10 },
+    11:{ name: "Asphalt",   force: 1,  force_range: [0, 2],  speed: 6,  speed_range: [5, 7],  tilt: 5,  tilt_range: [0, 10],  pressure_limit: 12 },
+    12:{ name: "Mudslide",  force: 8,  force_range: [6, 10], speed: 2,  speed_range: [1, 3],  tilt: 35, tilt_range: [30, 40], pressure_limit: 40 },
+    13:{ name: "Rainwater", force: 1,  force_range: [0, 2],  speed: 10, speed_range: [8, 12], tilt: 0,  tilt_range: [0, 5],   pressure_limit: 10 },
+    14:{ name: "Bushes",    force: 3,  force_range: [2, 4],  speed: 5,  speed_range: [3, 7],  tilt: 20, tilt_range: [15, 25], pressure_limit: 25 },
+    15:{ name: "Bad Edge",  force: 5,  force_range: [4, 6],  speed: 2,  speed_range: [1, 3],  tilt: 15, tilt_range: [10, 20], pressure_limit: 30 },
+    default: { name: "Unknown", force: 5, force_range: [0, 10], speed: 5, speed_range: [0, 10], tilt: 15, tilt_range: [0, 30], pressure_limit: 30 }
+  };
+
+  const materialTrainingData = [
+    { features: [1.5, 20, 60, 2, 25, 0],    label: 0 },  // Sand
+    { features: [2.1, 30, 20, 4, 22, 1],    label: 1 },  // Gravel
+    { features: [3.5, 25, 30, 3, 20, 2],    label: 2 },  // Soil
+    { features: [4.0, 40, 10, 5, 18, -1],   label: 3 },  // Mud
+    { features: [3.0, 35, 50, 2, 24, 0.5],  label: 4 },  // Wet Sand
+    { features: [4.5, 50, 15, 6, 17, -2],   label: 5 },  // Clay
+    { features: [5.0, 45, 20, 7, 15, 3],    label: 6 },  // Rock
+    { features: [1.0, 5, 80, 1, 28, 0],     label: 7 },  // Water
+    { features: [0.8, 10, 60, 2, -5, 0],    label: 8 },  // Snow
+    { features: [0.9, 15, 50, 2, -2, 0],    label: 9 },  // Ice
+    { features: [6.0, 30, 5, 8, 30, 0],     label: 10 }, // Pavement
+    { features: [5.5, 40, 7, 7, 27, 0],     label: 11 }, // Asphalt
+    { features: [4.8, 38, 70, 6, 19, 10],   label: 12 }, // Mudslide
+    { features: [1.2, 12, 90, 1, 26, -15],  label: 13 }, // Rainwater
+    { features: [2.5, 28, 40, 3, 23, 0],    label: 14 }, // Bushes
+    { features: [3.8, 33, 25, 5, 21, 15],   label: 15 }  // Bad Edge
+  ];
+
+  const yoloClassToMaterial = {
+    sand: 0,
+    gravel: 1,
+    soil: 2,
+    mud: 3,
+    wet_sand: 4,
+    clay: 5,
+    rock: 6,
+    water: 7,
+    snow: 8,
+    ice: 9,
+    pavement: 10,
+    asphalt: 11,
+    mudslide: 12,
+    rainwater: 13,
+    bushes: 14,
+    bad_edge: 15
+  };
+
+  const yoloClassNames = Object.keys(yoloClassToMaterial);
+
+  // -----------------------------
+  // Utility helpers
+  // -----------------------------
+  function rand(min, max) {
+    return Math.random() * (max - min) + min;
+  }
+
+  function readSensors() {
+    const pressure = rand(5, 50);
+    const volume = rand(0.5, 3.0);
+    const weight = rand(200, 500);
+    const moisture = rand(0, 100);
+    const vibration = rand(0, 10);
+    const temperature = rand(-10, 40);
+    const inclination = rand(-15, 15);
+    return { pressure, volume, weight, moisture, vibration, temperature, inclination };
+  }
+
+  function readMovement() {
+    const position = rand(0, 100);
+    const velocity = rand(0, 10);
+    const acceleration = rand(-5, 5);
+    return { position, velocity, acceleration };
+  }
+
+  function calculateDensity(weight, volume) {
+    return volume ? weight / volume : 0;
+  }
+
+  function estimateBucketFullness(volume, capacity = 3.0) {
+    const fullness = (volume / capacity) * 100;
+    return Math.min(fullness, 100);
+  }
+
+  function euclideanDistance(a, b) {
+    let sum = 0;
+    for (let i = 0; i < a.length; i++) {
+      const d = a[i] - b[i];
+      sum += d * d;
+    }
+    return Math.sqrt(sum);
+  }
+
+  function classifyMaterial(features) {
+    // JS twin of the RandomForest classifier using nearest neighbor on training data
+    let bestLabel = 0;
+    let bestDist = Infinity;
+    materialTrainingData.forEach(row => {
+      const dist = euclideanDistance(features, row.features);
+      if (dist < bestDist) {
+        bestDist = dist;
+        bestLabel = row.label;
+      }
+    });
+    return bestLabel;
+  }
+
+  function simulateYoloDetections() {
+    const detections = [];
+    // ~50% of the time, no detections
+    if (Math.random() < 0.5) return detections;
+    const count = 1 + Math.floor(Math.random() * 3);
+    for (let i = 0; i < count; i++) {
+      const cls = yoloClassNames[Math.floor(Math.random() * yoloClassNames.length)];
+      detections.push(cls);
+    }
+    return detections;
+  }
+
+  function mapYoloToMaterialIndex(detectedClasses) {
+    for (const cls of detectedClasses) {
+      if (cls in yoloClassToMaterial) {
+        return yoloClassToMaterial[cls];
+      }
+    }
+    return null;
+  }
+
+  function adjustMachineControls(materialType, pressure) {
+    const props = materialProperties[materialType] || materialProperties.default;
+    const adjustments = {
+      force: props.force,
+      speed: props.speed,
+      tilt: props.tilt,
+      pressure_limit: props.pressure_limit,
+      pressure_exceeded: pressure > props.pressure_limit
+    };
+    return { adjustments, props };
+  }
+
+  function aiAnalyzer(estimatedMovements, taskRequirements = [10.0, 5.0, 15.0]) {
+    // estimatedMovements: [velocity, acceleration, inclination]
+    for (let i = 0; i < estimatedMovements.length; i++) {
+      if (Math.abs(estimatedMovements[i]) > taskRequirements[i]) return false;
+    }
+    return true;
+  }
+
+  // -----------------------------
+  // Simulation state
+  // -----------------------------
+  let simRunning = false;
+  let simInterval = null;
+  let currentMaterialType = null;
+  let sensorMaterialType = null;
+  let yoloMaterialType = null;
+  let sensorMaterialName = "—";
+  let yoloMaterialName = "—";
+  let finalMaterialName = "—";
+
+  // -----------------------------
+  // DOM refs
+  // -----------------------------
+  const metricMaterialFinal = document.getElementById("metricMaterialFinal");
+  const metricMaterialMode = document.getElementById("metricMaterialMode");
+  const metricFullness = document.getElementById("metricFullness");
+  const fullnessBar = document.getElementById("fullnessBar");
+  const metricValidator = document.getElementById("metricValidator");
+  const metricValidatorTrend = document.getElementById("metricValidatorTrend");
+  const sensorList = document.getElementById("sensorList");
+  const movementList = document.getElementById("movementList");
+  const visionDetections = document.getElementById("visionDetections");
+  const visionMaterialYOLO = document.getElementById("visionMaterialYOLO");
+  const visionMaterialSensor = document.getElementById("visionMaterialSensor");
+  const visionMaterialFinal = document.getElementById("visionMaterialFinal");
+  const adjustmentList = document.getElementById("adjustmentList");
+  const materialList = document.getElementById("materialList");
+  const adjustmentPressureDot = document.getElementById("adjustmentPressureDot");
+
+  const materialSelect = document.getElementById("materialSelect");
+  const matForceInput = document.getElementById("matForce");
+  const matSpeedInput = document.getElementById("matSpeed");
+  const matTiltInput = document.getElementById("matTilt");
+  const matPressureLimitInput = document.getElementById("matPressureLimit");
+
+  const overrideSetting = document.getElementById("overrideSetting");
+  const overrideValue = document.getElementById("overrideValue");
+  const btnOverrideUpdate = document.getElementById("btnOverrideUpdate");
+  const btnApplyMaterial = document.getElementById("btnApplyMaterial");
+  const btnStartSim = document.getElementById("btnStartSim");
+  const btnStopSim = document.getElementById("btnStopSim");
+
+  // -----------------------------
+  // Populate material dropdown
+  // -----------------------------
+  function initMaterialSelect() {
+    materialSelect.innerHTML = "";
+    const autoOpt = document.createElement("option");
+    autoOpt.value = "Auto Detect";
+    autoOpt.textContent = "Auto Detect";
+    materialSelect.appendChild(autoOpt);
+
+    for (let i = 0; i < 16; i++) {
+      const mat = materialProperties[i];
+      const opt = document.createElement("option");
+      opt.value = mat.name;
+      opt.textContent = mat.name;
+      materialSelect.appendChild(opt);
+    }
+    materialSelect.value = "Auto Detect";
+  }
+
+  initMaterialSelect();
+
+  function getMaterialIndexByName(name) {
+    for (let i = 0; i < 16; i++) {
+      if (materialProperties[i].name === name) return i;
+    }
+    return null;
+  }
+
+  function loadMaterialFieldsFromSelection() {
+    const sel = materialSelect.value;
+    if (sel === "Auto Detect") {
+      matForceInput.value = "";
+      matSpeedInput.value = "";
+      matTiltInput.value = "";
+      matPressureLimitInput.value = "";
+      return;
+    }
+    const idx = getMaterialIndexByName(sel);
+    if (idx === null) return;
+    const props = materialProperties[idx];
+    matForceInput.value = props.force;
+    matSpeedInput.value = props.speed;
+    matTiltInput.value = props.tilt;
+    matPressureLimitInput.value = props.pressure_limit;
+  }
+
+  materialSelect.addEventListener("change", loadMaterialFieldsFromSelection);
+  loadMaterialFieldsFromSelection();
+
+  // -----------------------------
+  // Rendering helpers
+  // -----------------------------
+  function renderSensors(data) {
+    const {
+      timestamp,
+      sensorMaterialName,
+      finalMaterialName,
+      weight,
+      volume,
+      density,
+      pressure,
+      moisture,
+      vibration,
+      temperature,
+      inclination,
+      bucketFullness
+    } = data;
+
+    const lines = [
+      { k: "Timestamp", v: timestamp },
+      { k: "Material (Sensor)", v: sensorMaterialName },
+      { k: "Material (Final)", v: finalMaterialName },
+      { k: "Weight", v: `${weight.toFixed(2)} kg` },
+      { k: "Volume", v: `${volume.toFixed(2)} m³` },
+      { k: "Density", v: `${density.toFixed(2)} kg/m³` },
+      { k: "Pressure", v: `${pressure.toFixed(2)} psi` },
+      { k: "Moisture", v: `${moisture.toFixed(2)} %` },
+      { k: "Vibration", v: `${vibration.toFixed(2)}` },
+      { k: "Temperature", v: `${temperature.toFixed(2)} °C` },
+      { k: "Inclination", v: `${inclination.toFixed(2)} °` },
+      { k: "Bucket Fullness", v: `${bucketFullness.toFixed(2)} %` }
+    ];
+
+    sensorList.innerHTML = lines.map(line => `
+      <div class="kv-row">
+        <span class="kv-key">${line.k}</span>
+        <span class="kv-val">${line.v}</span>
+      </div>
+    `).join("");
+  }
+
+  function renderMovement(data) {
+    const {
+      position,
+      velocity,
+      acceleration,
+      movementsValidated
+    } = data;
+
+    const lines = [
+      { k: "Position", v: `${position.toFixed(2)} m` },
+      { k: "Velocity", v: `${velocity.toFixed(2)} m/s` },
+      { k: "Acceleration", v: `${acceleration.toFixed(2)} m/s²` },
+      { k: "Movements Validated", v: movementsValidated ? "Yes" : "No" }
+    ];
+
+    movementList.innerHTML = lines.map(line => `
+      <div class="kv-row">
+        <span class="kv-key">${line.k}</span>
+        <span class="kv-val">${line.v}</span>
+      </div>
+    `).join("");
+  }
+
+  function renderVision(detectedClasses) {
+    visionDetections.innerHTML = "";
+    if (!detectedClasses || detectedClasses.length === 0) {
+      visionDetections.innerHTML = `<span class="card-subtitle">No detections this frame.</span>`;
+    } else {
+      detectedClasses.forEach(cls => {
+        const chip = document.createElement("span");
+        chip.className = "vision-chip";
+        chip.textContent = cls;
+        visionDetections.appendChild(chip);
+      });
+    }
+
+    visionMaterialYOLO.textContent = yoloMaterialName;
+    visionMaterialSensor.textContent = sensorMaterialName;
+    visionMaterialFinal.textContent = finalMaterialName;
+  }
+
+  function renderAdjustments(adjustments, props) {
+    const { force, speed, tilt, pressure_limit, pressure_exceeded } = adjustments;
+    const { force_range, speed_range, tilt_range } = props;
+
+    const lines = [
+      { k: "Force", v: `${force.toFixed(2)} (Range: ${force_range[0]}–${force_range[1]})` },
+      { k: "Speed", v: `${speed.toFixed(2)} (Range: ${speed_range[0]}–${speed_range[1]})` },
+      { k: "Tilt", v: `${tilt.toFixed(2)}° (Range: ${tilt_range[0]}–${tilt_range[1]})` },
+      { k: "Pressure Limit", v: `${pressure_limit.toFixed(2)} psi` },
+      { k: "Pressure State", v: pressure_exceeded ? "Warning: limit exceeded" : "Within safe envelope" }
+    ];
+
+    adjustmentList.innerHTML = lines.map(line => `
+      <div class="kv-row">
+        <span class="kv-key">${line.k}</span>
+        <span class="kv-val">${line.v}</span>
+      </div>
+    `).join("");
+
+    // Pressure indicator dot
+    adjustmentPressureDot.className = pressure_exceeded ? "chip-dot-red" : "chip-dot-green";
+  }
+
+  function renderMaterialProps(props, idx) {
+    const { name, force, force_range, speed, speed_range, tilt, tilt_range, pressure_limit } = props;
+    const lines = [
+      { k: "Material", v: `${name} (#${idx !== null ? idx : "?"})` },
+      { k: "Force", v: `${force.toFixed(2)} (Range: ${force_range[0]}–${force_range[1]})` },
+      { k: "Speed", v: `${speed.toFixed(2)} (Range: ${speed_range[0]}–${speed_range[1]})` },
+      { k: "Tilt", v: `${tilt.toFixed(2)}° (Range: ${tilt_range[0]}–${tilt_range[1]})` },
+      { k: "Pressure Limit", v: `${pressure_limit.toFixed(2)} psi` }
+    ];
+
+    materialList.innerHTML = lines.map(line => `
+      <div class="kv-row">
+        <span class="kv-key">${line.k}</span>
+        <span class="kv-val">${line.v}</span>
+      </div>
+    `).join("");
+  }
+
+  // -----------------------------
+  // Simulation tick
+  // -----------------------------
+  function simulationTick() {
+    const now = new Date();
+    const timestamp = now.toISOString().replace("T", " ").slice(0, 19);
+
+    // Sensors
+    const { pressure, volume, weight, moisture, vibration, temperature, inclination } = readSensors();
+    const density = calculateDensity(weight, volume);
+    const bucketFullness = estimateBucketFullness(volume);
+
+    // Movement
+    const { position, velocity, acceleration } = readMovement();
+
+    // Sensor-based material classification
+    const features = [density, pressure, moisture, vibration, temperature, inclination];
+    sensorMaterialType = classifyMaterial(features);
+    const sensorInfo = materialProperties[sensorMaterialType] || materialProperties.default;
+    sensorMaterialName = sensorInfo.name;
+
+    // YOLO detection simulation
+    const detectedClasses = simulateYoloDetections();
+    yoloMaterialType = mapYoloToMaterialIndex(detectedClasses);
+    yoloMaterialName = yoloMaterialType !== null
+      ? (materialProperties[yoloMaterialType] || materialProperties.default).name
+      : "—";
+
+    // Decide final material (manual / yolo / sensor)
+    const materialModeManual = materialSelect.value !== "Auto Detect";
+    if (materialModeManual) {
+      const idx = getMaterialIndexByName(materialSelect.value);
+      currentMaterialType = idx !== null ? idx : sensorMaterialType;
+    } else {
+      if (yoloMaterialType !== null) {
+        currentMaterialType = yoloMaterialType;
+      } else {
+        currentMaterialType = sensorMaterialType;
+      }
+    }
+
+    const finalProps = materialProperties[currentMaterialType] || materialProperties.default;
+    finalMaterialName = finalProps.name;
+
+    // Machine adjustments
+    const { adjustments, props } = adjustMachineControls(currentMaterialType, pressure);
+
+    // Movement validation
+    const movementsValidated = aiAnalyzer([velocity, acceleration, inclination]);
+
+    // Update metrics
+    metricMaterialFinal.textContent = finalMaterialName;
+    metricMaterialMode.textContent = materialModeManual
+      ? "Mode: Manual (Operator Override)"
+      : (yoloMaterialType !== null
+          ? "Mode: Auto (YOLO + Sensor)"
+          : "Mode: Auto (Sensor only)");
+
+    metricFullness.textContent = bucketFullness.toFixed(1);
+    fullnessBar.style.width = `${bucketFullness.toFixed(1)}%`;
+
+    metricValidator.textContent = movementsValidated ? "VALID" : "CHECK";
+    metricValidatorTrend.textContent = movementsValidated
+      ? "Movements within thresholds."
+      : "Movements out of safe thresholds.";
+    metricValidatorTrend.className = movementsValidated ? "metric-trend" : "metric-trend bad";
+
+    // Render panels
+    renderSensors({
+      timestamp,
+      sensorMaterialName,
+      finalMaterialName,
+      weight,
+      volume,
+      density,
+      pressure,
+      moisture,
+      vibration,
+      temperature,
+      inclination,
+      bucketFullness
+    });
+
+    renderMovement({
+      position,
+      velocity,
+      acceleration,
+      movementsValidated
+    });
+
+    renderVision(detectedClasses);
+    renderAdjustments(adjustments, props);
+    renderMaterialProps(props, currentMaterialType);
+  }
+
+  // -----------------------------
+  // Start / Stop simulation
+  // -----------------------------
+  function startSimulation() {
+    if (simRunning) return;
+    simRunning = true;
+    btnStartSim.disabled = true;
+    btnStopSim.disabled = false;
+    metricValidator.textContent = "RUNNING";
+    metricValidatorTrend.textContent = "Simulation loop active.";
+    metricValidatorTrend.className = "metric-trend";
+    simulationTick();
+    simInterval = setInterval(simulationTick, 800);
+  }
+
+  function stopSimulation() {
+    if (!simRunning) return;
+    simRunning = false;
+    btnStartSim.disabled = false;
+    btnStopSim.disabled = true;
+    if (simInterval) {
+      clearInterval(simInterval);
+      simInterval = null;
+    }
+    metricValidator.textContent = "IDLE";
+    metricValidatorTrend.textContent = "Simulation stopped.";
+    metricValidatorTrend.className = "metric-trend neutral";
+  }
+
+  btnStartSim.addEventListener("click", startSimulation);
+  btnStopSim.addEventListener("click", stopSimulation);
+
+  // -----------------------------
+  // Apply material selection (manual)
+  // -----------------------------
+  btnApplyMaterial.addEventListener("click", () => {
+    const sel = materialSelect.value;
+    if (sel === "Auto Detect") {
+      // back to auto
+      console.log("Material detection set to Auto Detect (web).");
+      return;
+    }
+    const idx = getMaterialIndexByName(sel);
+    if (idx === null) return;
+    const info = materialProperties[idx];
+
+    const force = matForceInput.value !== "" ? parseFloat(matForceInput.value) : info.force;
+    const speed = matSpeedInput.value !== "" ? parseFloat(matSpeedInput.value) : info.speed;
+    const tilt = matTiltInput.value !== "" ? parseFloat(matTiltInput.value) : info.tilt;
+    const pressure_limit = matPressureLimitInput.value !== ""
+      ? parseFloat(matPressureLimitInput.value)
+      : info.pressure_limit;
+
+    if ([force, speed, tilt, pressure_limit].some(x => Number.isNaN(x))) {
+      alert("Invalid numeric input in material properties.");
+      return;
+    }
+
+    info.force = force;
+    info.speed = speed;
+    info.tilt = tilt;
+    info.pressure_limit = pressure_limit;
+
+    currentMaterialType = idx;
+    console.log(`Material ${info.name} updated via web panel.`);
+    // If running, the next tick will reflect changes
+    renderMaterialProps(info, idx);
+  });
+
+  // -----------------------------
+  // Operator override update
+  // -----------------------------
+  btnOverrideUpdate.addEventListener("click", () => {
+    if (currentMaterialType === null) {
+      alert("No current material to update yet. Start simulation first.");
+      return;
+    }
+    const val = parseFloat(overrideValue.value);
+    if (Number.isNaN(val)) {
+      alert("Please enter a numeric value for the override.");
+      return;
+    }
+    const setting = overrideSetting.value;
+    const info = materialProperties[currentMaterialType];
+
+    if (setting === "Force") info.force = val;
+    else if (setting === "Speed") info.speed = val;
+    else if (setting === "Tilt") info.tilt = val;
+    else if (setting === "Pressure Limit") info.pressure_limit = val;
+    else return;
+
+    console.log(`${setting} for ${info.name} updated to ${val} via override panel.`);
+    renderMaterialProps(info, currentMaterialType);
+  });
+
+  // Initial idle render
+  renderSensors({
+    timestamp: "—",
+    sensorMaterialName: "—",
+    finalMaterialName: "—",
+    weight: 0,
+    volume: 0,
+    density: 0,
+    pressure: 0,
+    moisture: 0,
+    vibration: 0,
+    temperature: 0,
+    inclination: 0,
+    bucketFullness: 0
+  });
+  renderMovement({
+    position: 0,
+    velocity: 0,
+    acceleration: 0,
+    movementsValidated: false
+  });
+  renderVision([]);
+  renderAdjustments(
+    { force: 0, speed: 0, tilt: 0, pressure_limit: 0, pressure_exceeded: false },
+    materialProperties.default
+  );
+  renderMaterialProps(materialProperties.default, null);
+</script>
+</body>
+</html>
