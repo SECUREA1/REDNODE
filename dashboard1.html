@@ -1,0 +1,1592 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>RedNode Excavation – Operations Dashboard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    :root {
+      --bg: #050509;
+      --bg-elevated: #11111a;
+      --bg-elevated-soft: #171723;
+      --accent: #ff375f;
+      --accent-soft: rgba(255, 55, 95, 0.15);
+      --accent-strong: #ff6b8f;
+      --border-subtle: #272739;
+      --text-main: #f9fbff;
+      --text-muted: #a3a9c5;
+      --text-soft: #7a80a2;
+      --good: #48d597;
+      --warn: #ffca5f;
+      --bad: #ff5555;
+      --blue: #3f82ff;
+      --radius-lg: 18px;
+      --radius-md: 12px;
+      --radius-pill: 999px;
+      --shadow-soft: 0 22px 60px rgba(0, 0, 0, 0.65);
+      --shadow-card: 0 14px 40px rgba(0, 0, 0, 0.6);
+      --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      --font-main: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: var(--font-main);
+      background: radial-gradient(circle at top, #171729 0, #050509 55%) fixed;
+      color: var(--text-main);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .app-shell {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    header.app-header {
+      padding: 18px 28px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+      backdrop-filter: blur(18px);
+      background: linear-gradient(
+          to right,
+          rgba(255, 55, 95, 0.12),
+          transparent 23%,
+          rgba(63, 130, 255, 0.09),
+          transparent 68%
+        ),
+        linear-gradient(to bottom, rgba(9, 9, 16, 0.9), rgba(5, 5, 9, 0.96));
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .brand-logo {
+      width: 34px;
+      height: 34px;
+      border-radius: 14px;
+      background: conic-gradient(
+        from 210deg,
+        #ff375f,
+        #ff9f0a,
+        #ff375f,
+        #3f82ff,
+        #ff375f
+      );
+      padding: 2px;
+      box-shadow: 0 0 16px rgba(255, 55, 95, 0.7);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .brand-logo-inner {
+      width: 100%;
+      height: 100%;
+      border-radius: 12px;
+      background: radial-gradient(circle at 20% 0, #1f1f2e 0, #050509 70%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      font-weight: 700;
+      color: #fff;
+      letter-spacing: 0.03em;
+    }
+
+    .brand-meta {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .brand-title {
+      font-weight: 600;
+      font-size: 18px;
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+    }
+
+    .brand-subtitle {
+      font-size: 11px;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      color: var(--text-soft);
+    }
+
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .environment-pill {
+      padding: 6px 12px;
+      border-radius: var(--radius-pill);
+      border: 1px solid rgba(163, 169, 197, 0.15);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--text-soft);
+      background: rgba(10, 10, 18, 0.9);
+    }
+
+    .env-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--good);
+      box-shadow: 0 0 10px rgba(72, 213, 151, 0.8);
+    }
+
+    .user-chip {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 6px 10px;
+      border-radius: var(--radius-pill);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      background: rgba(4, 4, 10, 0.9);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+    }
+
+    .user-avatar {
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 25% 0, #fff 0, #ffc9e5 30%, #ff375f 50%, #050509 80%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      font-weight: 600;
+      color: #050509;
+    }
+
+    .user-meta {
+      display: flex;
+      flex-direction: column;
+      line-height: 1.1;
+    }
+
+    .user-name {
+      font-size: 12px;
+      font-weight: 500;
+    }
+
+    .user-role {
+      font-size: 10px;
+      color: var(--text-soft);
+    }
+
+    .main {
+      padding: 16px 24px 26px;
+      display: grid;
+      grid-template-columns: minmax(0, 2.1fr) minmax(0, 1.7fr);
+      gap: 18px;
+    }
+
+    @media (max-width: 1100px) {
+      .main {
+        grid-template-columns: minmax(0, 1fr);
+      }
+    }
+
+    .card {
+      background: radial-gradient(circle at top left, rgba(255, 55, 95, 0.14), transparent 55%),
+        radial-gradient(circle at bottom right, rgba(63, 130, 255, 0.18), transparent 55%),
+        linear-gradient(145deg, #161623, #090914);
+      border-radius: var(--radius-lg);
+      padding: 14px 14px 12px;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      box-shadow: var(--shadow-card);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card-soft {
+      background: radial-gradient(circle at top, rgba(255, 255, 255, 0.04), transparent 65%),
+        linear-gradient(160deg, #14141f, #070710);
+      border-radius: var(--radius-md);
+      padding: 12px 12px 10px;
+      border: 1px solid rgba(255, 255, 255, 0.04);
+      box-shadow: var(--shadow-soft);
+    }
+
+    .card-header {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+
+    .card-title-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .card-pill {
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      color: var(--accent-strong);
+      background: var(--accent-soft);
+      border-radius: var(--radius-pill);
+      padding: 2px 8px 3px;
+      border: 1px solid rgba(255, 55, 95, 0.6);
+    }
+
+    .card-title {
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .card-subtitle {
+      font-size: 11px;
+      color: var(--text-soft);
+    }
+
+    .card-tagline {
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--text-soft);
+    }
+
+    .metrics-row {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+
+    .metric-chip {
+      background: rgba(7, 7, 15, 0.9);
+      border-radius: 12px;
+      padding: 8px 9px 7px;
+      border: 1px solid rgba(255, 255, 255, 0.04);
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .metric-label {
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      color: var(--text-soft);
+    }
+
+    .metric-value {
+      font-size: 17px;
+      font-weight: 600;
+      display: flex;
+      align-items: baseline;
+      gap: 4px;
+    }
+
+    .metric-unit {
+      font-size: 10px;
+      color: var(--text-soft);
+    }
+
+    .metric-trend {
+      font-size: 11px;
+      color: var(--good);
+    }
+
+    .metric-trend.bad {
+      color: var(--bad);
+    }
+
+    .metric-trend.neutral {
+      color: var(--text-muted);
+    }
+
+    .pill-status {
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      padding: 4px 9px 3px;
+      border-radius: var(--radius-pill);
+      background: rgba(9, 9, 17, 0.9);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      color: var(--text-soft);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .pill-status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--good);
+      box-shadow: 0 0 10px rgba(72, 213, 151, 0.75);
+    }
+
+    .pill-status.bad .pill-status-dot {
+      background: var(--bad);
+      box-shadow: 0 0 10px rgba(255, 85, 85, 0.75);
+    }
+
+    .pill-status.warn .pill-status-dot {
+      background: var(--warn);
+      box-shadow: 0 0 10px rgba(255, 202, 95, 0.7);
+    }
+
+    .layout-main-row {
+      display: grid;
+      grid-template-columns: minmax(0, 1.6fr) minmax(0, 1.4fr);
+      gap: 12px;
+    }
+
+    @media (max-width: 1024px) {
+      .layout-main-row {
+        grid-template-columns: minmax(0, 1fr);
+      }
+    }
+
+    .canvas-wrapper {
+      position: relative;
+      overflow: hidden;
+      border-radius: var(--radius-md);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      background: radial-gradient(circle at top, rgba(255, 255, 255, 0.04), transparent 60%),
+        linear-gradient(145deg, #141421, #050509);
+    }
+
+    #siteCanvas {
+      width: 100%;
+      height: 380px;
+      display: block;
+      background: radial-gradient(circle at 10% 10%, rgba(63, 130, 255, 0.18), transparent 40%),
+        radial-gradient(circle at 80% 80%, rgba(255, 55, 95, 0.18), transparent 45%),
+        repeating-linear-gradient(
+          0deg,
+          rgba(255, 255, 255, 0.04),
+          rgba(255, 255, 255, 0.04) 1px,
+          transparent 1px,
+          transparent 12px
+        ),
+        repeating-linear-gradient(
+          90deg,
+          rgba(255, 255, 255, 0.04),
+          rgba(255, 255, 255, 0.04) 1px,
+          transparent 1px,
+          transparent 12px
+        );
+      cursor: crosshair;
+    }
+
+    .canvas-overlay-legend {
+      position: absolute;
+      inset: auto 8px 8px auto;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      padding: 6px 8px;
+      border-radius: 10px;
+      background: rgba(2, 2, 8, 0.9);
+      border: 1px solid rgba(255, 255, 255, 0.07);
+      font-size: 10px;
+      color: var(--text-soft);
+      backdrop-filter: blur(10px);
+    }
+
+    .legend-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .legend-swatch {
+      width: 10px;
+      height: 10px;
+      border-radius: 3px;
+    }
+
+    .legend-rect {
+      background: rgba(255, 55, 95, 0.9);
+    }
+
+    .legend-line {
+      background: #3f82ff;
+    }
+
+    .legend-point {
+      background: #48d597;
+      border-radius: 50%;
+    }
+
+    .controls-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .form-row {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      margin-bottom: 8px;
+    }
+
+    label {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      color: var(--text-soft);
+    }
+
+    select,
+    input[type="number"],
+    input[type="text"] {
+      width: 100%;
+      padding: 6px 8px;
+      border-radius: 8px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      background: rgba(7, 7, 14, 0.98);
+      color: var(--text-main);
+      font-size: 12px;
+      font-family: var(--font-main);
+      outline: none;
+    }
+
+    select:focus,
+    input[type="number"]:focus,
+    input[type="text"]:focus {
+      border-color: rgba(255, 55, 95, 0.8);
+      box-shadow: 0 0 0 1px rgba(255, 55, 95, 0.5);
+    }
+
+    .toggle-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin: 4px 0 10px;
+    }
+
+    .toggle-label {
+      font-size: 11px;
+      color: var(--text-soft);
+    }
+
+    .btn {
+      border-radius: 10px;
+      border: none;
+      padding: 7px 10px;
+      font-size: 12px;
+      font-weight: 500;
+      font-family: var(--font-main);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: transform 0.08s ease, box-shadow 0.08s ease, background 0.12s ease;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--accent), var(--accent-strong));
+      color: #fff;
+      box-shadow: 0 10px 26px rgba(255, 55, 95, 0.55);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 14px 34px rgba(255, 55, 95, 0.65);
+    }
+
+    .btn-ghost {
+      background: rgba(9, 9, 16, 0.96);
+      color: var(--text-soft);
+      border: 1px solid rgba(255, 255, 255, 0.09);
+    }
+
+    .btn-ghost:hover {
+      background: rgba(17, 17, 28, 0.98);
+      transform: translateY(-1px);
+    }
+
+    .btn-sm {
+      padding: 5px 9px;
+      border-radius: 999px;
+      font-size: 11px;
+    }
+
+    .btn-danger {
+      background: linear-gradient(135deg, #ff5555, #ff7e7e);
+      color: #fff;
+      box-shadow: 0 10px 26px rgba(255, 85, 85, 0.55);
+    }
+
+    .btn-danger:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 14px 34px rgba(255, 85, 85, 0.65);
+    }
+
+    .chip {
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      padding: 3px 8px 2px;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      color: var(--text-soft);
+      background: rgba(7, 7, 14, 0.95);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .chip-pill {
+      width: 7px;
+      height: 7px;
+      border-radius: 999px;
+      background: var(--blue);
+    }
+
+    .task-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 11px;
+    }
+
+    .task-table thead {
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      font-size: 10px;
+      color: var(--text-soft);
+    }
+
+    .task-table th,
+    .task-table td {
+      text-align: left;
+      padding: 5px 4px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+    }
+
+    .task-status {
+      font-size: 10px;
+      padding: 2px 7px 2px;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      background: rgba(7, 7, 14, 0.95);
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+    }
+
+    .task-status.pending {
+      color: var(--text-soft);
+    }
+    .task-status.running {
+      color: var(--blue);
+      border-color: rgba(63, 130, 255, 0.7);
+      background: rgba(63, 130, 255, 0.08);
+    }
+    .task-status.completed {
+      color: var(--good);
+      border-color: rgba(72, 213, 151, 0.7);
+      background: rgba(72, 213, 151, 0.08);
+    }
+
+    .pill-small {
+      border-radius: 999px;
+      padding: 2px 6px 1px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      font-size: 10px;
+      color: var(--text-soft);
+      background: rgba(7, 7, 14, 0.96);
+    }
+
+    .sensor-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+      font-size: 11px;
+    }
+
+    .sensor-row {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .sensor-label {
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.13em;
+      color: var(--text-soft);
+    }
+
+    .sensor-value {
+      font-family: var(--font-mono);
+      font-size: 12px;
+    }
+
+    .sensor-sub {
+      font-size: 10px;
+      color: var(--text-soft);
+    }
+
+    .hstack {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .log-list {
+      max-height: 150px;
+      overflow-y: auto;
+      font-size: 11px;
+      padding-right: 4px;
+    }
+
+    .log-entry {
+      padding: 5px 0;
+      border-bottom: 1px dashed rgba(255, 255, 255, 0.04);
+    }
+
+    .log-entry strong {
+      color: var(--accent-strong);
+      font-weight: 500;
+    }
+
+    .badge-secondary {
+      border-radius: 999px;
+      padding: 2px 6px;
+      font-size: 9px;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      color: var(--text-soft);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .pill-toggle {
+      position: relative;
+      width: 40px;
+      height: 20px;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      background: rgba(9, 9, 17, 0.9);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      padding: 2px;
+    }
+
+    .pill-toggle-thumb {
+      width: 16px;
+      height: 16px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.85);
+      transform: translateX(0);
+      transition: transform 0.16s ease, background 0.12s ease;
+    }
+
+    .pill-toggle.on {
+      background: rgba(255, 55, 95, 0.2);
+      border-color: rgba(255, 55, 95, 0.7);
+    }
+
+    .pill-toggle.on .pill-toggle-thumb {
+      transform: translateX(18px);
+      background: #ff375f;
+    }
+
+    .alerts-list {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      font-size: 11px;
+    }
+
+    .alert-empty {
+      font-size: 11px;
+      color: var(--text-soft);
+    }
+
+    .alert-item {
+      display: flex;
+      gap: 8px;
+      align-items: flex-start;
+      padding: 5px 7px;
+      border-radius: 9px;
+      background: rgba(10, 10, 18, 0.95);
+      border: 1px solid rgba(255, 255, 255, 0.04);
+    }
+
+    .alert-badge {
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: var(--warn);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      font-weight: 700;
+      color: #11111a;
+    }
+
+    .alert-text small {
+      display: block;
+      font-size: 9px;
+      color: var(--text-soft);
+      margin-top: 1px;
+    }
+
+    .badge-primary {
+      font-size: 9px;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      padding: 2px 6px 1px;
+      border-radius: 999px;
+      border: 1px solid rgba(63, 130, 255, 0.7);
+      color: rgba(184, 199, 255, 0.96);
+      background: rgba(63, 130, 255, 0.1);
+    }
+
+    .section-footer {
+      margin-top: 4px;
+      font-size: 10px;
+      color: var(--text-soft);
+    }
+
+    .footer-note {
+      padding: 0 26px 16px;
+      font-size: 10px;
+      color: var(--text-soft);
+      text-align: right;
+    }
+  </style>
+</head>
+<body>
+<div class="app-shell">
+  <header class="app-header">
+    <div class="brand">
+      <div class="brand-logo">
+        <div class="brand-logo-inner">RN</div>
+      </div>
+      <div class="brand-meta">
+        <div class="brand-title">RedNode Excavation</div>
+        <div class="brand-subtitle">Omconsole Machine Control · Task Intelligence</div>
+      </div>
+    </div>
+    <div class="header-right">
+      <div class="environment-pill">
+        <span class="env-dot"></span> LIVE OPS · NODE CLUSTER
+      </div>
+      <div class="user-chip">
+        <div class="user-avatar">J</div>
+        <div class="user-meta">
+          <div class="user-name">Site Operator</div>
+          <div class="user-role">Omconsole · Excavation Node</div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="main">
+    <!-- LEFT COLUMN: Overview + Site Canvas + Sensors -->
+    <section>
+      <!-- Top overview / machine + alerts -->
+      <div class="card" style="margin-bottom: 12px;">
+        <div class="card-header">
+          <div class="card-title-row">
+            <span class="card-pill">Cluster Overview</span>
+            <div class="card-title">Excavation Node Status</div>
+          </div>
+          <div class="hstack">
+            <span class="badge-primary">Excavator · RedNode-01</span>
+          </div>
+        </div>
+        <div class="metrics-row">
+          <div class="metric-chip">
+            <div class="metric-label">Active Primary Tasks</div>
+            <div class="metric-value">
+              <span id="metricPrimaryCount">0</span>
+            </div>
+            <div id="metricPrimarySummary" class="metric-trend neutral">
+              No tasks yet
+            </div>
+          </div>
+          <div class="metric-chip">
+            <div class="metric-label">Awareness Mode</div>
+            <div class="metric-value">
+              <span id="metricAwarenessState">OFF</span>
+            </div>
+            <div id="metricAwarenessSummary" class="metric-trend neutral">
+              Secondary triggers disabled
+            </div>
+          </div>
+          <div class="metric-chip">
+            <div class="metric-label">Obstacles in Reach</div>
+            <div class="metric-value">
+              <span id="metricObstacles">0</span>
+              <span class="metric-unit">objects</span>
+            </div>
+            <div id="metricObstaclesSummary" class="metric-trend">
+              Sensor sweep idle
+            </div>
+          </div>
+        </div>
+        <div class="layout-main-row">
+          <div class="card-soft">
+            <div class="card-header">
+              <div class="card-title-row">
+                <span class="card-title">Live Site Map</span>
+              </div>
+              <div class="card-tagline">Draw job geometry · Pipe runs · No-go zones</div>
+            </div>
+            <div class="canvas-wrapper">
+              <canvas id="siteCanvas"></canvas>
+              <div class="canvas-overlay-legend">
+                <div class="legend-row">
+                  <span class="legend-swatch legend-rect"></span> Area tasks
+                </div>
+                <div class="legend-row">
+                  <span class="legend-swatch legend-line"></span> Pipe / cable runs
+                </div>
+                <div class="legend-row">
+                  <span class="legend-swatch legend-point"></span> Posts / single points
+                </div>
+              </div>
+            </div>
+            <div class="section-footer">
+              Click–drag to draw the current task on the map. Geometry is stored as coordinates for the task manager.
+            </div>
+          </div>
+
+          <div class="card-soft">
+            <div class="card-header">
+              <div class="card-title-row">
+                <span class="card-title">Sensor Fusion Snapshot</span>
+              </div>
+              <span class="card-tagline">Lidar · Camera · Infrared · Slope</span>
+            </div>
+            <div class="sensor-grid">
+              <div class="sensor-row">
+                <span class="sensor-label">Lidar (0–5m)</span>
+                <span id="sensorLidarObstacles" class="sensor-value">—</span>
+                <span id="sensorLidarSub" class="sensor-sub">Closest: — m</span>
+              </div>
+              <div class="sensor-row">
+                <span class="sensor-label">Infrared Hotspots</span>
+                <span id="sensorInfraHotspots" class="sensor-value">—</span>
+                <span id="sensorInfraSub" class="sensor-sub">Max temp: — °C</span>
+              </div>
+              <div class="sensor-row">
+                <span class="sensor-label">Slope &amp; Depth</span>
+                <span id="sensorSlopeDepth" class="sensor-value">—</span>
+                <span id="sensorSlopeSub" class="sensor-sub">Slope: — ° · Depth: — m</span>
+              </div>
+            </div>
+            <div style="margin-top: 8px;">
+              <div class="card-subtitle">
+                These values mirror your Python helpers:
+                <code style="font-family: var(--font-mono); font-size: 10px;">
+                  get_lidar_data · get_infrared_data · get_current_depth · get_slope
+                </code>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- RIGHT COLUMN: Task controls, queue, training log, alerts -->
+    <section>
+      <!-- Task controls -->
+      <div class="card" style="margin-bottom: 12px;">
+        <div class="card-header">
+          <div class="card-title-row">
+            <span class="card-pill">Task Manager</span>
+            <div class="card-title">Job Definition &amp; Awareness Logic</div>
+          </div>
+          <span class="card-tagline">Primary jobs · Secondary reactions · Omconsole orchestration</span>
+        </div>
+        <div class="controls-grid">
+          <div class="card-soft">
+            <div class="form-row">
+              <label for="taskType">Task Type</label>
+              <select id="taskType">
+                <option>Post Digging</option>
+                <option>Pipe Laying</option>
+                <option>Area Stripping</option>
+                <option>Dig Area</option>
+                <option>Bush Clearing</option>
+                <option>Cable Laying</option>
+                <option>No-Go Zone</option>
+                <option>Depth Piling</option>
+              </select>
+            </div>
+            <div class="form-row">
+              <label for="taskPriority">Priority (1–10)</label>
+              <input id="taskPriority" type="number" min="1" max="10" value="5" />
+            </div>
+            <div class="form-row">
+              <label for="taskGrade">Grade (1–10)</label>
+              <input id="taskGrade" type="number" min="1" max="10" value="5" />
+            </div>
+            <div class="form-row">
+              <label>Task Kind</label>
+              <select id="taskKind">
+                <option value="primary" selected>Primary</option>
+                <option value="secondary">Secondary (awareness reaction)</option>
+              </select>
+            </div>
+            <button class="btn btn-primary" id="btnAddTask">
+              + Add Task (uses drawn geometry)
+            </button>
+            <div class="section-footer">
+              In your Python version this wraps <code>instantiate_task</code> and <code>TaskManager.add_task</code>.
+            </div>
+          </div>
+
+          <div class="card-soft">
+            <div class="toggle-row">
+              <div class="toggle-label">
+                <strong>Enable Awareness Tasks</strong><br />
+                <span style="font-size: 10px;">
+                  Mirrors <code>enable_awareness_task()</code> and
+                  <code>monitor_for_awareness_task()</code> in your TaskManager.
+                </span>
+              </div>
+              <div id="awarenessToggle" class="pill-toggle" role="switch" aria-checked="false">
+                <div class="pill-toggle-thumb"></div>
+              </div>
+            </div>
+            <div class="form-row">
+              <label>Execution Controls</label>
+              <div class="hstack">
+                <button class="btn btn-sm btn-ghost" id="btnStartTasks">Start Tasks</button>
+                <button class="btn btn-sm btn-danger" id="btnStopTasks">Stop / Clear Tasks</button>
+              </div>
+            </div>
+            <div class="form-row">
+              <label for="modelOverlayLabel">3D Model Overlay (concept)</label>
+              <input id="modelOverlayLabel" type="text" placeholder="e.g. site_model.glb or point cloud id" />
+            </div>
+            <div class="section-footer">
+              In the Tkinter app this is where <code>ModelUploader</code> &amp; <code>LiveFeedOverlay</code> sit.<br />
+              Here it's rendered conceptually; hook to a backend to stream a real overlay.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Task queue + training log + alerts -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title-row">
+            <span class="card-pill">Execution &amp; Learning</span>
+            <div class="card-title">Task Queue · Dynamic Training · Alerts</div>
+          </div>
+          <span class="card-tagline">Sequential execution · Awareness-triggered reactions · Training store</span>
+        </div>
+        <div class="layout-main-row">
+          <div class="card-soft">
+            <div class="card-header" style="margin-bottom: 4px;">
+              <div class="card-title-row">
+                <span class="card-title">Task Queue</span>
+              </div>
+              <span class="badge-secondary" id="taskQueueBadge">0 tasks queued</span>
+            </div>
+            <div style="max-height: 180px; overflow-y: auto; padding-right: 4px;">
+              <table class="task-table">
+                <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Task</th>
+                  <th>P</th>
+                  <th>G</th>
+                  <th>Kind</th>
+                  <th>Status</th>
+                </tr>
+                </thead>
+                <tbody id="tasksTableBody"></tbody>
+              </table>
+            </div>
+            <div class="section-footer">
+              When "Start Tasks" is pressed, tasks execute in order (simulating your <code>real_time_task_control()</code> loop).
+            </div>
+          </div>
+
+          <div class="card-soft">
+            <div class="card-header" style="margin-bottom: 6px;">
+              <div class="card-title-row">
+                <span class="card-title">Adaptive Training Log</span>
+              </div>
+              <span class="badge-secondary">mirrors AdaptiveDynamicTraining</span>
+            </div>
+            <div class="log-list" id="trainingLog"></div>
+            <div class="section-footer">
+              Each completed task logs position, depth, and task name, similar to your SQLite-backed
+              <code>training_data</code> table.
+            </div>
+          </div>
+        </div>
+
+        <div class="card-soft" style="margin-top: 10px;">
+          <div class="card-header" style="margin-bottom: 6px;">
+            <div class="card-title-row">
+              <span class="card-title">Situational Alerts</span>
+            </div>
+            <span class="badge-secondary">Derived from sensors + awareness</span>
+          </div>
+          <div class="alerts-list" id="alertList">
+            <div class="alert-empty">No active alerts. Node is operating within defined envelopes.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div class="footer-note">
+    HTML dashboard is a visual twin of your Tkinter dashboards: task geometry, awareness logic, sensor fusion, and adaptive training.
+  </div>
+</div>
+
+<script>
+  // ------------------------------
+  // Task & Training Models (JS mirror of your Python classes)
+  // ------------------------------
+
+  class Task {
+    constructor(name, priority, grade, coordinates, kind = "primary") {
+      this.id = Task.nextId++;
+      this.name = name;
+      this.priority = priority;
+      this.grade = grade;
+      this.status = "pending"; // pending | running | completed
+      this.kind = kind; // primary or secondary
+      this.coordinates = coordinates; // [x1, y1, x2, y2] or [x, y]
+      this.settings = {};
+    }
+
+    setSettings(settings) {
+      Object.assign(this.settings, settings);
+    }
+  }
+  Task.nextId = 1;
+
+  class TaskManager {
+    constructor() {
+      this.primaryTasks = [];
+      this.secondaryTasks = [];
+      this.awarenessEnabled = false;
+      this.executing = false;
+      this._currentTimeout = null;
+    }
+
+    addTask(task) {
+      if (task.kind === "secondary") {
+        this.secondaryTasks.push(task);
+      } else {
+        this.primaryTasks.push(task);
+      }
+      this.sortTasks();
+    }
+
+    sortTasks() {
+      const sorter = (a, b) => b.priority - a.priority;
+      this.primaryTasks.sort(sorter);
+      this.secondaryTasks.sort(sorter);
+    }
+
+    getNextTask(isSecondary = false) {
+      if (isSecondary) return this.secondaryTasks.shift() || null;
+      return this.primaryTasks.shift() || null;
+    }
+
+    enableAwareness(enable) {
+      this.awarenessEnabled = enable;
+    }
+
+    clearAll() {
+      this.primaryTasks = [];
+      this.secondaryTasks = [];
+      this.executing = false;
+      if (this._currentTimeout) {
+        clearTimeout(this._currentTimeout);
+        this._currentTimeout = null;
+      }
+    }
+
+    // Simulated awareness condition (mirrors monitor_for_awareness_task)
+    checkAwarenessTrigger(taskName) {
+      if (!this.awarenessEnabled) return false;
+      // Simple probability-based simulation
+      return Math.random() < 0.4;
+    }
+  }
+
+  class AdaptiveDynamicTraining {
+    constructor() {
+      this.trainingData = [];
+    }
+
+    logTrainingData(position, action, depth, task) {
+      const record = {
+        position,
+        action,
+        depth,
+        task,
+        timestamp: new Date().toISOString()
+      };
+      this.trainingData.push(record);
+      if (this.trainingData.length > 50) {
+        this.trainingData.shift();
+      }
+      renderTrainingLog();
+    }
+  }
+
+  const taskManager = new TaskManager();
+  const trainingSystem = new AdaptiveDynamicTraining();
+
+  // ------------------------------
+  // Canvas Drawing (mirror of DrawingCanvas)
+  // ------------------------------
+
+  const canvas = document.getElementById("siteCanvas");
+  const ctx = canvas.getContext("2d");
+
+  let canvasWidth = 0;
+  let canvasHeight = 0;
+  let isDrawing = false;
+  let startX = 0;
+  let startY = 0;
+  let currentTool = "rectangle"; // rectangle | line | point
+  const drawnShapes = []; // {type, coordinates, taskName}
+
+  function resizeCanvas() {
+    const rect = canvas.getBoundingClientRect();
+    canvasWidth = rect.width;
+    canvasHeight = rect.height;
+    canvas.width = canvasWidth;
+    canvas.height = canvasHeight;
+    redrawCanvas();
+  }
+
+  window.addEventListener("resize", resizeCanvas);
+  resizeCanvas();
+
+  function getCurrentTaskName() {
+    return document.getElementById("taskType").value || "Task";
+  }
+
+  function setToolForTask(taskName) {
+    if (["Post Digging", "Area Stripping", "Dig Area", "Bush Clearing", "No-Go Zone"].includes(taskName)) {
+      currentTool = "rectangle";
+    } else if (["Pipe Laying", "Cable Laying"].includes(taskName)) {
+      currentTool = "line";
+    } else {
+      currentTool = "point";
+    }
+  }
+
+  canvas.addEventListener("mousedown", (e) => {
+    const taskName = getCurrentTaskName();
+    setToolForTask(taskName);
+    isDrawing = true;
+    const rect = canvas.getBoundingClientRect();
+    startX = e.clientX - rect.left;
+    startY = e.clientY - rect.top;
+
+    if (currentTool === "point") {
+      const shape = {
+        type: "point",
+        coordinates: [startX, startY],
+        taskName
+      };
+      drawnShapes.push(shape);
+      redrawCanvas();
+      isDrawing = false;
+    }
+  });
+
+  canvas.addEventListener("mousemove", (e) => {
+    if (!isDrawing || currentTool === "point") return;
+    const rect = canvas.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    redrawCanvas();
+    ctx.save();
+    ctx.lineWidth = 2;
+    if (currentTool === "rectangle") {
+      ctx.strokeStyle = "#ff375f";
+      ctx.strokeRect(startX, startY, x - startX, y - startY);
+    } else if (currentTool === "line") {
+      ctx.strokeStyle = "#3f82ff";
+      ctx.beginPath();
+      ctx.moveTo(startX, startY);
+      ctx.lineTo(x, y);
+      ctx.stroke();
+    }
+    ctx.restore();
+  });
+
+  canvas.addEventListener("mouseup", (e) => {
+    if (!isDrawing || currentTool === "point") return;
+    isDrawing = false;
+    const rect = canvas.getBoundingClientRect();
+    const endX = e.clientX - rect.left;
+    const endY = e.clientY - rect.top;
+    const taskName = getCurrentTaskName();
+
+    let coordinates;
+    if (currentTool === "rectangle" || currentTool === "line") {
+      coordinates = [startX, startY, endX, endY];
+    }
+
+    const shape = {
+      type: currentTool,
+      coordinates,
+      taskName
+    };
+    drawnShapes.push(shape);
+    redrawCanvas();
+  });
+
+  function redrawCanvas() {
+    ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+
+    drawnShapes.forEach((shape) => {
+      const [x1, y1, x2, y2] = shape.coordinates || [];
+      ctx.save();
+      if (shape.type === "rectangle") {
+        ctx.strokeStyle = "#ff375f";
+        ctx.lineWidth = 2;
+        ctx.strokeRect(x1, y1, x2 - x1, y2 - y1);
+      } else if (shape.type === "line") {
+        ctx.strokeStyle = "#3f82ff";
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(x1, y1);
+        ctx.lineTo(x2, y2);
+        ctx.stroke();
+      } else if (shape.type === "point") {
+        const [px, py] = shape.coordinates;
+        ctx.fillStyle = "#48d597";
+        ctx.beginPath();
+        ctx.arc(px, py, 5, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      ctx.restore();
+    });
+  }
+
+  // ------------------------------
+  // Task UI wiring
+  // ------------------------------
+
+  const tasksTableBody = document.getElementById("tasksTableBody");
+  const taskQueueBadge = document.getElementById("taskQueueBadge");
+  const metricPrimaryCount = document.getElementById("metricPrimaryCount");
+  const metricPrimarySummary = document.getElementById("metricPrimarySummary");
+
+  function getLastShapeForTask(taskName) {
+    for (let i = drawnShapes.length - 1; i >= 0; i--) {
+      if (drawnShapes[i].taskName === taskName) {
+        return drawnShapes[i];
+      }
+    }
+    return null;
+  }
+
+  document.getElementById("btnAddTask").addEventListener("click", () => {
+    const taskName = document.getElementById("taskType").value;
+    const priority = parseInt(document.getElementById("taskPriority").value, 10) || 5;
+    const grade = parseInt(document.getElementById("taskGrade").value, 10) || 5;
+    const kind = document.getElementById("taskKind").value || "primary";
+
+    const shape = getLastShapeForTask(taskName);
+    if (!shape) {
+      alert("Please draw a shape for this task on the site map before adding.");
+      return;
+    }
+
+    const task = new Task(taskName, priority, grade, shape.coordinates, kind);
+    taskManager.addTask(task);
+    renderTasks();
+  });
+
+  function renderTasks() {
+    tasksTableBody.innerHTML = "";
+    const allTasks = [...taskManager.primaryTasks, ...taskManager.secondaryTasks];
+
+    allTasks.forEach((task, index) => {
+      const tr = document.createElement("tr");
+
+      const kindLabel = task.kind === "secondary" ? "Secondary" : "Primary";
+
+      tr.innerHTML = `
+        <td>${index + 1}</td>
+        <td>${task.name}</td>
+        <td>${task.priority}</td>
+        <td>${task.grade}</td>
+        <td><span class="pill-small">${kindLabel}</span></td>
+        <td><span class="task-status ${task.status}">${task.status}</span></td>
+      `;
+
+      tasksTableBody.appendChild(tr);
+    });
+
+    const primaryCount = taskManager.primaryTasks.length;
+    const secCount = taskManager.secondaryTasks.length;
+    const total = primaryCount + secCount;
+    taskQueueBadge.textContent = `${total} task${total === 1 ? "" : "s"} queued`;
+    metricPrimaryCount.textContent = primaryCount;
+    if (primaryCount === 0) {
+      metricPrimarySummary.textContent = "No active primary tasks";
+      metricPrimarySummary.className = "metric-trend neutral";
+    } else {
+      metricPrimarySummary.textContent = `${primaryCount} in queue · ${secCount} secondary`;
+      metricPrimarySummary.className = "metric-trend";
+    }
+  }
+
+  // ------------------------------
+  // Task execution (mirror of real_time_task_control)
+  // ------------------------------
+
+  function simulateTaskDuration(task) {
+    // Based on your Python "time.sleep" durations, scale a bit:
+    switch (task.name) {
+      case "Post Digging":
+      case "Bush Clearing":
+        return 2000;
+      case "Pipe Laying":
+      case "Area Stripping":
+      case "Dig Area":
+      case "Cable Laying":
+        return 3000;
+      case "No-Go Zone":
+      case "Depth Piling":
+        return 2000;
+      default:
+        return 2000;
+    }
+  }
+
+  function randomPosition() {
+    return [
+      (Math.random() * 200).toFixed(1),
+      (Math.random() * 200).toFixed(1),
+      5
+    ];
+  }
+
+  function randomDepth() {
+    return (1 + Math.random() * 9).toFixed(1);
+  }
+
+  function logAlert(message, level = "!", severity = "warn") {
+    const alertList = document.getElementById("alertList");
+    alertList.innerHTML = "";
+    const item = document.createElement("div");
+    item.className = "alert-item";
+    const badge = document.createElement("div");
+    badge.className = "alert-badge";
+    badge.textContent = level;
+    const text = document.createElement("div");
+    text.className = "alert-text";
+    text.innerHTML = `<strong>${message}</strong><small>${new Date().toLocaleTimeString()}</small>`;
+    item.appendChild(badge);
+    item.appendChild(text);
+    alertList.appendChild(item);
+
+    const pill = document.querySelector(".pill-status");
+    if (pill) {
+      pill.classList.remove("bad", "warn");
+      if (severity === "bad") pill.classList.add("bad");
+      else if (severity === "warn") pill.classList.add("warn");
+    }
+  }
+
+  function clearAlertIfNeeded() {
+    const alertList = document.getElementById("alertList");
+    if (alertList && alertList.children.length === 0) {
+      const empty = document.createElement("div");
+      empty.className = "alert-empty";
+      empty.textContent = "No active alerts. Node is operating within defined envelopes.";
+      alertList.appendChild(empty);
+    }
+  }
+
+  function executeNextTask() {
+    if (!taskManager.executing) return;
+
+    const task = taskManager.getNextTask(false); // primary
+    if (!task) {
+      // No primary tasks left; optionally run secondary ones on demand only
+      taskManager.executing = false;
+      clearAlertIfNeeded();
+      renderTasks();
+      return;
+    }
+
+    task.status = "running";
+    renderTasks();
+
+    const duration = simulateTaskDuration(task);
+
+    // Awareness logic – mirrors monitor_for_awareness_task
+    const triggered = taskManager.checkAwarenessTrigger(task.name);
+    if (triggered) {
+      const sec = taskManager.getNextTask(true);
+      if (sec) {
+        sec.status = "running";
+        renderTasks();
+        logAlert(
+          `Awareness triggered: executing secondary task "${sec.name}" alongside "${task.name}"`,
+          "A",
+          "warn"
+        );
+        setTimeout(() => {
+          sec.status = "completed";
+          renderTasks();
+          trainingSystem.logTrainingData(randomPosition(), sec.name, randomDepth(), sec.name);
+        }, duration * 0.7);
+      }
+    }
+
+    // Complete primary task
+    taskManager._currentTimeout = setTimeout(() => {
+      task.status = "completed";
+      renderTasks();
+
+      trainingSystem.logTrainingData(randomPosition(), task.name, randomDepth(), task.name);
+      executeNextTask();
+    }, duration);
+  }
+
+  document.getElementById("btnStartTasks").addEventListener("click", () => {
+    if (taskManager.executing) return;
+    taskManager.executing = true;
+    executeNextTask();
+  });
+
+  document.getElementById("btnStopTasks").addEventListener("click", () => {
+    taskManager.clearAll();
+    document.getElementById("trainingLog").innerHTML = "";
+    document.getElementById("alertList").innerHTML =
+      "<div class='alert-empty'>Tasks cleared. No active alerts.</div>";
+    renderTasks();
+  });
+
+  // ------------------------------
+  // Awareness toggle wiring
+  // ------------------------------
+
+  const awarenessToggle = document.getElementById("awarenessToggle");
+  const metricAwarenessState = document.getElementById("metricAwarenessState");
+  const metricAwarenessSummary = document.getElementById("metricAwarenessSummary");
+
+  awarenessToggle.addEventListener("click", () => {
+    const isOn = awarenessToggle.classList.toggle("on");
+    taskManager.enableAwareness(isOn);
+    awarenessToggle.setAttribute("aria-checked", isOn ? "true" : "false");
+    metricAwarenessState.textContent = isOn ? "ON" : "OFF";
+    if (isOn) {
+      metricAwarenessSummary.textContent = "Secondary tasks will trigger on sensor events.";
+      metricAwarenessSummary.className = "metric-trend";
+    } else {
+      metricAwarenessSummary.textContent = "Awareness tasks disabled.";
+      metricAwarenessSummary.className = "metric-trend neutral";
+    }
+  });
+
+  // ------------------------------
+  // Training log rendering
+  // ------------------------------
+
+  function renderTrainingLog() {
+    const container = document.getElementById("trainingLog");
+    container.innerHTML = "";
+    const latest = trainingSystem.trainingData.slice(-10).reverse();
+    latest.forEach((rec) => {
+      const div = document.createElement("div");
+      div.className = "log-entry";
+      div.innerHTML = `
+        <strong>${rec.task}</strong> @ pos ${rec.position.join(", ")}
+        · depth ${rec.depth} m<br />
+        <span style="color: var(--text-soft); font-size: 10px;">${new Date(rec.timestamp).toLocaleTimeString()}</span>
+      `;
+      container.appendChild(div);
+    });
+  }
+
+  // ------------------------------
+  // Sensor simulation (mirror of get_lidar_data, get_infrared_data, get_current_depth, get_slope)
+  // ------------------------------
+
+  function simulateSensors() {
+    // Lidar: 1000 rays; count < 5m
+    const lidarObstacles = Math.floor(Math.random() * 18);
+    const closest = (Math.random() * 5).toFixed(2);
+
+    document.getElementById("sensorLidarObstacles").textContent = `${lidarObstacles} pts`;
+    document.getElementById("sensorLidarSub").textContent = `Closest: ${closest} m`;
+
+    // Infrared: hotspots > 60°C
+    const hotspots = Math.floor(Math.random() * 6);
+    const maxTemp = (60 + Math.random() * 40).toFixed(1);
+    document.getElementById("sensorInfraHotspots").textContent = `${hotspots} zones`;
+    document.getElementById("sensorInfraSub").textContent = `Max temp: ${maxTemp} °C`;
+
+    // Slope & depth
+    const slope = (Math.random() * 15).toFixed(1);
+    const depth = (1 + Math.random() * 9).toFixed(1);
+    document.getElementById("sensorSlopeDepth").textContent = `${depth} m`;
+    document.getElementById("sensorSlopeSub").textContent = `Slope: ${slope} ° · Depth: ${depth} m`;
+
+    // Obstacle metric card
+    document.getElementById("metricObstacles").textContent = lidarObstacles;
+
+    const metricObstaclesSummary = document.getElementById("metricObstaclesSummary");
+    if (lidarObstacles === 0) {
+      metricObstaclesSummary.textContent = "Sensor sweep clear.";
+      metricObstaclesSummary.className = "metric-trend";
+    } else if (lidarObstacles < 6) {
+      metricObstaclesSummary.textContent = "Light clutter near work envelope.";
+      metricObstaclesSummary.className = "metric-trend";
+    } else {
+      metricObstaclesSummary.textContent = "High congestion in bucket reach.";
+      metricObstaclesSummary.className = "metric-trend bad";
+      logAlert("High obstacle density detected in work envelope.", "!", "warn");
+    }
+  }
+
+  setInterval(simulateSensors, 2000);
+  simulateSensors();
+
+  // Initial render
+  renderTasks();
+</script>
+</body>
+</html>
