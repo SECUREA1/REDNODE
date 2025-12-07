@@ -29,6 +29,51 @@
       color-scheme: dark;
       scroll-behavior: smooth;
     }
+    .global-rail {
+      display: flex;
+      align-items: center;
+      gap: 0.9rem;
+      flex-wrap: wrap;
+      justify-content: center;
+      padding: 0.75rem 1.2rem;
+      background: linear-gradient(120deg, #b30000, #ffb400);
+      color: #1b0b0b;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      box-shadow: 0 14px 26px rgba(0, 0, 0, 0.35);
+      position: relative;
+      z-index: 30;
+    }
+    .global-rail .rail-brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      text-transform: uppercase;
+      color: #fff6da;
+    }
+    .global-rail .rail-dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 3px;
+      background: #fff6da;
+      box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.28);
+    }
+    .global-rail a {
+      color: #1b0b0b;
+      text-decoration: none;
+      padding: 0.45rem 0.85rem;
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.86);
+      border: 1px solid rgba(27, 11, 11, 0.12);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.65);
+      font-size: 0.9rem;
+    }
+    .global-rail a:hover,
+    .global-rail a:focus-visible {
+      color: #7b1100;
+      transform: translateY(-1px);
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.25);
+    }
     *, *::before, *::after {
       box-sizing: border-box;
     }
@@ -349,6 +394,13 @@
   </style>
 </head>
 <body>
+  <div class="global-rail" role="navigation" aria-label="RedNode global navigation">
+    <span class="rail-brand"><span class="rail-dot" aria-hidden="true"></span>RedNode.ai</span>
+    <a href="start.html">Token Gate</a>
+    <a href="dashboard.html">Operations Dashboard</a>
+    <a href="CHAINES.IO-CHAT-codex-fix-footer-not-staying-active-on-scroll/index.html">Chat Stream</a>
+    <a href="home.html">Product Overview</a>
+  </div>
   <nav>
     <div class="nav-content">
       <div class="brand">

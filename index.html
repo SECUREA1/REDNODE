@@ -4,11 +4,18 @@
   <meta charset="utf-8" />
   <title>RedNode Launching…</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta http-equiv="refresh" content="0; url=start.html" />
   <script>
-    window.addEventListener('DOMContentLoaded', () => {
-      window.location.replace('start.html');
-    });
+    const redirectTo = () => {
+      const { hash, search } = window.location;
+      const destination = `start.html${search || ''}${hash || ''}`;
+      window.location.replace(destination);
+    };
+
+    if (document.readyState === 'loading') {
+      window.addEventListener('DOMContentLoaded', redirectTo);
+    } else {
+      redirectTo();
+    }
   </script>
 </head>
 <body>
