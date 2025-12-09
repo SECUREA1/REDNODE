@@ -14,6 +14,115 @@
       transition: all 0.3s ease;
     }
 
+    .intro-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 2000;
+      display: grid;
+      place-items: center;
+      background: radial-gradient(circle at 20% 20%, rgba(255, 87, 87, 0.2), transparent 40%),
+        radial-gradient(circle at 80% 30%, rgba(252, 211, 77, 0.2), transparent 35%),
+        linear-gradient(135deg, #0b0d1a, #120b18 42%, #170f24);
+      overflow: hidden;
+      pointer-events: none;
+    }
+
+    .intro-overlay::after {
+      content: '';
+      position: absolute;
+      inset: -20%;
+      background: radial-gradient(circle, rgba(255, 255, 255, 0.08), transparent 60%);
+      filter: blur(60px);
+      opacity: 0;
+      transition: opacity 0.8s ease;
+    }
+
+    .intro-overlay.animate::after { opacity: 0.75; }
+
+    .intro-logo-wrap {
+      position: relative;
+      display: grid;
+      place-items: center;
+      gap: 1rem;
+    }
+
+    .intro-logo {
+      width: clamp(120px, 18vw, 220px);
+      height: clamp(120px, 18vw, 220px);
+      filter: drop-shadow(0 0 18px rgba(255, 195, 30, 0.65));
+      opacity: 0;
+      transform: scale(0.4) rotate(-20deg);
+    }
+
+    .intro-overlay.animate .intro-logo {
+      animation: logo-thrust 2s ease-out forwards;
+    }
+
+    @keyframes logo-thrust {
+      0% {
+        opacity: 1;
+        transform: scale(0.4) rotate(-20deg);
+      }
+      45% {
+        transform: scale(1.35) rotate(360deg);
+        filter: drop-shadow(0 0 28px rgba(255, 195, 30, 0.8));
+      }
+      70% {
+        transform: scale(1.05) rotate(540deg);
+        filter: drop-shadow(0 0 40px rgba(255, 214, 102, 0.9));
+      }
+      100% {
+        opacity: 0;
+        transform: scale(1.2) rotate(720deg);
+      }
+    }
+
+    .intro-text {
+      font-family: 'Montserrat', Arial, sans-serif;
+      font-weight: 700;
+      letter-spacing: 0.35em;
+      color: #f8f5ef;
+      font-size: clamp(1rem, 4vw, 1.8rem);
+      text-transform: uppercase;
+      opacity: 0;
+      transform: translateY(12px);
+      text-shadow: 0 0 18px rgba(255, 214, 102, 0.4);
+    }
+
+    .intro-overlay.animate .intro-text {
+      animation: text-flare 1.6s 1s ease-out forwards, text-fade 0.9s 3s ease forwards;
+    }
+
+    @keyframes text-flare {
+      0% {
+        opacity: 0;
+        transform: translateY(14px);
+      }
+      50% {
+        opacity: 1;
+        transform: translateY(0);
+        text-shadow: 0 0 28px rgba(255, 214, 102, 0.7);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes text-fade {
+      to {
+        opacity: 0;
+        transform: translateY(-10px);
+        letter-spacing: 0.45em;
+      }
+    }
+
+    .intro-overlay.animate { animation: overlay-disappear 1.1s 3.5s ease forwards; }
+
+    @keyframes overlay-disappear {
+      to { opacity: 0; visibility: hidden; }
+    }
+
     body {
       font-family: 'Montserrat', Arial, sans-serif;
       line-height: 1.6;
@@ -757,6 +866,12 @@
   </style>
 </head>
 <body>
+  <div class="intro-overlay" id="intro-overlay">
+    <div class="intro-logo-wrap">
+      <img src="static/excavator.svg" alt="RedNode excavator logo" class="intro-logo" />
+      <div class="intro-text">REDNODE.AI</div>
+    </div>
+  </div>
   <div id="token-gate" class="gate-overlay" role="dialog" aria-modal="true" aria-labelledby="gate-title">
     <div class="gate-card">
       <div class="gate-header">
@@ -998,6 +1113,70 @@
     <p>&copy; 2025 RedNode.ai. All Rights Reserved.</p>
   </footer>
   <script>
+    (() => {
+      const overlay = document.getElementById('intro-overlay');
+      const startEngineSound = (() => {
+        let started = false;
+        let audioCtx;
+        let engineGain;
+        return () => {
+          if (started && audioCtx?.state === 'suspended') {
+            audioCtx.resume();
+            return;
+          }
+          if (started) return;
+          try {
+            audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            const base = audioCtx.createOscillator();
+            base.type = 'sawtooth';
+            base.frequency.value = 42;
+
+            const wobble = audioCtx.createOscillator();
+            wobble.type = 'triangle';
+            wobble.frequency.value = 3.8;
+
+            const wobbleGain = audioCtx.createGain();
+            wobbleGain.gain.value = 14;
+            wobble.connect(wobbleGain);
+            wobbleGain.connect(base.frequency);
+
+            engineGain = audioCtx.createGain();
+            engineGain.gain.setValueAtTime(0.0001, audioCtx.currentTime);
+            base.connect(engineGain);
+            engineGain.connect(audioCtx.destination);
+
+            base.start();
+            wobble.start();
+            engineGain.gain.exponentialRampToValueAtTime(0.22, audioCtx.currentTime + 0.08);
+            engineGain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 3.9);
+            started = true;
+            setTimeout(() => {
+              base.stop();
+              wobble.stop();
+              audioCtx.close();
+            }, 4500);
+          } catch (err) {
+            console.warn('Engine sound unavailable', err);
+          }
+        };
+      })();
+
+      const playIntro = () => {
+        if (!overlay) return;
+        overlay.classList.add('animate');
+        startEngineSound();
+        setTimeout(() => overlay.remove(), 4800);
+      };
+
+      if (document.readyState === 'complete' || document.readyState === 'interactive') {
+        requestAnimationFrame(playIntro);
+      } else {
+        document.addEventListener('DOMContentLoaded', playIntro, { once: true });
+      }
+
+      window.addEventListener('pointerdown', startEngineSound, { once: true });
+    })();
+
     (() => {
       const gate = document.getElementById('token-gate');
       const gateStatus = document.getElementById('gate-status');
