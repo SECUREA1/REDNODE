@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>RedNode.ai – Integrated Intelligent Node System</title>
+  <link rel="icon" href="static/excavator.svg" />
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
   <style>
     * {
@@ -62,6 +63,15 @@
       letter-spacing: 0.08em;
       text-transform: uppercase;
       text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.55rem;
+    }
+
+    .nav-brand img {
+      width: 28px;
+      height: 28px;
+      filter: drop-shadow(0 0 6px rgba(255, 195, 30, 0.7));
     }
 
     .nav-links {
@@ -780,7 +790,10 @@
   <button id="gate-manage" class="gate-manage" type="button">Manage access</button>
   <nav>
     <div class="nav-container">
-      <a class="nav-brand" href="/">RedNode.ai</a>
+      <a class="nav-brand" href="/">
+        <img src="static/excavator.svg" alt="RedNode excavator logo" loading="lazy" />
+        RedNode.ai
+      </a>
       <ul class="nav-links">
         <li><a href="#home">Home</a></li>
         <li><a href="#platform">Platform</a></li>
