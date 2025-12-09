@@ -5,6 +5,7 @@
   <title>RedNode Excavation – Operations Dashboard</title>
   <!-- Lock content into viewport frame and improve mobile touch behavior -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <link rel="icon" href="static/excavator.svg" />
   <style>
     :root {
       --bg: #050509;
@@ -84,8 +85,8 @@
     }
 
     .brand-logo {
-      width: 34px;
-      height: 34px;
+      width: 38px;
+      height: 38px;
       border-radius: 14px;
       background: conic-gradient(
         from 210deg,
@@ -95,7 +96,7 @@
         #3f82ff,
         #ff375f
       );
-      padding: 2px;
+      padding: 3px;
       box-shadow: 0 0 16px rgba(255, 55, 95, 0.7);
       position: relative;
       overflow: hidden;
@@ -109,10 +110,14 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 18px;
-      font-weight: 700;
-      color: #fff;
-      letter-spacing: 0.03em;
+      padding: 4px;
+    }
+
+    .brand-logo-inner img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      filter: drop-shadow(0 0 6px rgba(255, 153, 0, 0.6));
     }
 
     .brand-meta {
@@ -838,7 +843,9 @@
   <header class="app-header">
     <div class="brand">
       <div class="brand-logo">
-        <div class="brand-logo-inner">RN</div>
+        <div class="brand-logo-inner">
+          <img src="static/excavator.svg" alt="RedNode excavator logo" loading="lazy" />
+        </div>
       </div>
       <div class="brand-meta">
         <div class="brand-title">RedNode Excavation</div>
