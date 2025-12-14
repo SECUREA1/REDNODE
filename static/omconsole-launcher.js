@@ -41,15 +41,15 @@
     overlay.id = OVERLAY_ID;
     applyStyles(overlay, {
       position: 'fixed',
-      bottom: '76px',
-      right: '16px',
-      width: 'min(520px, 90vw)',
-      height: 'min(380px, 70vh)',
+      top: '0',
+      left: '0',
+      width: '100vw',
+      height: '100vh',
       display: 'flex',
       flexDirection: 'column',
       backdropFilter: 'blur(12px)',
-      background: 'rgba(7,20,40,0.82)',
-      borderRadius: '18px',
+      background: 'rgba(7,20,40,0.9)',
+      borderRadius: '0',
       border: '1px solid rgba(212,175,55,0.35)',
       boxShadow: '0 30px 80px rgba(0,0,0,0.45)',
       overflow: 'hidden',
@@ -69,7 +69,34 @@
       letterSpacing: '.22px',
       borderBottom: '1px solid rgba(212,175,55,0.28)'
     });
-    bar.textContent = 'OMConsole — Cursor + Control (active)';
+    const title = document.createElement('div');
+    title.textContent = 'OMConsole — Cursor + Control (active)';
+    bar.appendChild(title);
+
+    const actions = document.createElement('div');
+    applyStyles(actions, {
+      display: 'flex',
+      alignItems: 'center',
+      gap: '8px'
+    });
+
+    const openFull = document.createElement('a');
+    openFull.href = FRAME_URL;
+    openFull.target = '_blank';
+    openFull.rel = 'noopener noreferrer';
+    openFull.textContent = 'Open full page';
+    applyStyles(openFull, {
+      textDecoration: 'none',
+      background: 'rgba(255,255,255,0.1)',
+      color: '#fff',
+      border: '1px solid rgba(255,255,255,0.22)',
+      borderRadius: '10px',
+      padding: '8px 10px',
+      fontSize: '12px',
+      fontWeight: '600',
+      letterSpacing: '.2px'
+    });
+    actions.appendChild(openFull);
 
     const close = document.createElement('button');
     close.type = 'button';
@@ -87,7 +114,9 @@
       lineHeight: '24px'
     });
     close.addEventListener('click', () => setPinned(false));
-    bar.appendChild(close);
+    actions.appendChild(close);
+
+    bar.appendChild(actions);
 
     const iframe = document.createElement('iframe');
     iframe.src = FRAME_URL;
