@@ -11,6 +11,7 @@ COPY dashboard1.html       /usr/share/nginx/html/dashboard1.html
 COPY dashboard.html        /usr/share/nginx/html/dashboard.html
 COPY home.html             /usr/share/nginx/html/home.html
 COPY sensor2.html          /usr/share/nginx/html/sensor2.html
+COPY omconsole_render_single_games_ROUTING.html /usr/share/nginx/html/omconsole_render_single_games_ROUTING.html
 
 COPY live/                 /usr/share/nginx/html/live/
 COPY static/               /usr/share/nginx/html/static/
@@ -25,7 +26,7 @@ server {
     index index.html;
 
     location / {
-        try_files $uri $uri/ /index.html;
+        try_files $uri $uri/ $uri.html /index.html;
     }
 
     location ~* \.(?:css|js|png|jpg|jpeg|gif|ico|svg|woff2?|ttf|eot)$ {
@@ -34,7 +35,7 @@ server {
     }
 
     location /live/ {
-        try_files $uri $uri/ /index.html;
+        try_files $uri $uri/ $uri.html /index.html;
     }
 }
 EOF
