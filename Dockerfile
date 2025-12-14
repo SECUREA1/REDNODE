@@ -1,26 +1,26 @@
-# Use Nginx to serve the RedNode HTML pages
+# Dockerfile
 FROM nginx:alpine
 
-# Optional: set working dir for readability
+# Optional workdir
 WORKDIR /usr/share/nginx/html
 
-# Ensure the landing/start page is available as index.html
+# Copy site files (adjust paths if your HTML files live in a subfolder)
 COPY start.html            /usr/share/nginx/html/index.html
 COPY start.html            /usr/share/nginx/html/start.html
 COPY rednode.html          /usr/share/nginx/html/rednode.html
-
-# Important: copy dashboard, home, sensor2 and related pages so nginx can serve them
 COPY dashboard1.html       /usr/share/nginx/html/dashboard1.html
 COPY dashboard.html        /usr/share/nginx/html/dashboard.html
 COPY home.html             /usr/share/nginx/html/home.html
 COPY sensor2.html          /usr/share/nginx/html/sensor2.html
 
-# Copy other site assets and the live folder
 COPY live/                 /usr/share/nginx/html/live/
 COPY static/               /usr/share/nginx/html/static/
 
-# Expose Nginx default HTTP port
+# Put an nginx config template that listens on port 80 (we'll replace 80 with $PORT at runtime)
+COPY nginx.conf.template   /etc/nginx/conf.d/default.conf.template
+
+# Expose is only documentation; Render provides PORT via env
 EXPOSE 80
 
-# Run nginx in foreground
-CMD ["nginx", "-g", "daemon off;"]
+# At runtime replace "listen 80;" with "listen ${PORT};" then start nginx in foreground
+CMD ["sh", "-c", "sed -e \"s/listen 80;/listen ${PORT};/g\" /etc/nginx/conf.d/default.conf.template > /etc/nginx/conf.d/default.conf && nginx -g 'daemon off;'"]
