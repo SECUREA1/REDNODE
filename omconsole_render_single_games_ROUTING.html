@@ -780,6 +780,7 @@
       </div>
       <button class="btn ghost" id="btnToggleHover" title="F11">Hover Click</button>
       <button class="btn gold" id="btnToggleOS" title="F12">Toggle OS*</button>
+      <button class="btn ghost" id="btnPinConsole" title="Keep active across this site">Pin Console</button>
       <div class="pill" title="Local time">
         <b id="clock">--:--:--</b>
       </div>
@@ -1288,6 +1289,7 @@ function updateSimBusFromController(name, out){
 // Global State + Storage
 // -----------------------------
 const STORAGE_KEY = "omconsole.web.settings.v1";
+const PIN_STORAGE_KEY = "omconsole_pinned";
 const defaultSettings = {
   ui: {
     hoverClick: true,
@@ -4325,6 +4327,26 @@ function wireNav(){
     dotCtl.classList.toggle("bad", !state.runtime.osEnabled);
   };
 
+  const btnPinConsole = $("#btnPinConsole");
+  function syncPinButton(){
+    if(!btnPinConsole) return;
+    const active = localStorage.getItem(PIN_STORAGE_KEY) === "1";
+    btnPinConsole.textContent = active ? "Console Pinned" : "Pin Console";
+    btnPinConsole.classList.toggle("gold", active);
+    btnPinConsole.classList.toggle("ghost", !active);
+  }
+  if(btnPinConsole){
+    btnPinConsole.addEventListener("click", ()=>{
+      const active = localStorage.getItem(PIN_STORAGE_KEY) === "1";
+      localStorage.setItem(PIN_STORAGE_KEY, active ? "0" : "1");
+      syncPinButton();
+    });
+    syncPinButton();
+  }
+  window.addEventListener("storage", (e)=>{
+    if(e.key === PIN_STORAGE_KEY) syncPinButton();
+  });
+
   // hotkeys
   window.addEventListener("keydown", (e)=>{
     if(e.key === "F11"){
@@ -4757,5 +4779,6 @@ function boot(){
 boot();
 
 </script>
+  <script src="static/omconsole-launcher.js"></script>
 </body>
 </html>
