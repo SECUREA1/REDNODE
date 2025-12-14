@@ -1,10 +1,9 @@
-# Dockerfile
+# Use nginx
 FROM nginx:alpine
 
-# Optional workdir
 WORKDIR /usr/share/nginx/html
 
-# Copy site files (adjust paths if your HTML files live in a subfolder)
+# copy site files
 COPY start.html            /usr/share/nginx/html/index.html
 COPY start.html            /usr/share/nginx/html/start.html
 COPY rednode.html          /usr/share/nginx/html/rednode.html
@@ -16,11 +15,32 @@ COPY sensor2.html          /usr/share/nginx/html/sensor2.html
 COPY live/                 /usr/share/nginx/html/live/
 COPY static/               /usr/share/nginx/html/static/
 
-# Put an nginx config template that listens on port 80 (we'll replace 80 with $PORT at runtime)
-COPY nginx.conf.template   /etc/nginx/conf.d/default.conf.template
+# Create nginx config template at build-time
+RUN cat > /etc/nginx/conf.d/default.conf.template <<'EOF'
+server {
+    listen 80;
+    server_name _;
 
-# Expose is only documentation; Render provides PORT via env
+    root /usr/share/nginx/html;
+    index index.html;
+
+    location / {
+        try_files $uri $uri/ /index.html;
+    }
+
+    location ~* \.(?:css|js|png|jpg|jpeg|gif|ico|svg|woff2?|ttf|eot)$ {
+        expires 7d;
+        add_header Cache-Control "public";
+    }
+
+    location /live/ {
+        try_files $uri $uri/ /index.html;
+    }
+}
+EOF
+
+# Expose documentation only; Render provides actual PORT via env
 EXPOSE 80
 
-# At runtime replace "listen 80;" with "listen ${PORT};" then start nginx in foreground
+# Replace "listen 80;" with "listen ${PORT};" at container start, then run nginx
 CMD ["sh", "-c", "sed -e \"s/listen 80;/listen ${PORT};/g\" /etc/nginx/conf.d/default.conf.template > /etc/nginx/conf.d/default.conf && nginx -g 'daemon off;'"]
