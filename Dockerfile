@@ -11,6 +11,7 @@ COPY dashboard1.html       /usr/share/nginx/html/dashboard1.html
 COPY dashboard.html        /usr/share/nginx/html/dashboard.html
 COPY home.html             /usr/share/nginx/html/home.html
 COPY sensor2.html          /usr/share/nginx/html/sensor2.html
+COPY omconsole_render_single.html /usr/share/nginx/html/omconsole_render_single.html
 COPY omconsole_render_single_games_ROUTING.html /usr/share/nginx/html/omconsole_render_single_games_ROUTING.html
 
 COPY live/                 /usr/share/nginx/html/live/
