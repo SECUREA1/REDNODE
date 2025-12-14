@@ -6,7 +6,9 @@
   const OVERLAY_ID = 'omconsole-overlay';
   const BTN_ID = 'omconsole-launch-btn';
   const WRAP_ID = 'omconsole-launch-wrap';
-  const FRAME_URL = 'omconsole_render_single_games_ROUTING.html';
+  // Use an absolute URL so the iframe loads correctly from nested routes
+  // (e.g., /live/) instead of resolving relative to the current page.
+  const FRAME_URL = '/omconsole_render_single_games_ROUTING.html';
   const isConsolePage = location.pathname.includes('omconsole_render_single_games_ROUTING.html');
 
   let pinned = false;
